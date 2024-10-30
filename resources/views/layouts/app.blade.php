@@ -1,32 +1,20 @@
+@extends('adminlte::page')
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Sistema de Actas')</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
- 
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="{{ route('actas.create') }}">Crear Acta</a></li>
-              
-            </ul>
-        </nav>
-    </header>
+@section('title', 'Dashboard')
 
-    <main>
-        @yield('content')
-    </main>
+@section('content_header')
+    <h1>Dashboard</h1>
+@stop
 
-    <footer>
-        <p>&copy; {{ date('Y') }} Tu Organización. Todos los derechos reservados.</p>
-    </footer>
+@section('content')
+    <p>Welcome to this beautiful admin panel.</p>
+@stop
 
-    <script src="{{ asset('js/app.js') }}"></script>
-  
-</body>
-</html>
+@section('css')
+    {{-- Add here extra stylesheets --}}
+    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+@stop
+
+@section('js')
+    <script> console.log("Hi, I'm using the Laravel-AdminLTE package!"); </script>
+@stop
