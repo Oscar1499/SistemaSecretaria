@@ -2,73 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Personal;
+use Illuminate\Http\Request;
 
 class PersonalController extends Controller
 {
-   
+    /**
+     * Muestra una lista del recurso.
+     */
     public function index()
     {
-        $personales = Personal::all();
-        return view('personales.index', compact('personales'));
+        $personal = Personal::paginate(10); // Puedes ajustar el número de elementos por página
+        return view('personal.index', compact('personal'));
     }
 
 
+    /**
+     * Muestra el formulario para crear un nuevo recurso.
+     */
     public function create()
     {
-        return view('personales.create');
+        return view('personal.create');
     }
 
-  
+    /**
+     * Almacena un nuevo recurso en la base de datos.
+     */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'cargo' => 'required|string|max:255',
-            'departamento' => 'required|string|max:255',
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'cargo' => 'nullable|string|max:100',
+            'propietario' => 'required|boolean',
         ]);
 
-        Personal::create($validatedData);
-
-        return redirect()->route('personales.index')->with('success', 'Personal creado exitosamente.');
+        Personal::create($request->all());
+        return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente.');
     }
 
-   
+    /**
+     * Muestra el recurso especificado.
+     */
     public function show($id)
     {
         $personal = Personal::findOrFail($id);
-        return view('personales.show', compact('personal'));
+        return view('personal.show', compact('personal'));
     }
 
+    /**
+     * Muestra el formulario para editar el recurso especificado.
+     */
     public function edit($id)
     {
         $personal = Personal::findOrFail($id);
-        return view('personales.edit', compact('personal'));
+        return view('personal.edit', compact('personal'));
     }
 
-
+    /**
+     * Actualiza el recurso especificado en la base de datos.
+     */
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'cargo' => 'required|string|max:255',
-            'departamento' => 'required|string|max:255',
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'cargo' => 'nullable|string|max:100',
+            'propietario' => 'required|boolean',
         ]);
 
         $personal = Personal::findOrFail($id);
-        $personal->update($validatedData);
-
-        return redirect()->route('personales.index')->with('success', 'Personal actualizado exitosamente.');
+        $personal->update($request->all());
+        return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente.');
     }
 
-    
+    /**
+     * Elimina el recurso especificado de la base de datos.
+     */
     public function destroy($id)
     {
         $personal = Personal::findOrFail($id);
         $personal->delete();
-
-        return redirect()->route('personales.index')->with('success', 'Personal eliminado exitosamente.');
+        return redirect()->route('personal.index')->with('success', 'Personal eliminado exitosamente.');
     }
 }
-

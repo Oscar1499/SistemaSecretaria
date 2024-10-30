@@ -2,12 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Personal extends Model
 {
-    public function acuerdos()
-{
-    return $this->hasMany(Acuerdo::class, 'id_personal'); // campo de relación en Acuerdo
-}
+    use HasFactory;
+
+    // Nombre de la tabla
+    protected $table = 'Personal';
+
+    // Nombre de la clave primaria
+    protected $primaryKey = 'id_Personal';
+
+    public $timestamps = false;
+
+    // Definir los atributos que se pueden asignar masivamente
+    protected $fillable = [
+        'nombre',
+        'apellido',
+        'cargo',
+        'propietario',
+    ];
 }
