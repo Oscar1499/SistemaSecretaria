@@ -317,6 +317,11 @@ return [
 
         ['header' => 'Gestión de Documentos'],
         [
+            'text' => 'Libros',
+            'url' => 'libros',
+            'icon' => 'fas fa-fw fa-file-alt',
+        ],
+        [
             'text' => 'Actas',
             'url' => 'actas',
             'icon' => 'fas fa-fw fa-file-alt',
