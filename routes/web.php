@@ -12,12 +12,11 @@ Route::get('/', function () {
 });
 
 Route::get('/libros', [LibroController::class, 'index'])->name('libros.index');
-
 Route::get('/actas/create', [ActaController::class, 'create'])->name('actas.create');
 Route::post('/actas', [ActaController::class, 'store'])->name('actas.store');
 
 
-Route::resource('actas', ActaController::class);
+Route::resource('actas', ActaController::class)->middleware('auth');
 Route::resource('acuerdos', AcuerdoController::class);
 Route::resource('personal', PersonalController::class);
 
@@ -26,5 +25,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::resource('libros', LibroController::class);
+
+  
 });
 
