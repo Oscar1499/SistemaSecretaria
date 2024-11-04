@@ -10,10 +10,9 @@ class Personal extends Model
     use HasFactory;
 
     // Nombre de la tabla
-    protected $table = 'Personal';
+    protected $table = 'personal';
 
-    // Nombre de la clave primaria
-    protected $primaryKey = 'id_Personal';
+
 
     public $timestamps = false;
 
@@ -23,5 +22,6 @@ class Personal extends Model
         'apellido',
         'cargo',
         'propietario',
+        'rubricas',
     ];
 }
