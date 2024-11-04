@@ -6,24 +6,43 @@ use Illuminate\Database\Eloquent\Model;
 
 class Acta extends Model
 {
+    protected $table = 'actas'; 
+
+    protected $primaryKey = 'id_Actas'; 
+
+    protected $fillable = [
+        'id_libros', 
+        'id_Personal',
+        'fecha', 
+        'descripcion' 
+    ];
+
+   
     public function libro()
-{
-    return $this->belongsTo(Libro::class, 'id_libros');
-}
-
-public function acuerdos()
-{
-    return $this->hasMany(Acuerdo::class, 'id_actas'); 
-}
-
-public function definirTipoSesion()
-{
-    $dia = date('d', strtotime($this->fecha));
-
-    if (in_array($dia, range(1, 5)) || in_array($dia, range(15, 20))) {
-        return 'ordinaria';
-    } elseif (in_array($dia, range(6, 14)) || in_array($dia, range(21, 30))) {
-        return 'extraordinaria';
+    {
+        return $this->belongsTo(Libro::class, 'id_libros');
     }
+
+   
+    public function acuerdos()
+    {
+        return $this->hasMany(Acuerdo::class, 'id_actas'); 
+    }
+
+        
+        public function definirTipoSesion()
+    {
+        $dia = $this->fecha->day; 
+
+        
+        if (($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20)) {
+            return 'Ordinaria';
+        } else {
+            return 'Extraordinaria';
+        }
+    }
+
 }
-}
+
+
+

@@ -10,6 +10,7 @@ class LibroController extends Controller
     public function index()
     {
         $libros = Libro::all();
+        
         return view('libros.index', compact('libros'));
     }
 
@@ -22,10 +23,10 @@ class LibroController extends Controller
     {
         $request->validate([
             'anio' => 'required|integer',
-            'descripcion' => 'required|string',
+            'descripcion_Libro' => 'required|string',
         ]);
 
-        Libro::create($request->all());
+        Libro::create($request->except('_token'));
         return redirect()->route('libros.index');
     }
 
@@ -44,7 +45,7 @@ class LibroController extends Controller
     {
         $request->validate([
             'anio' => 'required|integer',
-            'descripcion' => 'required|string',
+            'descripcion_Libro' => 'required|string',
         ]);
 
         $libro->update($request->all());
@@ -56,5 +57,5 @@ class LibroController extends Controller
         $libro->delete();
         return redirect()->route('libros.index');
     }
+    
 }
-

@@ -14,58 +14,81 @@ class ActaController extends Controller
         return view('actas.index', compact('actas'));
     }
 
-    public function create(Libro $libro)
+    public function create()
     {
-        return view('actas.create', compact('libro'));
+        $libros = Libro::all(); 
+       
+        $dia = now()->day;
+        $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
+    
+        return view('actas.create', compact('libros', 'tipoSesion'));
     }
+    
 
-    public function store(Request $request, Libro $libro)
+    public function store(Request $request)
     {
-        $request->validate([
-            'fecha' => 'required|date',
-            'descripcion' => 'required|string',
-        ]);
+        
+        $currentYear = now()->year; 
+        $validBook = Libro::where('id', $request->id_libros)
+            ->where('fecha_inicio', '<=', now()->toDateString())
+            ->where('fecha_fin', '>=', now()->toDateString())
+            ->exists();
 
-        $acta = new Acta($request->all());
-        $acta->libro()->associate($libro);
-
-        // tipo de sesion
-        $dia = date('d', strtotime($request->fecha));
-        if (in_array($dia, range(1, 5)) || in_array($dia, range(15, 20))) {
-            $acta->tipo_sesion = 'ordinaria';
-        } else {
-            $acta->tipo_sesion = 'extraordinaria';
+        if (!$validBook) {
+            return back()->withErrors(['El libro no está activo para el año actual.']);
         }
 
+      
+        $request->validate([
+            'id_libros' => 'required|exists:libros,id', 
+            'fecha' => 'required|date',
+            'descripcion' => 'nullable|string',
+        ]);
+
+        
+        $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
+
+       
+        $acta = new Acta($request->all());
+        $acta->numero_acta = $correlativo; 
+        $acta->tipo_sesion = $acta->definirTipoSesion(); 
         $acta->save();
-        return redirect()->route('libros.show', $libro->id);
+
+        return redirect()->route('libros.show', $acta->id_libros)->with('success', 'Acta creada exitosamente.');
     }
 
     public function show(Acta $acta)
     {
-        $acuerdos = $acta->acuerdos; // aca manda a llamar los acuerdos de las actas
+        $acuerdos = $acta->acuerdos; 
         return view('actas.show', compact('acta', 'acuerdos'));
     }
 
     public function edit(Acta $acta)
     {
-        return view('actas.edit', compact('acta'));
+        $libros = Libro::all(); 
+        return view('actas.edit', compact('acta', 'libros'));
     }
 
     public function update(Request $request, Acta $acta)
     {
         $request->validate([
+            'id_libros' => 'required|exists:libros,id', 
             'fecha' => 'required|date',
-            'descripcion' => 'required|string',
+            'descripcion' => 'nullable|string',
         ]);
 
-        $acta->update($request->all());
-        return redirect()->route('actas.show', $acta->id);
+        $acta->fill($request->all());
+        $acta->tipo_sesion = $acta->definirTipoSesion(); 
+        $acta->save();
+
+        return redirect()->route('actas.show', $acta->id)->with('success', 'Acta actualizada exitosamente.');
     }
 
     public function destroy(Acta $acta)
     {
         $acta->delete();
-        return redirect()->route('libros.index');
+        return redirect()->route('libros.index')->with('success', 'Acta eliminada exitosamente.');
     }
+
+    
 }

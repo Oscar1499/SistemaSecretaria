@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "589cc0f65c3aaa7d4e9024d545bc1974",
+    "content-hash": "d00db0d66ce0494103d98eb956ad20f6",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -1096,6 +1096,65 @@
                 }
             ],
             "time": "2023-12-03T19:50:20+00:00"
+        },
+        {
+            "name": "jeroennoten/laravel-adminlte",
+            "version": "v3.14.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeroennoten/Laravel-AdminLTE.git",
+                "reference": "4dafd7931e0971ed75cca2efe052d891c783c1dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeroennoten/Laravel-AdminLTE/zipball/4dafd7931e0971ed75cca2efe052d891c783c1dd",
+                "reference": "4dafd7931e0971ed75cca2efe052d891c783c1dd",
+                "shasum": ""
+            },
+            "require": {
+                "almasaeed2010/adminlte": "3.2.*",
+                "laravel/framework": ">=7.0",
+                "php": ">=7.2.5"
+            },
+            "require-dev": {
+                "orchestra/testbench": ">=4.0",
+                "phpunit/phpunit": ">=9.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeroenNoten\\LaravelAdminLte\\AdminLteServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeroenNoten\\LaravelAdminLte\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeroen Noten",
+                    "email": "jeroennoten@me.com"
+                }
+            ],
+            "description": "Easy AdminLTE integration with Laravel",
+            "keywords": [
+                "AdminLTE",
+                "admin",
+                "administrator",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/jeroennoten/Laravel-AdminLTE/issues",
+                "source": "https://github.com/jeroennoten/Laravel-AdminLTE/tree/v3.14.1"
+            },
+            "time": "2024-10-15T18:40:40+00:00"
         },
         {
             "name": "laravel/framework",
