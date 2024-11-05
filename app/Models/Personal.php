@@ -11,9 +11,11 @@ class Personal extends Model
 
     // Nombre de la tabla
     protected $table = 'personal';
+<<<<<<< HEAD
+=======
 
-    // Nombre de la clave primaria
-    protected $primaryKey = 'id_Personal';
+>>>>>>> refs/remotes/origin/master
+
 
     public $timestamps = false;
 
@@ -23,5 +25,6 @@ class Personal extends Model
         'apellido',
         'cargo',
         'propietario',
+        'rubricas',
     ];
 }

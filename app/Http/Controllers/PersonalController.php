@@ -12,8 +12,9 @@ class PersonalController extends Controller
      */
     public function index()
     {
-        $personal = Personal::paginate(10); // Puedes ajustar el número de elementos por página
-        return view('personal.index', compact('personal'));
+        $personal = Personal::paginate(10);
+        $propietarios = Personal::where('propietario', 1)->get(); // Solo los que son propietarios
+        return view('personal.index', compact('personal', 'propietarios'));
     }
 
 

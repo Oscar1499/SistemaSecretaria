@@ -1,10 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Personal')
+@section('title', 'Gestión de Personal')
 
 @section('content_header')
     <h1>Gestión de Personal</h1>
-    <a href="{{ route('personal.create') }}" class="btn btn-primary mb-3">Agregar Nuevo Personal</a>
+    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#personalModal">
+        <i class="fas fa-plus"></i> Agregar Personal
+    </button>
 @stop
 
 @section('content')
@@ -13,7 +15,7 @@
             <h3 class="card-title">Listado de Personal</h3>
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table id="personalTable" class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -27,15 +29,16 @@
                 <tbody>
                     @foreach($personal as $persona)
                         <tr>
-                            <td>{{ $persona->id_Personal }}</td>
+                            <td>{{ $persona->id }}</td>
                             <td>{{ $persona->nombre }}</td>
                             <td>{{ $persona->apellido }}</td>
                             <td>{{ $persona->cargo ?? 'Sin asignar' }}</td>
                             <td>{{ $persona->propietario ? 'Sí' : 'No' }}</td>
                             <td>
-                                <a href="{{ route('personal.show', $persona->id_Personal) }}" class="btn btn-info btn-sm">Ver</a>
-                                <a href="{{ route('personal.edit', $persona->id_Personal) }}" class="btn btn-warning btn-sm">Editar</a>
-                                <form action="{{ route('personal.destroy', $persona->id_Personal) }}" method="POST" style="display:inline-block;">
+                                <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})">
+                                    Editar
+                                </button>
+                                <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">Eliminar</button>
@@ -46,17 +49,38 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">
-            {{-- Paginación (si está habilitada) --}}
-            {{ $personal->links() }}
-        </div>
     </div>
 @stop
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 @stop
 
 @section('js')
-    <script> console.log('Index de Personal cargado'); </script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#personalTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" // Traducción al español
+                },
+                "autoWidth": true // Asegura que las columnas se adapten automáticamente
+            });
+        });
+
+        function openEditModal(persona) {
+            $('#personalModal').modal('show');
+            $('#personalForm').attr('action', `/personal/${persona.id_Personal}`);
+            $('#personalForm').find('input[name="_method"]').val('PUT');
+            $('#nombre').val(persona.nombre);
+            $('#apellido').val(persona.apellido);
+            $('#cargo').val(persona.cargo);
+            $('#propietario').prop('checked', persona.propietario == 1);
+        }
+    </script>
 @stop
+
+{{-- Incluye el modal desde un archivo separado --}}
+@include('personal.modals.modal', ['propietarios' => $propietarios])
