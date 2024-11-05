@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Libro;
 use Illuminate\Http\Request;
+use App\Models\Personal;
+
 
 class LibroController extends Controller
 {
@@ -14,11 +16,11 @@ class LibroController extends Controller
         return view('libros.index', compact('libros'));
     }
 
+    
     public function create()
     {
         return view('libros.create');
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -57,5 +59,15 @@ class LibroController extends Controller
         $libro->delete();
         return redirect()->route('libros.index');
     }
+
+    public function libroActual()
+    {
+        $anioActual = date('Y'); 
+    
+       
+        return Libro::where('anio', $anioActual)->first();
+    }
+    
+
     
 }

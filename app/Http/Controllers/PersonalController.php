@@ -13,7 +13,7 @@ class PersonalController extends Controller
     public function index()
     {
         $personal = Personal::paginate(10);
-        $propietarios = Personal::where('propietario', 1)->get(); // Solo los que son propietarios
+        $propietarios = Personal::where('propietario', 1)->get(); 
         return view('personal.index', compact('personal', 'propietarios'));
     }
 

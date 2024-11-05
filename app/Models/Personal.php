@@ -10,14 +10,7 @@ class Personal extends Model
     use HasFactory;
 
     // Nombre de la tabla
-    protected $table = 'personal';
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/master
-
-
-    public $timestamps = false;
+    protected $table = 'personal';  public $timestamps = false;
 
     // Definir los atributos que se pueden asignar masivamente
     protected $fillable = [

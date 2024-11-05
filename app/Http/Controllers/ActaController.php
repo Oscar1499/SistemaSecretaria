@@ -16,51 +16,68 @@ class ActaController extends Controller
 
     public function create()
     {
-        $libros = Libro::all(); 
-       
+        $anioActual = date('Y'); 
+
+    $libros = Libro::where('anio', $anioActual)->get(); 
+
+    
+    if ($libros->isEmpty()) {
+        return back()->withErrors(['No hay libros disponibles para el año actual.']);
+    }
+
+    $libroActual = $libros->first();
+
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
-    
-       
-    $personal = Personal::all(); 
+        $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first(); 
+        $secretario = Personal::where('cargo', 'Secretario')->first(); 
+        $personal = Personal::all(); 
+        
 
-    return view('actas.create', compact('libros', 'tipoSesion', 'personal'));
+    return view('actas.create', compact('libros','libroActual', 'tipoSesion', 'personal', 'alcaldesa', 'secretario',));
+
     }
     
 
     public function store(Request $request)
-    {
-        $currentYear = now()->year; 
-        $validBook = Libro::where('id', $request->id_libros)
-            ->where('fecha_inicio', '<=', now()->toDateString())
-            ->where('fecha_fin', '>=', now()->toDateString())
-            ->exists();
-    
-        if (!$validBook) {
-            return back()->withErrors(['El libro no está activo para el año actual.']);
-        }
-    
-        $request->validate([
-            'id_libros' => 'required|exists:libros,id', 
-            'fecha' => 'required|date',
-            'descripcion' => 'nullable|string',
-        ]);
-    
-        $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
-    
-        $acta = new Acta($request->all());
-        $acta->numero_acta = $correlativo; 
-        $acta->tipo_sesion = $acta->definirTipoSesion(); 
-        $acta->save();
-    
-        
-        if ($request->has('personal')) {
-            $acta->personal()->sync($request->input('personal'));
-        }
-    
-        return redirect()->route('libros.show', $acta->id_libros)->with('success', 'Acta creada exitosamente.');
+{
+    $currentYear = now()->year; 
+
+   
+    $validBook = Libro::where('id_Libros', $request->id_libros) 
+        ->where('anio', $currentYear) 
+        ->exists();
+
+    if (!$validBook) {
+        return back()->withErrors(['El libro no está activo para el año actual.']);
     }
+
     
+    $request->validate([
+        'id_libros' => 'required|exists:libros,id_Libros', 
+        'fecha' => 'required|date',
+        'descripcion' => 'nullable|string',
+    ]);
+
+   
+    $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
+
+    
+    $acta = new Acta($request->all());
+    $acta->numero_acta = $correlativo; 
+    $acta->tipo_sesion = $acta->definirTipoSesion(); 
+    $acta->save();
+
+   
+    if ($request->has('personal')) {
+        $acta->personal()->sync($request->input('personal'));
+    }
+
+ 
+    return redirect()->route('libros.show', $acta->id_libros)->with('success', 'Acta creada exitosamente.');
+}
+
+
 
     public function show(Acta $acta)
     {
