@@ -10,7 +10,7 @@ class Personal extends Model
     use HasFactory;
 
     // Nombre de la tabla
-    protected $table = 'Personal';
+    protected $table = 'personal';
 
     // Nombre de la clave primaria
     protected $primaryKey = 'id_Personal';

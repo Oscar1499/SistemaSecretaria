@@ -28,8 +28,11 @@ class Acta extends Model
     {
         return $this->hasMany(Acuerdo::class, 'id_actas'); 
     }
-
-        
+    public function personal()
+    {
+        return $this->belongsToMany(personal::class, 'acta_personal', 'acta_id', 'personal_id');
+    }
+            
         public function definirTipoSesion()
     {
         $dia = $this->fecha->day; 

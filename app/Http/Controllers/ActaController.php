@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Personal;
 use App\Models\Acta;
 use App\Models\Libro;
 use Illuminate\Http\Request;
@@ -21,41 +21,46 @@ class ActaController extends Controller
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
     
-        return view('actas.create', compact('libros', 'tipoSesion'));
+       
+    $personal = Personal::all(); 
+
+    return view('actas.create', compact('libros', 'tipoSesion', 'personal'));
     }
     
 
     public function store(Request $request)
     {
-        
         $currentYear = now()->year; 
         $validBook = Libro::where('id', $request->id_libros)
             ->where('fecha_inicio', '<=', now()->toDateString())
             ->where('fecha_fin', '>=', now()->toDateString())
             ->exists();
-
+    
         if (!$validBook) {
             return back()->withErrors(['El libro no está activo para el año actual.']);
         }
-
-      
+    
         $request->validate([
             'id_libros' => 'required|exists:libros,id', 
             'fecha' => 'required|date',
             'descripcion' => 'nullable|string',
         ]);
-
-        
+    
         $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
-
-       
+    
         $acta = new Acta($request->all());
         $acta->numero_acta = $correlativo; 
         $acta->tipo_sesion = $acta->definirTipoSesion(); 
         $acta->save();
-
+    
+        
+        if ($request->has('personal')) {
+            $acta->personal()->sync($request->input('personal'));
+        }
+    
         return redirect()->route('libros.show', $acta->id_libros)->with('success', 'Acta creada exitosamente.');
     }
+    
 
     public function show(Acta $acta)
     {

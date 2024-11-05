@@ -20,8 +20,16 @@
         </div>
         
         <div class="form-group">
-            <label for="id_Personal">Personal</label>
-            <input type="number" class="form-control" id="id_Personal" name="id_Personal" required>
+            <label for="personal">Personal</label>
+            <div>
+                @foreach ($personal as $persona)
+                    <label>
+                        <input type="checkbox" name="personal[]" value="{{ $persona->id }}" 
+                               onchange="updateSelectedPersonal()"> 
+                        {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }} {{ $persona-> }}
+                    </label><br>
+                @endforeach
+            </div>
         </div>
 
         <div class="form-group">
@@ -42,15 +50,32 @@
         
         <div class="form-group">
             <label>Fecha y Hora de Elaboración</label>
-            <p>En las instalaciones del Centro Municipal para la Prevención de la Violecia, del distrito de la Unión, Municipio de La Unión Sur, departamento de La Unión, a las {{ now()->translatedFormat('H') }} horas del día 
-                {{ now()->format('j') }} de 
-                {{ now()->translatedFormat('F') }} del 
-                {{ now()->year }}. En avenencia de artículo 31 numeral 10, artículo 31 numeral 10, acrtículo 38, artículo 48, numeral 1 del Código Municipal, en sesión <strong>{{ $tipoSesion }}</strong>,
+            <p>
+                En las instalaciones del Centro Municipal para la Prevención de la Violecia, del distrito de la Unión, 
+                Municipio de La Unión Sur, departamento de La Unión, a las {{ now()->translatedFormat('H') }} horas del día 
+                {{ now()->format('j') }} de {{ now()->translatedFormat('F') }} del {{ now()->year }}. 
+                En avenencia de artículo 31 numeral 10, artículo 31 numeral 10, acrtículo 38, artículo 48, numeral 1 del Código 
+                Municipal, en sesión <strong>{{ $tipoSesion }}</strong>,
             </p>
-
+            
+            
+            <p><strong>Personal Seleccionado:</strong></p>
+            <p id="selected-personal"></p>
         </div>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
 @stop
 
+@section('js')
+<script>
+    function updateSelectedPersonal() {
+        
+        const checkboxes = document.querySelectorAll('input[name="personal[]"]:checked');
+        const selectedNames = Array.from(checkboxes).map(checkbox => checkbox.parentNode.textContent.trim());
+
+        
+        document.getElementById('selected-personal').textContent = selectedNames.join(', ');
+    }
+</script>
+@stop
