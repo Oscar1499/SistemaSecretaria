@@ -25,8 +25,8 @@ class ActaController extends Controller
         return back()->withErrors(['No hay libros disponibles para el año actual.']);
     }
 
-    $libroActual = $libros->first();
-
+        $libroActual = $libros->first();
+        
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first(); 
@@ -40,45 +40,53 @@ class ActaController extends Controller
     
 
     public function store(Request $request)
-{
-    $currentYear = now()->year; 
-
-   
-    $validBook = Libro::where('id_Libros', $request->id_libros) 
-        ->where('anio', $currentYear) 
-        ->exists();
-
-    if (!$validBook) {
-        return back()->withErrors(['El libro no está activo para el año actual.']);
-    }
-
+    {
+        $currentYear = now()->year;
     
-    $request->validate([
-        'id_libros' => 'required|exists:libros,id_Libros', 
-        'fecha' => 'required|date',
-        'descripcion' => 'nullable|string',
-    ]);
-
-   
-    $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
-
+        
+        $validBook = Libro::where('id_Libros', $request->id_libros)
+            ->where('anio', $currentYear)
+            ->exists();
     
-    $acta = new Acta($request->all());
-    $acta->numero_acta = $correlativo; 
-    $acta->tipo_sesion = $acta->definirTipoSesion(); 
-    $acta->save();
-
-   
-    if ($request->has('personal')) {
-        $acta->personal()->sync($request->input('personal'));
+        if (!$validBook) {
+            return back()->withErrors(['El libro no está activo para el año actual.']);
+        }
+    
+        
+        $request->validate([
+            'id_libros' => 'required|exists:libros,id_Libros',
+            'fecha' => 'required|date',
+            'descripcion' => 'nullable|string',
+            'tipo_sesion' => 'required|string',  
+            'alcaldesa' => 'required|string',  
+            'secretario' => 'required|string'  
+        ]);
+    
+     
+        $correlativo = Acta::whereYear('fecha', $currentYear)->count() + 1;
+    
+      
+        $contenido_elaboracion = "En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión, 
+        Municipio de La Unión Sur, departamento de La Unión, a las " . now()->translatedFormat('H') . " horas del día " .
+        now()->format('j') . " de " . now()->translatedFormat('F') . " del " . now()->year . ".
+        En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código Municipal, en sesión <strong>" . 
+        $request->tipo_sesion . "</strong>, convocada y presidida por <strong>" . $request->alcaldesa .
+        " Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal, <strong>" . $request->secretario .
+        "</strong>; presentes los miembros del Concejo Municipal Plural de La Unión.";
+    
+       
+        $acta = new Acta();
+        $acta->id_libros = $request->id_libros;
+        $acta->fecha = $request->fecha;
+        $acta->descripcion = $request->descripcion;
+        $acta->numero_acta = $correlativo;
+        $acta->tipo_sesion = $request->tipo_sesion;
+        $acta->contenido_elaboracion = $contenido_elaboracion; 
+        $acta->save();
+    
+        return redirect()->route('actas.index')->with('success', 'Acta guardada exitosamente.');
     }
-
- 
-    return redirect()->route('libros.show', $acta->id_libros)->with('success', 'Acta creada exitosamente.');
-}
-
-
-
+    
     public function show(Acta $acta)
     {
         $acuerdos = $acta->acuerdos; 
@@ -112,5 +120,7 @@ class ActaController extends Controller
         return redirect()->route('libros.index')->with('success', 'Acta eliminada exitosamente.');
     }
 
-    
+   
 }
+
+
