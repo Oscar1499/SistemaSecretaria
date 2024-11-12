@@ -87,6 +87,7 @@ class ActaController extends Controller
         return redirect()->route('actas.index')->with('success', 'Acta guardada exitosamente.');
     }
     
+
     public function show(Acta $acta)
     {
         $acuerdos = $acta->acuerdos; 

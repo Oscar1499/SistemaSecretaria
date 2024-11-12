@@ -19,10 +19,10 @@
                     <a class="nav-link" href="#step-2" data-toggle="pill">Fecha</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step-3" data-toggle="pill">Funcionarios Presentes</a>
+                    <a class="nav-link" href="#step-3" data-toggle="pill">Funcionarios Ausentes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step-4" data-toggle="pill">Funcionarios Ausentes</a>
+                    <a class="nav-link" href="#step-4" data-toggle="pill">Motivo</a>
                 </li>
             </ul>
         </div>
@@ -97,8 +97,8 @@
                 </div>
                 <div class="form-group">
                     <label for="motivo_ausencia">Motivo de Ausencia</label>
-                    <textarea class="form-control" id="motivo_ausencia" name="motivo_ausencia" placeholder="Escriba el motivo de ausencia para los que no se marcaron" oninput="updatePersonalAttendance()"></textarea>
-                </div>
+                    <textarea class="form-control" id="motivo_ausencia" name="motivo_ausencia" placeholder="Escriba el motivo de ausencia para los que no se marcaron" oninput="updateMotivoAusencia()"></textarea>
+                    </div>
                
                 <div class="form-group text-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Guardar</button>
@@ -131,7 +131,8 @@
 
 @section('js')
 <script>
-      function toggleSelectAll() {
+
+    function toggleSelectAll() {
         var isChecked = document.getElementById('selectAll').checked;
         var checkboxes = document.querySelectorAll('input[name="personal[]"]');
         checkboxes.forEach(function(checkbox) {
@@ -139,30 +140,118 @@
         });
         updatePersonalAttendance(); 
     }
+
+   
     function updatePersonalAttendance() {
         const checkboxes = document.querySelectorAll('input[name="personal[]"]');
         const presentPersonal = document.getElementById('presentPersonal');
         const FaltaPersonal = document.getElementById('FaltaPersonal');
-        const motivoAusencia = document.getElementById('motivo_ausencia').value;
 
-        const selectedNames = [];
-        const absentNames = [];
+        const selectedNames = []; 
+        const presentNames = [];  
 
+      
         checkboxes.forEach(checkbox => {
             const label = checkbox.closest('label').innerText.trim();
             if (checkbox.checked) {
-                selectedNames.push(label);
+                selectedNames.push(label);  
             } else {
-                absentNames.push(label);
+                presentNames.push(label);  
             }
         });
 
-        presentPersonal.innerText = selectedNames.length > 0 ? selectedNames.join(', ') : 'Ninguno';
-        FaltaPersonal.innerText = absentNames.length > 0 
-            ? `${absentNames.join(', ')}. Motivo: ${motivoAusencia}`
-            : 'Ninguno';
+        FaltaPersonal.innerText = selectedNames.length > 0 ? selectedNames.join(', ') : 'Ninguno';
+        presentPersonal.innerText = presentNames.length > 0 ? presentNames.join(', ') : 'Ninguno';
     }
 
+
+    function updateMotivoAusencia() {
+    const FaltaPersonal = document.getElementById('FaltaPersonal');
+    const motivoAusencia = document.getElementById('motivo_ausencia').value;
+    
+    if (FaltaPersonal.innerText !== 'Ninguno') {
+        
+        if (motivoAusencia) {
+            FaltaPersonal.innerText = FaltaPersonal.innerText.replace(/\. Motivo: .*/, "") + `. Motivo: ${motivoAusencia}`;
+        } else {
+         
+            FaltaPersonal.innerText = FaltaPersonal.innerText.replace(/\. Motivo: .*/, "");
+        }
+    }
+}
+
+
+
     document.addEventListener("DOMContentLoaded", updatePersonalAttendance);
+
+
+    document.getElementById('motivo_ausencia').addEventListener('input', updateMotivoAusencia);
 </script>
+
+
 @stop
+
+
+@section('css')
+@section('css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <style>
+        /* Forzar que Select2 ocupe el 100% del ancho */
+        .select2-container {
+            width: 100% !important;
+        }
+        .select2-selection {
+            height: calc(1.5em + .75rem + 2px) !important;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+    </style>
+@stop
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar el stepper
+            var stepper = new Stepper(document.querySelector('.bs-stepper'))
+
+            // Funcionalidad para los botones de siguiente y anterior
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', () => stepper.next())
+            })
+            document.querySelectorAll('.previous-step').forEach(button => {
+                button.addEventListener('click', () => stepper.previous())
+            })
+
+            // Inicializar Select2
+            $('.select2').select2();
+
+            // Inicializar Summernote para el editor de texto enriquecido
+            $('#descripcion_Actas').summernote({
+                height: 200, // Altura del editor
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']], // Herramienta para tablas
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+@stop
+
+
