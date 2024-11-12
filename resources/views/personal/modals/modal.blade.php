@@ -29,10 +29,11 @@
                         <label for="rubricas">Rúbricas</label>
                         <input type="text" class="form-control" id="rubricas" name="rubricas" required>
                     </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" id="propietario" name="propietario" onchange="togglePropietarioSelect()">
-                        <label class="form-check-label" for="propietario">Propietario</label>
-                    </div>
+     <input type="hidden" name="propietario" value="0">
+<div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="propietario" name="propietario" value="1" onchange="togglePropietarioSelect()">
+    <label class="form-check-label" for="propietario">Propietario</label>
+</div>
 
                     {{-- Select de propietarios, visible solo si "propietario" no está marcado --}}
                     <div class="form-group" id="propietarioSelectContainer" style="display: none;">

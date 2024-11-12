@@ -2,17 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Acuerdo extends Model
 {
-    public function acta()
-{
-    return $this->belongsTo(Acta::class, 'id_actas');
-}
+    use HasFactory;
 
-public function personal()
-{
-    return $this->belongsTo(Personal::class, 'id_personal');
-}
+    // Nombre de la tabla
+    protected $table = 'Acuerdos';
+
+    // Clave primaria personalizada
+    protected $primaryKey = 'id_Acuerdo';
+
+    // Deshabilitamos timestamps ya que la tabla no los incluye
+    public $timestamps = false;
+
+    // Definir los atributos que se pueden asignar masivamente
+    protected $fillable = [
+        'id_Actas',
+        'id_Personal',
+        'fecha_Acuerdos',
+        'descripcion_Acuerdos',
+    ];
 }

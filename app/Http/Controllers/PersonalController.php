@@ -12,8 +12,8 @@ class PersonalController extends Controller
      */
     public function index()
     {
-        $personal = Personal::paginate(10);
-        $propietarios = Personal::where('propietario', 1)->get(); 
+        $personal = Personal::get();
+        $propietarios = Personal::where('propietario', 1)->get(); // Solo los que son propietarios
         return view('personal.index', compact('personal', 'propietarios'));
     }
 
@@ -31,14 +31,22 @@ class PersonalController extends Controller
      */
     public function store(Request $request)
     {
+        // Convertimos el valor de 'propietario' en un booleano según el estado del checkbox
+        $request->merge(['propietario' => $request->has('propietario')]);
+
+        // Validación de los datos
         $request->validate([
             'nombre' => 'required|string|max:100',
             'apellido' => 'required|string|max:100',
             'cargo' => 'nullable|string|max:100',
             'propietario' => 'required|boolean',
+            'rubricas' => 'required|string|max:100', // Ajusta el tipo de validación según tus necesidades
         ]);
 
+        // Crear el nuevo registro en la base de datos
         Personal::create($request->all());
+
+        // Redireccionar con mensaje de éxito
         return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente.');
     }
 
