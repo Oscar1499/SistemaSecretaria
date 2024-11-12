@@ -27,9 +27,7 @@
             </ul>
         </div>
 
-        
         <div class="tab-content">
-         
             <div class="tab-pane active" id="step-1">
                 <div class="form-group">
                     <label for="id_libros">Libro</label>
@@ -44,28 +42,25 @@
                 </div>
             </div>
 
-            
             <div class="tab-pane" id="step-3">
                 <div class="form-group">
-                    <label for="personal" >Personal</label>
+                    <label for="personal">Personal</label>
                     <div class="form-check">
-                    <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()"> 
-                Seleccionar Todos
-            </label><br>
+                        <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()"> 
+                            Seleccionar Todos
+                        </label><br>
                         @foreach ($personal as $persona)
                             <label class="form-check-label">
                                 <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()"> 
                                 {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }} 
-                                           <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }})</small>
+                                <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }})</small>
                             </label><br>
                         @endforeach
                     </div>
                 </div>
             </div>
 
-
-            
             <div class="tab-pane" id="step-2">
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
@@ -78,7 +73,6 @@
                 </div>
             </div>
 
-            
             <div class="tab-pane" id="step-4">
                 <div class="form-group">
                     <label>Fecha y Hora de Elaboración</label>
@@ -98,7 +92,7 @@
                 <div class="form-group">
                     <label for="motivo_ausencia">Motivo de Ausencia</label>
                     <textarea class="form-control" id="motivo_ausencia" name="motivo_ausencia" placeholder="Escriba el motivo de ausencia para los que no se marcaron" oninput="updateMotivoAusencia()"></textarea>
-                    </div>
+                </div>
                
                 <div class="form-group text-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Guardar</button>
@@ -106,7 +100,6 @@
             </div>
         </div>
 
-        
         <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -130,8 +123,34 @@
 @stop
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar el stepper
+        new Stepper(document.querySelector('.nav-pills'));
 
+        // Inicializar Select2
+        $('#id_libros').select2();
+
+        // Inicializar Summernote
+        $('#motivo_ausencia').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+    });
     function toggleSelectAll() {
         var isChecked = document.getElementById('selectAll').checked;
         var checkboxes = document.querySelectorAll('input[name="personal[]"]');
@@ -192,7 +211,7 @@
 @stop
 
 
-@section('css')
+
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
@@ -214,44 +233,6 @@
         }
     </style>
 @stop
-@section('js')
-    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar el stepper
-            var stepper = new Stepper(document.querySelector('.bs-stepper'))
 
-            // Funcionalidad para los botones de siguiente y anterior
-            document.querySelectorAll('.next-step').forEach(button => {
-                button.addEventListener('click', () => stepper.next())
-            })
-            document.querySelectorAll('.previous-step').forEach(button => {
-                button.addEventListener('click', () => stepper.previous())
-            })
-
-            // Inicializar Select2
-            $('.select2').select2();
-
-            // Inicializar Summernote para el editor de texto enriquecido
-            $('#descripcion_Actas').summernote({
-                height: 200, // Altura del editor
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']], // Herramienta para tablas
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
-            });
-        });
-    </script>
-@stop
 
 
