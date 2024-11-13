@@ -22,7 +22,7 @@
                     <a class="nav-link" href="#step-3" data-toggle="pill">Funcionarios Ausentes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#step-4" data-toggle="pill">Motivo</a>
+                    <a class="nav-link" href="#step-4" data-toggle="pill">Acta</a>
                 </li>
             </ul>
         </div>
@@ -32,9 +32,8 @@
                 <div class="form-group">
                     <label for="id_libros">Libro</label>
                     <select class="form-control" id="id_libros" name="id_libros" required>
-                        <option value="">Seleccione un libro</option>
-                        @foreach ($libros as $libro)
-                            <option value="{{ $libro->id }}" {{ $libro->id === $libroActual->id ? 'selected' : '' }}>
+                       @foreach ($libros as $libro)
+                            <option value="{{ $libro->id }}" {{ $libro->id == $libroActual->id ? 'selected' : '' }}>
                                 {{ $libro->nombre }} ({{ $libro->anio }})
                             </option>
                         @endforeach
@@ -54,6 +53,7 @@
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePersonal">
                                             Seleccionar Todos
                                         </button>
+                                        
                                     </h5>
                                 </div>
 
@@ -79,14 +79,11 @@
                     </div>
                 </div>
 
-
-
-
             <div class="tab-pane" id="step-2">
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
-                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{ now()->toDateString() }}" required>
-                </div>
+                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                    </div>
                 
             </div>
 
@@ -97,17 +94,19 @@
                     <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
                            value="ACTA NÚMERO {{ $correlativo ?? '1' }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
                 </div>
-                    <p>
-                        En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión, 
-                        Municipio de La Unión Sur, departamento de La Unión, a las {{ now()->translatedFormat('H') }} horas del día 
-                        {{ now()->format('j') }} de {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('F') }} del {{ now()->year }}. 
-                        En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código 
-                        Municipal, en sesión <strong>{{ $tipoSesion }}</strong>, convocada y presidida por 
-                        <strong>{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}
-                        Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal, 
-                        <strong>{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido : 'No definida' }}</strong>; 
-                        presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal"></a> 
-                        <strong>y Ausencia de: <a id="FaltaPersonal"></a>.</strong>
+                    
+                <p id="fechaTexto">
+                    En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión, 
+                    Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">{{ now()->translatedFormat('H') }}</span> horas del día 
+                    <span id="diaTexto">{{ now()->format('j') }}</span> de <span id="mesTexto">{{ \Carbon\Carbon::now()->locale('es')->translatedFormat('F') }}</span> del 
+                    <span id="anoTexto">{{ now()->year }}</span>. 
+                    En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código 
+                    Municipal, en sesión <strong>{{ $tipoSesion }}</strong>, convocada y presidida por 
+                    <strong>{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}
+                    Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal, 
+                    <strong>{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido : 'No definida' }}</strong>; 
+                    presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal"></a> 
+                    <strong>y Ausencia de: <a id="FaltaPersonal"></a>.</strong>
                     </p>
                 </div>
                 <div class="form-group">
@@ -144,9 +143,37 @@
 @stop
 
 @section('js')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const fechaInput = document.getElementById("fecha");
+
+    fechaInput.addEventListener("change", function() {
+        const fechaSeleccionada = new Date(fechaInput.value + 'T00:00:00'); 
+        ajustarFecha(fechaSeleccionada);
+    });
+
+    function ajustarFecha(fechaSeleccionada) {
+       
+        const dia = fechaSeleccionada.getDate();
+        const mes = fechaSeleccionada.toLocaleString('es-ES', { month: 'long' }); 
+        const ano = fechaSeleccionada.getFullYear();
+
+      
+        document.getElementById('diaTexto').innerText = dia;
+        document.getElementById('mesTexto').innerText = mes;
+        document.getElementById('anoTexto').innerText = ano;
+    }
+});
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Inicializar el stepper
@@ -172,6 +199,12 @@
             ]
         });
     });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    console.log('DOMContentLoaded activado');
+    updatePersonalAttendance();
+});
     function toggleSelectAll() {
         var isChecked = document.getElementById('selectAll').checked;
         var checkboxes = document.querySelectorAll('input[name="personal[]"]');
@@ -192,18 +225,20 @@
 
       
         checkboxes.forEach(checkbox => {
-            const label = checkbox.closest('label').innerText.trim();
-            if (checkbox.checked) {
-                selectedNames.push(label);  
-            } else {
-                presentNames.push(label);  
-            }
-        });
+        const label = checkbox.closest('label').innerText.trim();
 
+        
+        if (checkbox.checked) {
+            selectedNames.push(label);
+        } else {
+           
+            presentNames.push(label);
+        }
+    });
         FaltaPersonal.innerText = selectedNames.length > 0 ? selectedNames.join(', ') : 'Ninguno';
         presentPersonal.innerText = presentNames.length > 0 ? presentNames.join(', ') : 'Ninguno';
     }
-
+    
 
     function updateMotivoAusencia() {
     const FaltaPersonal = document.getElementById('FaltaPersonal');
@@ -220,24 +255,26 @@
     }
 }
 
-
-
     document.addEventListener("DOMContentLoaded", updatePersonalAttendance);
-
-
     document.getElementById('motivo_ausencia').addEventListener('input', updateMotivoAusencia);
 </script>
-
-
+<script>
+   // Inicializar flatpickr en el campo de fecha
+   flatpickr("#fecha", {
+       dateFormat: "Y-m-d", // Formato de fecha que se utilizará
+       allowInput: true, // Permitir que el usuario escriba la fecha
+       position: "auto", // Asegura que el calendario se posicione cerca del input
+       
+   });
+</script>
 @stop
-
-
-
 @section('css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <style>
+        
         /* Forzar que Select2 ocupe el 100% del ancho */
         .select2-container {
             width: 100% !important;
