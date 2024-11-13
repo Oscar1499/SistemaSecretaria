@@ -42,44 +42,65 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="step-3">
-                <div class="form-group">
-                    <label for="personal">Personal</label>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()"> 
-                            Seleccionar Todos
-                        </label><br>
-                        @foreach ($personal as $persona)
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()"> 
-                                {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }} 
-                                <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }})</small>
-                            </label><br>
-                        @endforeach
+                            <div class="tab-pane" id="step-3">
+                    <div class="form-group">
+                        <label for="personal"></label>
+                        
+                        
+                        <div class="accordion" id="accordionPersonal">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePersonal">
+                                            Seleccionar Todos
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapsePersonal" class="collapse" aria-labelledby="headingOne" data-parent="#accordionPersonal">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()"> 
+                                                Seleccionar Todos
+                                            </label><br>
+                                            @foreach ($personal as $persona)
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()"> 
+                                                    {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }} 
+                                                    <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }})</small>
+                                                </label><br>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+
+
 
             <div class="tab-pane" id="step-2">
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
                     <input type="date" class="form-control" id="fecha" name="fecha" value="{{ now()->toDateString() }}" required>
                 </div>
-                <div class="form-group">
-                    <label for="correlativo">Número de Acta</label>
-                    <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                           value="ACTA NÚMERO {{ $correlativo ?? '1' }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
-                </div>
+                
             </div>
 
             <div class="tab-pane" id="step-4">
                 <div class="form-group">
-                    <label>Fecha y Hora de Elaboración</label>
+                    <div class="form-group">
+                    <label for="correlativo">Número de Acta</label>
+                    <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                           value="ACTA NÚMERO {{ $correlativo ?? '1' }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+                </div>
                     <p>
                         En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión, 
                         Municipio de La Unión Sur, departamento de La Unión, a las {{ now()->translatedFormat('H') }} horas del día 
-                        {{ now()->format('j') }} de {{ now()->translatedFormat('F') }} del {{ now()->year }}. 
+                        {{ now()->format('j') }} de {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('F') }} del {{ now()->year }}. 
                         En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código 
                         Municipal, en sesión <strong>{{ $tipoSesion }}</strong>, convocada y presidida por 
                         <strong>{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}
@@ -231,7 +252,79 @@
             border: 1px solid #ced4da;
             border-radius: 0.25rem;
         }
-    </style>
+        </style>
+        <style>
+            
+#toggleCheckboxes {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#toggleCheckboxes:hover {
+    background-color: #0056b3;
+}
+
+
+#checkboxContainer {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+
+.form-check-input {
+    margin-right: 25px !important;  
+    width: 16px;        
+    height: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;  
+    
+}
+
+.form-check-input:hover {
+    transform: scale(1.1); 
+}
+
+
+
+
+.small.text-muted {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-left: 8px;  
+}
+
+
+.form-check-label {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+    display: block; 
+    margin-left: 25px;  
+    cursor: pointer;
+    
+} 
+#checkboxContainer {
+    margin-top: 20px;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;  
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.small.text-muted {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+         </style>
+    
 @stop
 
 
