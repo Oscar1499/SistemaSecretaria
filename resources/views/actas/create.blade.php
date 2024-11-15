@@ -31,14 +31,16 @@
             <div class="tab-pane active" id="step-1">
                 <div class="form-group">
                     <label for="id_libros">Libro</label>
-                    <select class="form-control" id="id_libros" name="id_libros" required>
+                    <select class="form-control" id="id_libros" name="id_libros" >
                        @foreach ($libros as $libro)
                             <option value="{{ $libro->id }}" {{ $libro->id == $libroActual->id ? 'selected' : '' }}>
                                 {{ $libro->nombre }} ({{ $libro->anio }})
                             </option>
                         @endforeach
-                    </select>
+                        </select>
                 </div>
+                <button type="button" class="btn btn-secondary previous-step">Atrás</button>
+                <button type="button" class="btn btn-primary next-step">Siguiente</button>
             </div>
 
                             <div class="tab-pane" id="step-3">
@@ -53,6 +55,7 @@
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePersonal">
                                             Seleccionar Todos
                                         </button>
+                      
                                         
                                     </h5>
                                 </div>
@@ -62,11 +65,16 @@
                                         <div class="form-check">
                                             <label class="form-check-label">
                                                 <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()"> 
-                                                Seleccionar Todos
+                                                 Todos Ausentes
                                             </label><br>
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input" id="selectAllPresentes" onchange="toggleSelectAll()"> 
+                                                Todos Presentes
+                                            </label><br>
+
                                             @foreach ($personal as $persona)
                                                 <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()"> 
+                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()" required> 
                                                     {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }} 
                                                     <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }})</small>
                                                 </label><br>
@@ -77,6 +85,8 @@
                             </div>
                         </div>
                     </div>
+                    <button type="button" class="btn btn-secondary previous-step">Atrás</button>
+                    <button type="button" class="btn btn-primary next-step">Siguiente</button>
                 </div>
 
             <div class="tab-pane" id="step-2">
@@ -84,7 +94,8 @@
                     <label for="fecha">Fecha</label>
                     <input type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
                     </div>
-                
+                    <button type="button" class="btn btn-secondary previous-step">Atrás</button>
+                    <button type="button" class="btn btn-primary next-step">Siguiente</button>
             </div>
 
             <div class="tab-pane" id="step-4">
@@ -106,15 +117,16 @@
                     Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal, 
                     <strong>{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido : 'No definida' }}</strong>; 
                     presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal"></a> 
-                    <strong>y Ausencia de: <a id="FaltaPersonal"></a>.</strong>
+                    <strong>y Ausencia de:  <span id="FaltaPersonal">Ninguno</span>.</strong>
                     </p>
                 </div>
                 <div class="form-group">
                     <label for="motivo_ausencia">Motivo de Ausencia</label>
-                    <textarea class="form-control" id="motivo_ausencia" name="motivo_ausencia" placeholder="Escriba el motivo de ausencia para los que no se marcaron" oninput="updateMotivoAusencia()"></textarea>
-                </div>
+                    <textarea class="form-control" id="motivo_ausencia" name="motivo_ausencia" placeholder="Escriba el motivo de ausencia para los que no se marcaron" oninput="updateMotivoAusencia()" required></textarea>
+                    </div>
                
                 <div class="form-group text-center">
+                   <button type="button" class="btn btn-secondary previous-step">Atrás</button>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Guardar</button>
                 </div>
             </div>
@@ -205,16 +217,30 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log('DOMContentLoaded activado');
     updatePersonalAttendance();
 });
-    function toggleSelectAll() {
-        var isChecked = document.getElementById('selectAll').checked;
-        var checkboxes = document.querySelectorAll('input[name="personal[]"]');
+function toggleSelectAll() {
+    var isSelectAllChecked = document.getElementById('selectAll').checked; 
+    var checkboxes = document.querySelectorAll('input[name="personal[]"]'); 
+    var isAllPresentesChecked = document.getElementById('selectAllPresentes').checked; 
+    if (isAllPresentesChecked) {
+        
         checkboxes.forEach(function(checkbox) {
-            checkbox.checked = isChecked;
+            checkbox.checked = true;   
+            checkbox.disabled = true;
         });
-        updatePersonalAttendance(); 
+        document.getElementById('selectAll').checked = false; 
+        return;
     }
 
-   
+  
+    checkboxes.forEach(function(checkbox) {
+        checkbox.disabled = false; 
+        checkbox.checked = isSelectAllChecked; 
+    });
+
+    updatePersonalAttendance();
+}
+
+ 
     function updatePersonalAttendance() {
         const checkboxes = document.querySelectorAll('input[name="personal[]"]');
         const presentPersonal = document.getElementById('presentPersonal');
@@ -237,36 +263,96 @@ document.addEventListener("DOMContentLoaded", function() {
     });
         FaltaPersonal.innerText = selectedNames.length > 0 ? selectedNames.join(', ') : 'Ninguno';
         presentPersonal.innerText = presentNames.length > 0 ? presentNames.join(', ') : 'Ninguno';
+        
     }
     
 
     function updateMotivoAusencia() {
-    const FaltaPersonal = document.getElementById('FaltaPersonal');
-    const motivoAusencia = document.getElementById('motivo_ausencia').value;
+    const FaltaPersonal = document.getElementById('FaltaPersonal');  
+    const motivoAusencia = document.getElementById('motivo_ausencia').value; 
+
     
-    if (FaltaPersonal.innerText !== 'Ninguno') {
-        
-        if (motivoAusencia) {
-            FaltaPersonal.innerText = FaltaPersonal.innerText.replace(/\. Motivo: .*/, "") + `. Motivo: ${motivoAusencia}`;
-        } else {
-         
-            FaltaPersonal.innerText = FaltaPersonal.innerText.replace(/\. Motivo: .*/, "");
-        }
+    if (motivoAusencia) {
+        FaltaPersonal.innerText = motivoAusencia;
+    } else {
+        FaltaPersonal.innerText = 'Ninguno'; 
     }
 }
 
+    window.addEventListener('DOMContentLoaded', () => {
+        simulateCheckboxToggle();
+    });
     document.addEventListener("DOMContentLoaded", updatePersonalAttendance);
     document.getElementById('motivo_ausencia').addEventListener('input', updateMotivoAusencia);
 </script>
 <script>
-   // Inicializar flatpickr en el campo de fecha
+   
    flatpickr("#fecha", {
-       dateFormat: "Y-m-d", // Formato de fecha que se utilizará
-       allowInput: true, // Permitir que el usuario escriba la fecha
-       position: "auto", // Asegura que el calendario se posicione cerca del input
+       dateFormat: "Y-m-d", 
+       allowInput: true, 
+       position: "auto", 
        
    });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+ 
+    document.querySelectorAll(".next-step").forEach(button => {
+        button.addEventListener("click", function() {
+            const activeTab = document.querySelector(".tab-pane.active"); 
+            const inputs = activeTab.querySelectorAll("input, select, textarea"); 
+            let valid = true; 
+
+          
+            inputs.forEach(input => {
+                if (input.hasAttribute("required") && !input.value) {
+                    valid = false;
+                    input.classList.add("is-invalid"); 
+                } else {
+                    input.classList.remove("is-invalid"); 
+                }
+            });
+
+            if (valid) {
+             
+                const nextTab = document.querySelector(`.nav-link[href="#${activeTab.id}"]`).parentElement.nextElementSibling;
+                if (nextTab) {
+                    nextTab.querySelector(".nav-link").click(); 
+                }
+            } else {
+                alert("Por favor, completa todos los campos requeridos antes de avanzar.");
+            }
+        });
+    });
+
+    
+    document.querySelectorAll(".previous-step").forEach(button => {
+        button.addEventListener("click", function() {
+            const activeTab = document.querySelector(".tab-pane.active"); 
+            const prevTab = document.querySelector(`.nav-link[href="#${activeTab.id}"]`).parentElement.previousElementSibling;
+            if (prevTab) {
+               
+                prevTab.querySelector(".nav-link").click(); 
+            }
+        });
+    });
+
+   
+    const saveButton = document.querySelector("#confirmationModal .btn-primary");
+    if (saveButton) {
+        saveButton.addEventListener("click", function(event) {
+            const form = document.querySelector("#form-acta");
+            if (!form.checkValidity()) {
+                event.preventDefault(); 
+                alert("Por favor, completa todos los campos antes de guardar.");
+            }
+        });
+    }
+});
+
+</script>
+
+
 @stop
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
