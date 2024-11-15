@@ -112,10 +112,10 @@
                     <span id="diaTexto">{{ now()->format('j') }}</span> de <span id="mesTexto">{{ \Carbon\Carbon::now()->locale('es')->translatedFormat('F') }}</span> del 
                     <span id="anoTexto">{{ now()->year }}</span>. 
                     En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código 
-                    Municipal, en sesión <strong>{{ $tipoSesion }}</strong>, convocada y presidida por 
+                    Municipal, en sesión <strong><span id="tipoSesion"></span></strong>, convocada y presidida por 
                     <strong>{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}
                     Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal, 
-                    <strong>{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido : 'No definida' }}</strong>; 
+                    <strong>{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido : 'No definida' }}</strong>;
                     presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal"></a> 
                     <strong>y Ausencia de:  <span id="FaltaPersonal">Ninguno</span>.</strong>
                     </p>
@@ -168,23 +168,39 @@
 document.addEventListener("DOMContentLoaded", function() {
     const fechaInput = document.getElementById("fecha");
 
+  
+    const fechaHoy = new Date();
+    ajustarFecha(fechaHoy);
+    actualizarTipoSesion(fechaHoy);
+
+ 
     fechaInput.addEventListener("change", function() {
         const fechaSeleccionada = new Date(fechaInput.value + 'T00:00:00'); 
         ajustarFecha(fechaSeleccionada);
+        actualizarTipoSesion(fechaSeleccionada);  
     });
 
     function ajustarFecha(fechaSeleccionada) {
-       
         const dia = fechaSeleccionada.getDate();
         const mes = fechaSeleccionada.toLocaleString('es-ES', { month: 'long' }); 
         const ano = fechaSeleccionada.getFullYear();
 
-      
         document.getElementById('diaTexto').innerText = dia;
         document.getElementById('mesTexto').innerText = mes;
         document.getElementById('anoTexto').innerText = ano;
     }
+
+    function actualizarTipoSesion(fechaSeleccionada) {
+        const dia = fechaSeleccionada.getDate();
+        
+       
+        const tipoSesion = (dia >= 1 && dia <= 5) || (dia >= 15 && dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
+        
+       
+        document.getElementById('tipoSesion').innerText = tipoSesion;
+    }
 });
+
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -210,8 +226,34 @@ document.addEventListener("DOMContentLoaded", function() {
                 ['view', ['fullscreen', 'codeview', 'help']]
             ]
         });
+
+       
+        function validateMotivoAusencia() {
+            const checkboxesAusentes = document.querySelectorAll('input[name="personal[]"]:checked');
+            const motivoAusenciaField = $('#motivo_ausencia');
+
+          
+            if (checkboxesAusentes.length === 0) {
+                motivoAusenciaField.summernote('disable');
+                motivoAusenciaField.summernote('code', ''); 
+            } else {
+                motivoAusenciaField.summernote('enable');
+            }
+        }
+
+        
+        document.querySelectorAll('input[name="personal[]"]').forEach(checkbox => {
+            checkbox.addEventListener('change', validateMotivoAusencia);
+        });
+
+       
+        document.getElementById('selectAll').addEventListener('change', validateMotivoAusencia);
+
+    
+        validateMotivoAusencia();
     });
-    </script>
+</script>
+
     <script>
     document.addEventListener("DOMContentLoaded", function() {
     console.log('DOMContentLoaded activado');
@@ -294,6 +336,7 @@ function toggleSelectAll() {
        
    });
 </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
  
