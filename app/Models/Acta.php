@@ -5,17 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Acta extends Model
-{
-    protected $table = 'actas'; 
+{   
+    protected $table = 'Actas'; 
 
-    protected $primaryKey = 'id_Actas'; 
+     protected $primaryKey = 'id_Actas'; 
 
     protected $fillable = [
-        'id_libros', 
-        'id_Personal',
-        'fecha', 
-        'descripcion' 
+        'id_libros',
+        'fecha',
+        'descripcion',
+        'tipo_sesion',
+        'correlativo',
+        'motivo_ausencia',
+        'created_at',
+        'updated_at',
     ];
+
+    public function personalAusente()
+    {
+        return $this->belongsToMany(Personal::class, 'acta_personal', 'acta_id', 'personal_id')
+            ->withPivot('motivo_ausencia')
+            ->withTimestamps();
+    }
 
    
     public function libro()
@@ -23,29 +34,27 @@ class Acta extends Model
         return $this->belongsTo(Libro::class, 'id_libros');
     }
 
-   
+    
     public function acuerdos()
     {
         return $this->hasMany(Acuerdo::class, 'id_actas'); 
     }
+
+   
     public function personal()
     {
-        return $this->belongsToMany(personal::class, 'acta_personal', 'acta_id', 'personal_id');
+        return $this->belongsToMany(Personal::class, 'acta_personal', 'acta_id', 'personal_id');
     }
-            
-        public function definirTipoSesion()
+
+    
+    public function definirTipoSesion()
     {
         $dia = $this->fecha->day; 
 
-        
         if (($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20)) {
             return 'Ordinaria';
         } else {
             return 'Extraordinaria';
         }
     }
-
 }
-
-
-

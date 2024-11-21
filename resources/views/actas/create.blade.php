@@ -381,16 +381,12 @@ function toggleSelectAll() {
     });
 
    
-    const saveButton = document.querySelector("#confirmationModal .btn-primary");
-    if (saveButton) {
-        saveButton.addEventListener("click", function(event) {
-            const form = document.querySelector("#form-acta");
-            if (!form.checkValidity()) {
-                event.preventDefault(); 
-                alert("Por favor, completa todos los campos antes de guardar.");
-            }
-        });
-    }
+   
+});
+document.getElementById('form-acta').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    console.log("Datos del formulario:", new FormData(this));
+   
 });
 
 </script>
