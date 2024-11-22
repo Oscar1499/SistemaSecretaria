@@ -20,6 +20,7 @@
                                 <span class="bs-stepper-label">Seleccionar Acta</span>
                             </button>
                         </div>
+                        
                         <div class="line"></div>
 
                         <!-- Paso 2 -->
@@ -45,19 +46,21 @@
                         <form action="{{ route('acuerdos.store') }}" method="POST">
                             @csrf
 
-                            <!-- Paso 1: Seleccionar Acta -->
-                            <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
-                                <div class="form-group">
-                                    <label for="id_Actas">Acta</label>
-                                    <select id="id_Actas" name="id_Actas" class="form-control select2" required>
-                                        <option value="" disabled selected>Seleccione un Acta</option>
-                                        @foreach($actas as $acta)
-                                            <option value="{{ $acta->id }}">{{ $acta->nombre_acta }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <button type="button" class="btn btn-primary next-step">Siguiente</button>
+                           <!-- Paso 1: Seleccionar Acta -->
+                        <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
+                            <div class="form-group">
+                                <label for="id_Actas">Acta</label>
+                                <select id="id_Actas" name="id_Actas" class="form-control select2" required>
+                                    <option value="" disabled selected>Seleccione un Acta</option>
+                                    @foreach($actas as $acta)
+                                        <option value="{{ $acta->id }}|{{ $acta->descripcion_acta }}">
+                                            {{ $acta->id_Actas }} - {{ $acta->descripcion }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
+                            <button type="button" class="btn btn-primary next-step">Siguiente</button>
+                        </div>
 
                             <!-- Paso 2: Redactar el Memorando -->
                             <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">

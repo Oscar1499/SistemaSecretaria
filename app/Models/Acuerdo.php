@@ -25,4 +25,15 @@ class Acuerdo extends Model
         'fecha_Acuerdos',
         'descripcion_Acuerdos',
     ];
+
+    public function acta()
+    {
+        return $this->belongsTo(Acta::class, 'id_Actas'); 
+    }
+
+   
+    public function personal()
+    {
+        return $this->belongsTo(Personal::class, 'id_Personal');
+    }
 }
