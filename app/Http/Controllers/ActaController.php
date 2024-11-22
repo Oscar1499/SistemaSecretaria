@@ -16,84 +16,86 @@ class ActaController extends Controller
 
     public function create()
     {
-        $anioActual = date('Y'); 
+        $anioActual = date('Y');
 
-    $libros = Libro::where('anio', $anioActual)->get(); 
+    $libros = Libro::where('anio', $anioActual)->get();
 
-    
+
     if ($libros->isEmpty()) {
         return back()->withErrors(['No hay libros disponibles para el año actual.']);
     }
 
         $libroActual = $libros->first();
-        
+
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
-        $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first(); 
-        $secretario = Personal::where('cargo', 'Secretario')->first(); 
-        $personal = Personal::all(); 
-        
+        $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
+        $secretario = Personal::where('cargo', 'Secretario')->first();
+        $personal = Personal::all();
+
 
     return view('actas.create', compact('libros','libroActual', 'tipoSesion', 'personal', 'alcaldesa', 'secretario',));
 
     }
-    
+
 
     public function store(Request $request)
-{
-    $request->validate([
-        'id_libros' => 'required|integer',
-        'id_Personal' => 'required|integer',
-        'fecha' => 'required|date',
-        'descripcion' => 'nullable|string',
-        'correlativo' => 'required|string|max:255',
-        'motivo_ausencia' => 'required|string',
-        'contenido_elaboracion' => 'required|string',
-        'presentes' => 'required|string',
-        'ausentes' => 'required|string',
-        'tipo_sesion' => 'required|string'
-    ]);
+    {
+        // Validar los campos requeridos
+        $request->validate([
 
-   
-    $acta = new Acta();
-    $acta->id_libro = $request->id_libros;
-    $acta->fecha = $request->fecha;
-    $acta->motivo_ausencia = $request->motivo_ausencia;
-    $acta->correlativo = $request->correlativo ?? 'ACTA NÚMERO ' . rand(1, 100) . ' DEL CONCEJO MUNICIPAL';  
-    $acta->save();
+            'fecha' => 'required|date',
+            'correlativo' => 'required|string',
+            'motivo_ausencia' => 'required|string',
+            'contenido_elaboracion' => 'required|string',
+            'presentes' => 'required|string',
+            'ausentes' => 'required|string',
+            'tipo_sesion' => 'required|string',
+        ]);
 
-    
-    foreach ($request->personal as $personaId) {
-         $acta->personal()->attach($personaId);
+        // Crear una nueva instancia de Acta
+        $acta = new Acta();
+        $acta->id_libros = 7;
+        $acta->fecha = $request->fecha;
+        $acta->correlativo = $request->correlativo;
+        $acta->motivo_ausencia = $request->motivo_ausencia;
+        $acta->contenido_elaboracion = $request->contenido_elaboracion;
+        $acta->presentes = $request->presentes;
+        $acta->ausentes = $request->ausentes;
+        $acta->tipo_sesion = $request->tipo_sesion;
+
+        // Guardar en la base de datos
+        $acta->save();
+
+        // Redireccionar con mensaje de éxito
+        return redirect()->route('actas.index')->with('success', 'Acta creada exitosamente.');
     }
 
-    return redirect()->route('actas.index')->with('success', 'Acta creada exitosamente');
-}
 
-    
+
 
     public function show(Acta $acta)
     {
-        $acuerdos = $acta->acuerdos; 
+        $acuerdos = $acta->acuerdos;
         return view('actas.show', compact('acta', 'acuerdos'));
     }
 
     public function edit(Acta $acta)
     {
-        $libros = Libro::all(); 
+        $libros = Libro::all();
         return view('actas.edit', compact('acta', 'libros'));
     }
 
     public function update(Request $request, Acta $acta)
     {
         $request->validate([
-            'id_libros' => 'required|exists:libros,id', 
+            'id_libros' => 'required|exists:libros,id',
             'fecha' => 'required|date',
             'descripcion' => 'nullable|string',
         ]);
 
         $acta->fill($request->all());
-        $acta->tipo_sesion = $acta->definirTipoSesion(); 
+        $acta->tipo_sesion = $acta->definirTipoSesion();
         $acta->save();
 
         return redirect()->route('actas.show', $acta->id)->with('success', 'Acta actualizada exitosamente.');
@@ -105,7 +107,7 @@ class ActaController extends Controller
         return redirect()->route('libros.index')->with('success', 'Acta eliminada exitosamente.');
     }
 
-   
+
 }
 
 
