@@ -10,18 +10,18 @@ return new class extends Migration
     {
         Schema::create('actas', function (Blueprint $table) {
             $table->id('id_Actas');
-            $table->unsignedBigInteger('id_libros'); 
-            $table->unsignedBigInteger('id_Personal'); 
+            $table->unsignedBigInteger('id_libros');
+            $table->unsignedBigInteger('id_Personal');
             $table->date('fecha');
-            $table->text('descripcion');
-            $table->string('tipo_sesion');
-            $table->string('correlativo', 255);
-            $table->text('motivo_ausencia')->nullable();
-            $table->timestamps(); 
-    
-         
-            $table->foreign('id_libros')->references('id')->on('libros')->onDelete('cascade');
-           
+            $table->text('descripcion')->nullable();
+            $table->string('correlativo');
+            $table->text('motivo_ausencia');
+            $table->text('contenido_elaboracion');
+            $table->text('presentes');
+            $table->text('ausentes');
+            $table->text('tipo_sesion');
+            
+            $table->foreign('id_Libros')->references('id')->on('libros')->onDelete('cascade');
             $table->foreign('id_Personal')->references('id')->on('personal')->onDelete('cascade');
         });
     }

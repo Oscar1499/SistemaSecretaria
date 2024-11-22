@@ -9,7 +9,7 @@
 @section('content')
     <form id="form-acta" action="{{ route('actas.store') }}" method="POST">
         @csrf
-     
+        
         <div class="steps">
             <ul class="nav nav-pills">
                 <li class="nav-item">

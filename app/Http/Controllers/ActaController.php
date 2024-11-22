@@ -42,10 +42,16 @@ class ActaController extends Controller
     public function store(Request $request)
 {
     $request->validate([
-        'id_libros' => 'required|exists:libros,id',
+        'id_libros' => 'required|integer',
+        'id_Personal' => 'required|integer',
         'fecha' => 'required|date',
-        'personal' => 'required|array', 
-        'motivo_ausencia' => 'nullable|string',
+        'descripcion' => 'nullable|string',
+        'correlativo' => 'required|string|max:255',
+        'motivo_ausencia' => 'required|string',
+        'contenido_elaboracion' => 'required|string',
+        'presentes' => 'required|string',
+        'ausentes' => 'required|string',
+        'tipo_sesion' => 'required|string'
     ]);
 
    

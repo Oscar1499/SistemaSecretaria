@@ -43,9 +43,9 @@ class Acta extends Model
    
     public function personal()
     {
-        return $this->belongsToMany(Personal::class, 'acta_personal', 'acta_id', 'personal_id');
+        return $this->belongsTo(Personal::class, 'acta_personal', 'acta_id', 'personal_id');
     }
-
+    
     
     public function definirTipoSesion()
     {

@@ -20,4 +20,10 @@ class Personal extends Model
         'propietario',
         'rubricas',
     ];
+
+    public function actas()
+{
+    return $this->belongsToMany(Acta::class, 'acta_personal', 'personal_id', 'acta_id');
+}
+
 }
