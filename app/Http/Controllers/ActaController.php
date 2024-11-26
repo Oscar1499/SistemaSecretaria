@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Personal;
 use App\Models\Acta;
 use App\Models\Libro;
@@ -18,12 +19,12 @@ class ActaController extends Controller
     {
         $anioActual = date('Y');
 
-    $libros = Libro::where('anio', $anioActual)->get();
+        $libros = Libro::where('anio', $anioActual)->get();
 
 
-    if ($libros->isEmpty()) {
-        return back()->withErrors(['No hay libros disponibles para el año actual.']);
-    }
+        if ($libros->isEmpty()) {
+            return back()->withErrors(['No hay libros disponibles para el año actual.']);
+        }
 
         $libroActual = $libros->first();
 
@@ -34,8 +35,7 @@ class ActaController extends Controller
         $personal = Personal::all();
 
 
-    return view('actas.create', compact('libros','libroActual', 'tipoSesion', 'personal', 'alcaldesa', 'secretario',));
-
+        return view('actas.create', compact('libros', 'libroActual', 'tipoSesion', 'personal', 'alcaldesa', 'secretario',));
     }
 
 
@@ -106,8 +106,4 @@ class ActaController extends Controller
         $acta->delete();
         return redirect()->route('libros.index')->with('success', 'Acta eliminada exitosamente.');
     }
-
-
 }
-
-
