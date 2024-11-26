@@ -318,7 +318,6 @@
             presentPersonal.innerText = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
         };
 
-
         window.handleCheckboxChange = function() {
             updatePersonalAttendance();
         };
