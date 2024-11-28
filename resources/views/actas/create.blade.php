@@ -266,7 +266,6 @@
             updatePersonalAttendance();
         };
 
-
         window.toggleSelectAll = function() {
             const isSelectAllAusentesChecked = document.getElementById('selectAll').checked;
             const isSelectAllPresentesChecked = document.getElementById('selectAllPresentes').checked;

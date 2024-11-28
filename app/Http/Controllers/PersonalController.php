@@ -92,6 +92,6 @@ class PersonalController extends Controller
     {
         $personal = Personal::findOrFail($id);
         $personal->delete();
-        return redirect()->route('personal.index')->with('success', 'Personal eliminado exitosamente.');
+        return redirect()->route('personal.index')->with('delete', 'Personal eliminado exitosamente.');
     }
 }

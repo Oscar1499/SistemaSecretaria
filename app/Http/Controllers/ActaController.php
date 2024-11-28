@@ -72,8 +72,6 @@ class ActaController extends Controller
     }
 
 
-
-
     public function show(Acta $acta)
     {
         $acuerdos = $acta->acuerdos;
@@ -104,6 +102,6 @@ class ActaController extends Controller
     public function destroy(Acta $acta)
     {
         $acta->delete();
-        return redirect()->route('libros.index')->with('success', 'Acta eliminada exitosamente.');
+        return redirect()->route('actas.index')->with('success', 'Acta eliminada exitosamente.');
     }
 }

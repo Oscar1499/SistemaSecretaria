@@ -21,15 +21,17 @@ class LibroController extends Controller
     {
         return view('libros.create');
     }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'anio' => 'required|integer',
-            'descripcion_Libro' => 'required|string',
-        ]);
+        try {
+            // Guardar libro
+            Libro::create($request->all());
 
-        Libro::create($request->except('_token'));
-        return redirect()->route('libros.index');
+            return redirect()->route('libros.create')->with('success', 'Libro agregado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('libros.create')->with('error', 'Hubo un problema al agregar el libro.');
+        }
     }
 
     public function show(Libro $libro)
@@ -57,7 +59,7 @@ class LibroController extends Controller
     public function destroy(Libro $libro)
     {
         $libro->delete();
-        return redirect()->route('libros.index');
+        return redirect()->route('libros.index')->with('delete', 'Libro eliminado correctamente.');
     }
 
     public function libroActual()

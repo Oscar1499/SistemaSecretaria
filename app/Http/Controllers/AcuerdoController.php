@@ -26,6 +26,11 @@ class AcuerdoController extends Controller
         // Envía las variables a la vista
         return view('acuerdos.create', compact('actas', 'personal'));
     }
+    public function destroy(Acuerdo $acuerdo)
+    {
+        $acuerdo->delete();
+        return redirect()->route('acuerdos.index')->with('delete', 'Libro eliminado correctamente.');
+    }
 
 
     // Método para almacenar un nuevo acuerdo
