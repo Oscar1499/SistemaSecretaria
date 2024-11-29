@@ -9,17 +9,20 @@ use App\Models\Personal;
 
 class LibroController extends Controller
 {
+
     public function index()
     {
+        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
         $libros = Libro::all();
-
-        return view('libros.index', compact('libros'));
+        return view('libros.index', compact('libros', 'alcalde',));
     }
 
 
     public function create()
     {
-        return view('libros.create');
+        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
+        $sindico = Personal::where('cargo', 'Sindico')->get();
+        return view('libros.create', compact('alcalde', 'sindico'));
     }
 
     public function store(Request $request)

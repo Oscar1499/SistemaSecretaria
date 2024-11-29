@@ -11,6 +11,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/libros/create', [PersonalController::class, 'obtenerAlcaldesas']);
+
 Route::get('/libros', [LibroController::class, 'index'])->name('libros.index');
 Route::get('/actas/create', [ActaController::class, 'create'])->name('actas.create');
 Route::post('/actas', [ActaController::class, 'store'])->name('actas.store');
@@ -25,8 +27,4 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::resource('libros', LibroController::class);
-    
-
-  
 });
-

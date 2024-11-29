@@ -14,24 +14,30 @@
 <body>
 
 </body>
+<style>
+    .bi1 {
+        color: black;
+        /* Color personalizado */
+    }
+</style>
 @section('content')
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Acuerdos Registrados</h3>
     </div>
     <div class="card-body">
-        <table id="acuerdosTable" class="table table-bordered table-hover w-100">
+        <table id="acuerdosTable" class="table table-striped table-bordered table-hover text-center w-100">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>ID Acta</th>
-                    <th>ID Personal</th>
-                    <th>Fecha de Acuerdo</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
+                    <th><i class="bi1 bi-person-badge-fill"></i> ID</th>
+                    <th><i class="bi1 bi-file-earmark-fill"></i> ID Acta</th>
+                    <th><i class="bi1 bi-people-fill"></i> ID Personal</th>
+                    <th><i class="bi1 bi-calendar-fill"></i> Fecha de Acuerdo</th>
+                    <th><i class="bi1 bi-file-earmark-text-fill"></i> Descripción</th>
+                    <th><i class="bi1 bi-save-fill"></i> Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 @foreach($acuerdos as $acuerdo)
                 <tr>
                     <td>{{ $acuerdo->id_Acuerdo }}</td>
@@ -40,12 +46,18 @@
                     <td>{{ $acuerdo->fecha_Acuerdos }}</td>
                     <td>{{ $acuerdo->descripcion_Acuerdos }}</td>
                     <td>
-                        <a href="#" class="btn btn-warning btn-sm"><i class="bi bi-eye"></i> ver</a>
-                        <a href="#" class="btn btn-danger btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                        <a href="#" class="btn btn-warning btn-sm" title="Ver este acuerdo"
+
+                            data-bs-toggle="tooltip"><i class="bi bi-eye"> </i> ver</a>
+                        <a href="#" class="btn btn-danger btn-sm" title="Editar este acuerdo"
+
+                            data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</a>
                         <form action="{{ route('acuerdos.destroy', $acuerdo->id_Acuerdo) }}" method="POST" style="display:inline;" id="deleteForm">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);"><i class="bi bi-trash"></i> Eliminar</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);" title="Eliminar este acuerdo"
+
+                                data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
                         </form>
                     </td>
                 </tr>

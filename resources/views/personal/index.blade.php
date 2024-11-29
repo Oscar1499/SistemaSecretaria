@@ -14,6 +14,12 @@
 <body>
 
 </body>
+<style>
+    .bi1 {
+        color: black;
+        /* Color personalizado */
+    }
+</style>
 
 @section('content')
 <div class="card">
@@ -22,33 +28,57 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="personalTable" class="table table-striped table-bordered table-hover w-100">
+            <table id="personalTable" class="table table-striped table-bordered table-hover w-100 mx-auto">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Cargo</th>
-                        <th>Propietario</th>
-                        <th>Acciones</th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi1 bi-person-badge-fill me-1"></i> ID
+                            </span>
+                        </th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi1 bi-person-fill me-1"></i> Nombre
+                            </span>
+                        </th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi bi-person-lines-fill me-1"></i> Apellido
+                            </span>
+                        </th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi1 bi-briefcase-fill me-1"></i> Cargo
+                            </span>
+                        </th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi1 bi-house-door-fill me-1"></i> Propietario
+                            </span>
+                        </th>
+                        <th class="text-center">
+                            <span class="d-inline-flex align-items-center">
+                                <i class="bi1 bi-save-fill me-1"></i> Acciones
+                            </span>
+                        </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-center">
                     @foreach($personal as $persona)
                     <tr>
-                        <td>{{ $persona->id }}</td>
-                        <td>{{ $persona->nombre }}</td>
-                        <td>{{ $persona->apellido }}</td>
-                        <td>{{ $persona->cargo ?? 'Sin asignar' }}</td>
-                        <td>{{ $persona->propietario ? 'Sí' : 'No' }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})"><i class="bi bi-pencil"></i>
-                                Editar
-                            </button>
+                        <td class="text-center">{{ $persona->id }}</td>
+                        <td class="text-center">{{ $persona->nombre }}</td>
+                        <td class="text-center">{{ $persona->apellido }}</td>
+                        <td class="text-center">{{ $persona->cargo ?? 'Sin asignar' }}</td>
+                        <td class="text-center">{{ $persona->propietario ? 'Sí' : 'No' }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})" title="Editar a este personal"
+                                data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</button>
                             <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" id="deleteForm" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);"><i class="bi bi-trash"></i> Eliminar</button>
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);" title="Eliminar a este personal"
+                                    data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -58,6 +88,7 @@
         </div>
     </div>
 </div>
+
 <!-- Alerta de éxito de Eliminado-->
 @if(session('delete'))
 <script>
@@ -76,6 +107,10 @@
 @endif
 @stop
 <script>
+    // Inicializar tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
     function Eliminar(event) {
 
         event.preventDefault();

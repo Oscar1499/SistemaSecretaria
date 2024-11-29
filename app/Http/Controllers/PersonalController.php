@@ -17,7 +17,6 @@ class PersonalController extends Controller
         return view('personal.index', compact('personal', 'propietarios'));
     }
 
-
     /**
      * Muestra el formulario para crear un nuevo recurso.
      */

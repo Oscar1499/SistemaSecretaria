@@ -7,21 +7,29 @@
 @stop
 
 @section('content')
-
+<!-- SweetAlert2 (para alertas) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+<!-- BS Stepper (para el paso a paso del formulario) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
+<!-- Select2 (para mejorar los selectores de formularios) -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<!-- Bootstrap (framework de diseño) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Moment.js (para manejo de fechas y horas) -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+<!-- Flatpickr (para selección de fechas con calendario) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Bootstrap Icons (iconos adicionales para Bootstrap) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <body>
 
@@ -78,7 +86,7 @@
                     <form action="{{ route('acuerdos.store') }}" method="POST">
                         @csrf
 
-                        <!-- Paso 1: Seleccionar Acta -->
+                        <!-- Paso 1: Configuración del libro-->
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
                             <div class="form-group">
                                 <div class="form-group">
@@ -116,23 +124,41 @@
                             </div>
                         </div>
 
-                        <!-- Paso 2: Redactar el Memorando -->
+                        <!-- Paso 2: Representación del consejo -->
                         <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-
+                            <div class="form-group">
+                                <label for="alcalde">Seleccione Alcalde</label>
+                                <div class="input-group">
+                                    <select class="form-select form-select-sm" id="alcalde" name="alcalde">
+                                        <option selected>Seleccione</option>
+                                        @foreach($alcalde as $alcaldes)
+                                        <option value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}} ({{$alcaldes->cargo}})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="alcalde">Seleccione Sindico</label>
+                                <div class="input-group">
+                                    <select class="form-select form-select-sm" id="alcalde" name="alcalde">
+                                        <option selected>Seleccione</option>
+                                        @foreach($sindico as $sindicos)
+                                        <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}} ({{$sindicos->cargo}})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="mt-3">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
 
-                        <!-- Paso 3: Seleccionar Personal -->
+
                         <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                            <div class="form-group">
-                                <label for="id_Personal">Personal</label>
-                                <select id="id_Personal" name="id_Personal" class="form-control select2" required>
-                                    <option value="" disabled selected>Seleccione el Personal</option>
-                                </select>
-                            </div>
+                            <!-- Contenedor del editor Summernote -->
+
+                            <!-- Botones de navegación -->
                             <div class="mt-3">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
@@ -144,9 +170,10 @@
         </div>
     </div>
 </div>
+</body>
 
-<!-- Bootstrap JS y dependencias -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</html>
+
 <script>
     // Inicializar Flatpickr para el campo de fecha
     flatpickr("#fecha", {
@@ -205,6 +232,18 @@
         background-color: #fff;
         border: 1px solid #ced4da;
         border-radius: 0.25rem;
+    }
+
+    .form-select {
+        height: calc(1.5em + .75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        width: 100%;
     }
 </style>
 
