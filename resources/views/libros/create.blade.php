@@ -154,9 +154,39 @@
                             </div>
                         </div>
 
+{{-- Paso 3: Apertura del libro --}}
+<div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+    <div class="form-group">
+        <label for="notas">Notas</label>
+        <textarea class="form-control" id="notas" name="notas"></textarea>
+    </div>
 
-                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                            <!-- Contenedor del editor Summernote -->
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+@endsection
+
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#notas').summernote({
+                height: 200,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+@endsection
 
                             <!-- Botones de navegación -->
                             <div class="mt-3">

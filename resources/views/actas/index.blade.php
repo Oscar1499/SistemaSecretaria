@@ -16,7 +16,6 @@
 <style>
     .bi1 {
         color: black;
-        /* Color personalizado */
     }
 </style>
 @stop

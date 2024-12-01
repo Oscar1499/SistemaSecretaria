@@ -81,7 +81,7 @@ class PersonalController extends Controller
 
         $personal = Personal::findOrFail($id);
         $personal->update($request->all());
-        return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente.');
+        return redirect()->route('personal.index')->with('success_update', 'Personal actualizado exitosamente.');
     }
 
     /**

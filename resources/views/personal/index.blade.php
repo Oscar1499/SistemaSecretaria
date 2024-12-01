@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+
 <body>
 
 </body>
@@ -33,7 +34,7 @@
                     <tr>
                         <th class="text-center">
                             <span class="d-inline-flex align-items-center">
-                                <i class="bi1 bi-person-badge-fill me-1"></i> ID
+                                <i class="bi bi-person-badge-fill"></i> ID
                             </span>
                         </th>
                         <th class="text-center">
@@ -173,11 +174,35 @@
         $('#nombre').val(persona.nombre);
         $('#apellido').val(persona.apellido);
         $('#cargo').val(persona.cargo);
+        $('#search-cargo').val(persona.cargo); 
+        $('#rubricas').val(persona.rubricas);
         $('#propietario').prop('checked', persona.propietario == 1);
     }
 
     @if(session('success'))
-    swal("Éxito", "{{ session('success') }}", "success");
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: "El personal se ha agregado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+    @endif
+
+    @if(session('success_update'))
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: "El personal se ha actualizado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
     @endif
 </script>
 @stop
