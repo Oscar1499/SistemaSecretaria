@@ -90,26 +90,41 @@
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
                             <div class="form-group">
                                 <div class="form-group">
-                                    <label for="fecha">Fecha de ingreso</label>
+                                    <label for="fecha">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        Fecha de ingreso
+                                    </label>
+
                                     <div class="input-group">
-                                        <input type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required />
+                                        <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="form-group">
+
+                                    <label for="fecha2">
+                                        <i class="bi bi-calendar-x me-2"></i>
+                                        Fecha de fin
+                                    </label>
                                     <label for="fecha2">Fecha de fin</label>
+
                                     <div class="input-group">
-                                        <input type="date" class="form-control" id="fecha2" name="fecha2" value="{{ old('fecha2', now()->toDateString()) }}" required />
+                                        <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fecha2" value="{{ old('fecha2', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="form-group position-relative">
-                                    <label for="descripcion_Acuerdos">Descripción del libro</label>
-                                    <textarea
+
+                                    <label for="descripcion_Acuerdos">
+                                        <i class="bi bi-file-text me-2"></i>
+                                        Descripción del libro
+                                    </label>
+
+                                    <textarea oninput="validar_Step1()"
                                         class="form-control input-with-icon"
                                         id="descripcion_Acuerdos"
                                         name="descripcion_Acuerdos"
@@ -127,20 +142,29 @@
                         <!-- Paso 2: Representación del consejo -->
                         <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                             <div class="form-group">
-                                <label for="alcalde">Seleccione Alcalde</label>
+
+                                <label for="alcalde">
+                                    <i class="bi bi-person-badge me-2"></i>
+                                    Seleccione Alcalde
+                                </label>
                                 <div class="input-group">
                                     <select class="form-select form-select-sm" id="alcalde" name="alcalde">
                                         <option selected>Seleccione</option>
                                         @foreach($alcalde as $alcaldes)
-                                        <option value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}} ({{$alcaldes->cargo}})</option>
+                                        <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}} ({{$alcaldes->cargo}})</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="alcalde">Seleccione Sindico</label>
+
+                                <label for="sindico">
+                                    <i class="bi bi-person-badge me-2"></i>
+                                    Seleccione Sindico
+                                </label>
+
                                 <div class="input-group">
-                                    <select class="form-select form-select-sm" id="alcalde" name="alcalde">
+                                    <select class="form-select form-select-sm" id="sindico" name="sindico">
                                         <option selected>Seleccione</option>
                                         @foreach($sindico as $sindicos)
                                         <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}} ({{$sindicos->cargo}})</option>
@@ -150,43 +174,76 @@
                             </div>
                             <div class="mt-3">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+
+
                             </div>
                         </div>
 
-{{-- Paso 3: Apertura del libro --}}
-<div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-    <div class="form-group">
-        <label for="notas">Notas</label>
-        <textarea class="form-control" id="notas" name="notas"></textarea>
-    </div>
+                        {{-- Paso 3: Apertura del libro --}}
+                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
 
-@section('css')
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-@endsection
+                            <div class="form-group">
+                                <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Notas</label>
+                                <textarea class="form-control" id="notas" name="notas"></textarea>
+                            </div>
 
-@section('js')
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#notas').summernote({
-                height: 200,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
-            });
-        });
-    </script>
-@endsection
+                            @section('css')
+                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+                            @endsection
+
+                            @section('js')
+                            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+                            <script>
+                                $(document).ready(function() {
+                                    // Inicializar Summernote
+                                    $('#notas').summernote({
+                                        height: 400,
+                                        toolbar: [
+                                            ['style', ['style']],
+                                            ['font', ['bold', 'italic', 'underline', 'clear']],
+                                            ['fontname', ['fontname']],
+                                            ['fontsize', ['fontsize']],
+                                            ['color', ['color']],
+                                            ['para', ['ul', 'ol', 'paragraph']],
+                                            ['height', ['height']],
+                                            ['table', ['table']],
+                                            ['insert', ['link', 'picture', 'video']],
+                                            ['view', ['fullscreen', 'codeview', 'help']]
+                                        ]
+                                    });
+
+                                    // Precargar texto inicial
+                                    const textoInicial = `<p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+                    a las cero horas y un minuto del día uno de mayo del año dos mil veinticuatro, EL PRIMER CONSEJO MUNICIPAL PLURAL, 
+                    juramentado constitucionalmente para el periodo 2024-2027,  AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones, 
+                    debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de 
+                    La Unión Sur, del departamento de La Unión, durante el periodo de mayo a diciembre del año dos mil veinticuatro, quienes en 
+                    representación de este Concejo firman.</p>
+                    
+                    <p>&nbsp;</p>
+                    <p style="text-align: center;"><strong>______________________</strong></p>
+
+                    <p style="text-align: center;"><strong id="palcalde" name="palcalde"></strong><strong> Municipal</strong></p>
+                   
+                    
+                    <p>&nbsp;</p>
+                    <p style="text-align: center;"><strong>______________________</strong></p>
+                    <p style="text-align: center;"><strong id="psindico" name="psindico"></strong><strong> Municipal</strong></p>
+
+                    <p>&nbsp;</p>
+                `;
+                                    const actaTexto = `
+<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
+En las instalaciones de la Casa del Migrante, Lotificación Rubio, sector Cutuco; 
+distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión; a las 
+cero horas y cinco minutos del día uno de mayo de dos mil veinticuatro. Reunidas 
+las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNION SUR.
+`;
+                                    $('#notas').summernote('code', textoInicial + actaTexto);
+                                });
+                            </script>
+                            @endsection
 
                             <!-- Botones de navegación -->
                             <div class="mt-3">
@@ -213,6 +270,20 @@
         defaultDate: new Date(new Date().getFullYear(), 0, 1),
     });
 </script>
+<script>
+    const selectAlcalde = document.getElementById('alcalde');
+    selectAlcalde.addEventListener('change', (e) => {
+        const selectedOption = e.target.selectedOptions[0];
+        document.getElementById('palcalde').textContent = selectedOption.textContent;
+    });
+
+    const selectSindico = document.getElementById('sindico');
+    selectSindico.addEventListener('change', function(e) {
+        const selectedOption = e.target.selectedOptions[0];
+        document.getElementById('psindico').textContent = selectedOption.textContent;
+    });
+</script>
+
 
 <script>
     flatpickr("#fecha2", {
@@ -234,7 +305,58 @@
         }
     });
 </script>
+<script>
+    // Función para validar los campos
+    function validar_Step1() {
+        var input = document.querySelector('input[name="fecha"]');
+        var input2 = document.querySelector('input[name="fecha2"]');
+        var textarea = document.querySelector('textarea[name="descripcion_Acuerdos"]');
+        const nextStepButton = document.querySelector('.next-step');
 
+        // Verificar si todos los campos tienen valores
+        if (input.value.trim() !== "" && input2.value.trim() !== "" && textarea.value.trim() !== "") {
+            nextStepButton.disabled = false;
+        } else {
+            nextStepButton.disabled = true;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.next-step').disabled = true;
+    });
+</script>
+<script>
+    // Función para validar los campos de selección en el Paso 2
+    function validar_Step2() {
+        const selectAlcalde = document.querySelector('select[name="alcalde"]');
+        const selectSindico = document.querySelector('select[name="sindico"]');
+        const nextStepButton = document.querySelector('#step-2 .next-step');
+
+        // Verificar si las opciones seleccionadas son válidas
+        if (
+            selectAlcalde.value !== "Seleccione" &&
+            selectAlcalde.value.trim() !== "" &&
+            selectSindico.value !== "Seleccione" &&
+            selectSindico.value.trim() !== ""
+        ) {
+            nextStepButton.disabled = false; 
+        } else {
+            nextStepButton.disabled = true; 
+        }
+    }
+
+    // Deshabilitar botón al cargar la página y añadir eventos
+    document.addEventListener('DOMContentLoaded', () => {
+        const nextStepButton = document.querySelector('#step-2 .next-step');
+        nextStepButton.disabled = true;
+
+        // Asociar la validación al cambio de selección en los select
+        const selectAlcalde = document.querySelector('select[name="alcalde"]');
+        const selectSindico = document.querySelector('select[name="sindico"]');
+
+        selectAlcalde.addEventListener('change', validar_Step2);
+        selectSindico.addEventListener('change', validar_Step2);
+    });
+</script>
 <!-- Estilos personalizados -->
 <style>
     .step .bs-stepper-circle {

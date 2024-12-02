@@ -6,6 +6,11 @@
 <h1>Crear Nuevo Acuerdo</h1>
 @stop
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<body>
+
+</body>
 @section('content')
 <div class="container">
     <div class="card">
@@ -63,7 +68,7 @@
                             <!-- Paso 1: Seleccionar Acta -->
                             <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
                                 <div class="form-group">
-                                    <label for="id_Actas">Acta</label>
+                                    <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
                                     <select id="id_Actas" name="id_Actas" class="form-control select2" required>
                                         <option value="" disabled selected>Seleccione un Acta</option>
                                         @foreach($actas as $acta)
@@ -73,25 +78,25 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-primary next-step">Siguiente</button>
+                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
 
                             <!-- Paso 2: Redactar el Memorando -->
                             <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                                 <div class="form-group">
-                                    <label for="descripcion_Acuerdos">Descripción del Acuerdo</label>
+                                    <label for="descripcion_Acuerdos"><i class="bi bi-journal-plus"></i> Descripción del Acuerdo</label>
                                     <textarea class="form-control" id="descripcion_Acuerdos" name="descripcion_Acuerdos" required></textarea>
                                 </div>
 
 
-                                <button type="button" class="btn btn-secondary previous-step">Atrás</button>
-                                <button type="button" class="btn btn-primary next-step">Siguiente</button>
+                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
+                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
 
                             <!-- Paso 3: Seleccionar Personal -->
                             <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                                 <div class="form-group">
-                                    <label for="id_Personal">Personal</label>
+                                    <label for="id_Personal"><i class="bi bi-people-fill"></i> Personal</label>
                                     <select id="id_Personal" name="id_Personal" class="form-control select2" required>
                                         <option value="" disabled selected>Seleccione el Personal</option>
                                         @foreach($personal as $persona)
@@ -105,7 +110,9 @@
                                     <p id="porcentaje-favor">0% a favor</p>
                                     <p id="porcentaje-contra">0% en contra</p>
                                 </div>
-                                <button type="button" class="btn btn-primary" id="todos-a-favor">Todos a Favor</button>
+
+
+                                <button type="button" class="btn btn-primary" id="todos-a-favor"><i class="bi bi-hand-thumbs-up me-2"></i> Todos a Favor</button>
 
                                 <!-- Tabla para mostrar los votos -->
                                 <table class="table table-bordered mt-3" id="tabla-votos">
@@ -118,8 +125,8 @@
                                     <tbody></tbody>
                                 </table>
 
-                                <button type="button" class="btn btn-secondary previous-step">Atrás</button>
-                                <button type="submit" class="btn btn-success">Guardar Acuerdo</button>
+                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Acuerdo</button>
                             </div>
                         </form>
                     </div>
@@ -153,19 +160,20 @@
                 progressBarText.textContent = `Paso ${currentStep + 1} de ${totalSteps}`;
             }
 
-            // Mostrar el paso correspondiente
             function showStep(stepIndex) {
                 steps.forEach((step, index) => {
                     const stepContent = document.querySelector(step.getAttribute('data-target'));
+
                     if (index === stepIndex) {
-                        step.classList.add('active');
+                        step.classList.add('active', 'active-step');
                         stepContent.style.display = 'block';
                     } else {
-                        step.classList.remove('active');
+                        step.classList.remove('active', 'active-step');
                         stepContent.style.display = 'none';
                     }
                 });
-                updateProgressBar();
+
+                updateProgressBar(); // Actualiza la barra de progreso
             }
 
             // Botón "Siguiente"
@@ -193,6 +201,18 @@
         });
     </script>
     <style>
+        .step .bs-stepper-circle {
+            background-color: #ccc;
+            /* Color por defecto */
+            color: #fff;
+        }
+
+        .active-step .bs-stepper-circle {
+            background-color: #007bff;
+            /* Azul cuando está activo */
+            color: #fff;
+        }
+
         /* Forzar que Select2 ocupe el 100% del ancho */
         .select2-container {
             width: 100% !important;
@@ -275,10 +295,11 @@
                     <td>${nombre}</td>
                     <td>${voto}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm eliminar-voto" data-id="${id}">Eliminar</button>
+                        <button class="btn btn-danger btn-sm eliminar-voto" data-id="${id}"><i class="bi bi-trash me-2"></i>Eliminar</button>
                     </td>
                 </tr>`;
                     tablaVotos.innerHTML += fila;
+
                 });
 
                 document.querySelectorAll('.eliminar-voto').forEach(button => {
