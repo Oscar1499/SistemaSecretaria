@@ -65,9 +65,9 @@ class LibroController extends Controller
         return redirect()->route('libros.index')->with('delete', 'Libro eliminado correctamente.');
     }
 
-    public function libroActual()
-    {
-        $anioActual = date('Y');
-        return Libro::where('anio', $anioActual)->first();
-    }
+    // public function libroActual()
+    // {
+    //     $anioActual = date('Y');
+    //     return Libro::where('anio', $anioActual)->first();
+    // }
 }

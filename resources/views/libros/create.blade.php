@@ -175,8 +175,6 @@
                             <div class="mt-3">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
-
-
                             </div>
                         </div>
 
@@ -223,7 +221,6 @@
                     
                     <p>&nbsp;</p>
                     <p style="text-align: center;"><strong>______________________</strong></p>
-
                     <p style="text-align: center;"><strong id="palcalde" name="palcalde"></strong><strong> Municipal</strong></p>
                    
                     
@@ -233,8 +230,7 @@
 
                     <p>&nbsp;</p>
                 `;
-                                    const actaTexto = `
-<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
+                                    const actaTexto = `<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
 En las instalaciones de la Casa del Migrante, Lotificación Rubio, sector Cutuco; 
 distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión; a las 
 cero horas y cinco minutos del día uno de mayo de dos mil veinticuatro. Reunidas 
@@ -338,9 +334,9 @@ las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNI
             selectSindico.value !== "Seleccione" &&
             selectSindico.value.trim() !== ""
         ) {
-            nextStepButton.disabled = false; 
+            nextStepButton.disabled = false;
         } else {
-            nextStepButton.disabled = true; 
+            nextStepButton.disabled = true;
         }
     }
 
