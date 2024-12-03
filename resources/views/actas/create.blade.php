@@ -90,11 +90,24 @@
                         <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                             <div class="form-group">
                                 <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
-                                <input type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                                <input oninput="validarFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
                             </div>
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                            <button type="button" class="btn btn-primary next-step" id="nextStepBtn" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
+
+                        <script>
+                            function validarFecha() {
+                                const fechaInput = document.getElementById("fecha");
+                                const nextStepButton = document.getElementById("nextStepBtn");
+
+                                if (fechaInput.value.trim() !== "") {
+                                    nextStepButton.disabled = false;
+                                } else {
+                                    nextStepButton.disabled = true;
+                                }
+                            }
+                        </script>
 
                         <!-- Paso 3: Seleccionar Personal -->
                         <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
@@ -342,47 +355,41 @@
             // e.preventDefault();
             // console.log("Datos del formulario:", new FormData(this));
         });
+
         // Función para manejar "Seleccionar Todos Ausentes"
         window.toggleSelectAll = function() {
             const isSelectAllAusentesChecked = document.getElementById('selectAll').checked; // Verificar si "Todos Ausentes" está marcado
-            const checkboxes = document.querySelectorAll('input[name="personal[]"]'); // Todos los checkboxes
+            const checkboxes = document.querySelectorAll('input[name="personal[]"]'); // Todos los checkboxes individuales
 
-            // Marcar todos los checkboxes como ausentes si "Todos Ausentes" está marcado
+            // Marcar/desmarcar todos los checkboxes individuales como ausentes
             checkboxes.forEach(checkbox => {
-                checkbox.checked = !isSelectAllAusentesChecked; // Si "Todos Ausentes" está marcado, desmarcar todos
+                checkbox.checked = isSelectAllAusentesChecked;
             });
 
-            // Actualizar las listas dinámicamente
-            updatePersonalAttendance();
+            // Desmarcar "Todos Presentes" al marcar "Todos Ausentes"
+            if (isSelectAllAusentesChecked) {
+                document.getElementById('selectAllPresentes').checked = false;
+            }
+            updatePersonalAttendance(); // Actualizar las listas dinámicas
         };
 
-        window.toggleSelectAll = function() {
-            const isSelectAllAusentesChecked = document.getElementById('selectAll').checked;
-            const isSelectAllPresentesChecked = document.getElementById('selectAllPresentes').checked;
+        // Función para manejar "Seleccionar Todos Presentes"
+        window.toggleSelectAllPresentes = function() {
+            const isSelectAllPresentesChecked = document.getElementById('selectAllPresentes').checked; 
             const checkboxes = document.querySelectorAll('input[name="personal[]"]');
 
-            if (isSelectAllAusentesChecked) {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
+         
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isSelectAllPresentesChecked;
+            });
 
-                document.getElementById('selectAllPresentes').checked = false;
-            } else if (isSelectAllPresentesChecked) {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = true;
-                });
-
+            if (isSelectAllPresentesChecked) {
                 document.getElementById('selectAll').checked = false;
-            } else {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
             }
-
-            updatePersonalAttendance();
+            updatePersonalAttendance(); 
         };
 
-        // Función para actualizar la lista de presentes y ausentes
+        // Función para actualizar las listas de ausentes y presentes
         window.updatePersonalAttendance = function() {
             const checkboxes = document.querySelectorAll('input[name="personal[]"]');
             const presentPersonal = document.getElementById('presentPersonal');
@@ -391,26 +398,27 @@
             const ausentes = [];
             const presentes = [];
 
-
+            // Clasificar los nombres según el estado del checkbox
             checkboxes.forEach(checkbox => {
                 const label = checkbox.closest('label').innerText.trim();
-
-
                 if (checkbox.checked) {
-                    presentes.push(label);
+                    ausentes.push(label); 
                 } else {
-                    ausentes.push(label);
+                    presentes.push(label); 
                 }
             });
 
+            // Actualizar las listas dinámicamente
             FaltaPersonal.innerText = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             presentPersonal.innerText = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
         };
 
+        // Función para manejar cambios individuales en los checkboxes
         window.handleCheckboxChange = function() {
-            updatePersonalAttendance();
+            document.getElementById('selectAll').checked = false;
+            document.getElementById('selectAllPresentes').checked = false;
+            updatePersonalAttendance(); 
         };
-
 
         window.updateMotivoAusencia = function() {
             const FaltaPersonal = document.getElementById('FaltaPersonal');
@@ -422,8 +430,7 @@
             } else {
                 FaltaPersonal.innerText = 'Ninguno';
             }
-
-            // Actualizar los campos ocultos
+            
             actualizarCamposOcultos();
         }
 

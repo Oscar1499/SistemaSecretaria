@@ -30,7 +30,8 @@
             <thead>
                 <tr>
                     <th><i class="bi1 bi-person-badge-fill"></i> ID</th>
-                    <th><i class="bi1 bi-calendar-fill"></i> Año</th>
+                    <th><i class="bi1 bi-calendar-fill"></i>Fecha de inicio</th>
+                    <th><i class="bi1 bi-calendar-event-fill"></i> Fecha de final</th>
                     <th><i class="bi1 bi-file-earmark-text-fill"> Descripción</th>
                     <th><i class="bi1 bi-save-fill"> Acciones</th>
                 </tr>
@@ -40,6 +41,7 @@
                 <tr>
                     <td>{{ $libro->id_Libros }}</td>
                     <td>{{ $libro->anio }}</td>
+                    <td></td>
                     <td>{{ $libro->descripcion_Libro }}</td>
                     <td>
                         <a href="{{ route('libros.show', $libro->id_Libros) }}" class="btn btn-info btn-sm" title="Ver este libro"

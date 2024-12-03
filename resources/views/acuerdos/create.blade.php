@@ -69,7 +69,8 @@
                             <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
                                 <div class="form-group">
                                     <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
-                                    <select id="id_Actas" name="id_Actas" class="form-control select2" required>
+                                    <select id="id_Actas" name="id_Actas" class="form-control select2" required
+                                        onchange="checkSelect(this)">
                                         <option value="" disabled selected>Seleccione</option>
                                         @foreach($actas as $acta)
                                         <option value="{{ $acta->id }}|{{ $acta->descripcion_acta }}">
@@ -78,19 +79,19 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" id="nextStepBtn" class="btn btn-primary next-step" disabled>
+                                    Siguiente <i class="bi bi-arrow-right"></i>
+                                </button>
                             </div>
 
-                            <!-- Paso 2: Redactar el Memorando -->
+
                             <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                                 <div class="form-group">
                                     <label for="descripcion_Acuerdos"><i class="bi bi-journal-plus"></i> Descripción del Acuerdo</label>
-                                    <textarea class="form-control" id="descripcion_Acuerdos" name="descripcion_Acuerdos" required placeholder="Ingrese una descripción del"></textarea>
+                                    <textarea class="form-control" id="descripcion_Acuerdos" name="descripcion_Acuerdos" required placeholder="Ingrese una descripción del acuerdo"></textarea>
                                 </div>
-
-
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" class="btn btn-primary next-step" id="nextStepBtn2" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
 
                             <!-- Paso 3: Seleccionar Personal -->
@@ -143,6 +144,15 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 
     <script>
+        function checkSelect(select) {
+            if (select.value === "") {
+                document.getElementById("nextStepBtn").disabled = true;
+            } else {
+                document.getElementById("nextStepBtn").disabled = false;
+            }
+        }
+
+
         document.addEventListener("DOMContentLoaded", function() {
             const nextButtons = document.querySelectorAll('.next-step');
             const prevButtons = document.querySelectorAll('.previous-step');
@@ -266,6 +276,11 @@
                     ['view', ['fullscreen', 'codeview', 'help']]
                 ]
             });
+            $('#descripcion_Acuerdos').on('summernote.keyup', function() {
+                const contenido = $('#descripcion_Acuerdos').summernote('isEmpty'); // Verificar si está vacío
+
+                $('#nextStepBtn2').prop('disabled', contenido);
+            });
 
             let votos = {}; // Almacena los votos por ID
             let totalFavor = 0;
@@ -387,33 +402,6 @@
                     });
                 }
             });
-
-
-            // Función para validar los campos de selección en el Paso 2
-            function validar_Step1() {
-                const selectacta = document.querySelector('select[name="id_Actas"]');
-                const nextStepButton = document.querySelector('#step-1 .next-step');
-                // Verificar si las opciones seleccionadas son válidas
-                if (
-                    selectacta.value !== "Seleccione"
-
-                ) {
-                    nextStepButton.disabled = false;
-                } else {
-                    nextStepButton.disabled = true;
-                }
-            }
-            // Deshabilitar botón al cargar la página y añadir eventos
-            document.addEventListener('DOMContentLoaded', () => {
-                const nextStepButton = document.querySelector('#step-1 .next-step');
-                nextStepButton.disabled = true;
-
-                // Asociar la validación al cambio de selección en los select
-                const selectacta = document.querySelector('select[name="id_Actas"]');
-             
-                selectacta.addEventListener('change', validar_Step1);
-            });
-
 
             document.querySelector('#todos-a-favor').addEventListener('click', function() {
                 $('#id_Personal option').each(function() {
