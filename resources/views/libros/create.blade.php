@@ -83,7 +83,7 @@
 
                 <div class="bs-stepper-content">
                     <!-- Formulario con pasos -->
-                    <form action="{{ route('acuerdos.store') }}" method="POST">
+                    <form action="{{ route('libros.store') }}" method="POST">
                         @csrf
 
                         <!-- Paso 1: Configuración del libro-->
@@ -96,7 +96,7 @@
                                     </label>
 
                                     <div class="input-group">
-                                        <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required />
+                                        <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fecha', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
@@ -108,10 +108,9 @@
                                         <i class="bi bi-calendar-x me-2"></i>
                                         Fecha de fin
                                     </label>
-                                    <label for="fecha2">Fecha de fin</label>
 
                                     <div class="input-group">
-                                        <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fecha2" value="{{ old('fecha2', now()->toDateString()) }}" required />
+                                        <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
@@ -127,7 +126,7 @@
                                     <textarea oninput="validar_Step1()"
                                         class="form-control input-with-icon"
                                         id="descripcion_Acuerdos"
-                                        name="descripcion_Acuerdos"
+                                        name="descripcion_Libro"
                                         placeholder="Escriba una descripción detallada del libro"
                                         rows="5"
                                         required></textarea>
@@ -182,63 +181,12 @@
                         <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
 
                             <div class="form-group">
-                                <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Notas</label>
-                                <textarea class="form-control" id="notas" name="notas"></textarea>
+                                <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
+                                <textarea class="form-control" id="notas" name="apertura_Libro" required></textarea>
                             </div>
 
                             @section('css')
                             <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-                            @endsection
-
-                            @section('js')
-                            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-                            <script>
-                                $(document).ready(function() {
-                                    // Inicializar Summernote
-                                    $('#notas').summernote({
-                                        height: 400,
-                                        toolbar: [
-                                            ['style', ['style']],
-                                            ['font', ['bold', 'italic', 'underline', 'clear']],
-                                            ['fontname', ['fontname']],
-                                            ['fontsize', ['fontsize']],
-                                            ['color', ['color']],
-                                            ['para', ['ul', 'ol', 'paragraph']],
-                                            ['height', ['height']],
-                                            ['table', ['table']],
-                                            ['insert', ['link', 'picture', 'video']],
-                                            ['view', ['fullscreen', 'codeview', 'help']]
-                                        ]
-                                    });
-
-                                    // Precargar texto inicial
-                                    const textoInicial = `<p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-                    a las cero horas y un minuto del día uno de mayo del año dos mil veinticuatro, EL PRIMER CONSEJO MUNICIPAL PLURAL, 
-                    juramentado constitucionalmente para el periodo 2024-2027,  AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones, 
-                    debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de 
-                    La Unión Sur, del departamento de La Unión, durante el periodo de mayo a diciembre del año dos mil veinticuatro, quienes en 
-                    representación de este Concejo firman.</p>
-                    
-                    <p>&nbsp;</p>
-                    <p style="text-align: center;"><strong>______________________</strong></p>
-                    <p style="text-align: center;"><strong id="palcalde" name="palcalde"></strong><strong> Municipal</strong></p>
-                   
-                    
-                    <p>&nbsp;</p>
-                    <p style="text-align: center;"><strong>______________________</strong></p>
-                    <p style="text-align: center;"><strong id="psindico" name="psindico"></strong><strong> Municipal</strong></p>
-
-                    <p>&nbsp;</p>
-                `;
-                                    const actaTexto = `<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
-En las instalaciones de la Casa del Migrante, Lotificación Rubio, sector Cutuco; 
-distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión; a las 
-cero horas y cinco minutos del día uno de mayo de dos mil veinticuatro. Reunidas 
-las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNION SUR.
-`;
-                                    $('#notas').summernote('code', textoInicial + actaTexto);
-                                });
-                            </script>
                             @endsection
 
                             <!-- Botones de navegación -->
@@ -256,6 +204,66 @@ las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNI
 </body>
 
 </html>
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inicializar Summernote
+        $('#notas').summernote({
+            height: 400,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
+        // Obtener el texto de la opción seleccionada en el select
+        $('#alcalde, #sindico').on('change', function() {
+            var alcaldeSeleccionado = $('#alcalde option:selected').text();
+            var sindicoSeleccionado = $('#sindico option:selected').text();
+
+
+            // Definir el texto inicial y sustituir el lugar con el valor seleccionado
+            const textoInicial = `
+                <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+                a las cero horas y un minuto del día uno de mayo del año dos mil veinticuatro, EL PRIMER CONSEJO MUNICIPAL PLURAL,
+                juramentado constitucionalmente para el periodo 2024-2027,  AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
+                debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
+                La Unión Sur, del departamento de La Unión, durante el periodo de mayo a diciembre del año dos mil veinticuatro, quienes en
+                representación de este Concejo firman.</p>
+
+                <p>&nbsp;</p>
+                <p style="text-align: center;"><strong>______________________</strong></p>
+                <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
+
+                <p>&nbsp;</p>
+                <p style="text-align: center;"><strong>______________________</strong></p>
+                <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
+
+                <p>&nbsp;</p>
+            `;
+
+            const actaTexto = `<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
+            En las instalaciones de la Casa del Migrante, Lotificación Rubio, sector Cutuco;
+            distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión; a las
+            cero horas y cinco minutos del día uno de mayo de dos mil veinticuatro. Reunidas
+            las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNION SUR.
+            `;
+
+            // Insertar el texto generado en Summernote
+            $('#notas').summernote('code', textoInicial + actaTexto);
+        });
+    });
+</script>
+@endsection
 
 <script>
     // Inicializar Flatpickr para el campo de fecha
@@ -266,20 +274,6 @@ las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNI
         defaultDate: new Date(new Date().getFullYear(), 0, 1),
     });
 </script>
-<script>
-    const selectAlcalde = document.getElementById('alcalde');
-    selectAlcalde.addEventListener('change', (e) => {
-        const selectedOption = e.target.selectedOptions[0];
-        document.getElementById('palcalde').textContent = selectedOption.textContent;
-    });
-
-    const selectSindico = document.getElementById('sindico');
-    selectSindico.addEventListener('change', function(e) {
-        const selectedOption = e.target.selectedOptions[0];
-        document.getElementById('psindico').textContent = selectedOption.textContent;
-    });
-</script>
-
 
 <script>
     flatpickr("#fecha2", {
@@ -304,9 +298,9 @@ las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNI
 <script>
     // Función para validar los campos
     function validar_Step1() {
-        var input = document.querySelector('input[name="fecha"]');
-        var input2 = document.querySelector('input[name="fecha2"]');
-        var textarea = document.querySelector('textarea[name="descripcion_Acuerdos"]');
+        var input = document.querySelector('input[name="fechainicio_Libro"]');
+        var input2 = document.querySelector('input[name="fechafinal_Libro"]');
+        var textarea = document.querySelector('textarea[name="descripcion_Libro"]');
         const nextStepButton = document.querySelector('.next-step');
 
         // Verificar si todos los campos tienen valores

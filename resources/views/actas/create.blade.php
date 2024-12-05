@@ -370,7 +370,7 @@
             if (isSelectAllAusentesChecked) {
                 document.getElementById('selectAllPresentes').checked = false;
             }
-            updatePersonalAttendance(); // Actualizar las listas dinámicas
+            updatePersonalAttendance(); 
         };
 
         // Función para manejar "Seleccionar Todos Presentes"

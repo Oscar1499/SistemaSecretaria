@@ -11,8 +11,10 @@ class Libro extends Model
     public $timestamps = false; 
 
     protected $fillable = [
-        'anio',
+        'fechainicio_Libro',
+        'fechafinal_Libro',
         'descripcion_Libro',
+        'apertura_Libro',
     ];
 
     public function actas()

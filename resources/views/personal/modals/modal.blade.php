@@ -14,7 +14,7 @@
                 <input type="hidden" name="_method" value="POST">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="personalModalLabel">Agregar / Editar Personal</h5>
+                    <h5 class="modal-title" id="personalModalLabel"><i class="bi bi-person-fill-add"></i> Agregar /   <i class="bi bi-person-fill-gear"></i> Editar Personal</h5>
                     <button type="button" class="close" data-dismiss="modal"  onclick="volverAtras()" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -47,7 +47,7 @@
                             <input type="hidden" name="cargo" id="cargo" required>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="rubricas"><i class="bi bi-pencil-fill"></i> Rúbricas</label>
                         <input type="text" class="form-control" id="rubricas" name="rubricas" placeholder="Ingrese las rúbricas" required>
@@ -81,7 +81,7 @@
     const input = document.getElementById('search-cargo');
     const list = document.getElementById('cargo-list');
     const hiddenInput = document.getElementById('cargo');
-    const form = document.querySelector('form'); 
+    const form = document.querySelector('form');
 
     // Mostrar lista al hacer foco
     input.addEventListener('focus', () => list.style.display = 'block');
@@ -108,9 +108,9 @@
         }
     });
 
-  // Cierre del modal 
+  // Cierre del modal
   function volverAtras() {
-    $('#personalModal').modal('hide'); 
+    $('#personalModal').modal('hide');
   }
 
 

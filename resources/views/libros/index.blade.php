@@ -30,7 +30,7 @@
             <thead>
                 <tr>
                     <th><i class="bi1 bi-person-badge-fill"></i> ID</th>
-                    <th><i class="bi1 bi-calendar-fill"></i>Fecha de inicio</th>
+                    <th><i class="bi1 bi-calendar-fill"></i> Fecha de inicio</th>
                     <th><i class="bi1 bi-calendar-event-fill"></i> Fecha de final</th>
                     <th><i class="bi1 bi-file-earmark-text-fill"> Descripción</th>
                     <th><i class="bi1 bi-save-fill"> Acciones</th>
@@ -40,8 +40,8 @@
                 @foreach ($libros as $libro)
                 <tr>
                     <td>{{ $libro->id_Libros }}</td>
-                    <td>{{ $libro->anio }}</td>
-                    <td></td>
+                    <td>{{ $libro->fechainicio_Libro }}</td>
+                    <td>{{ $libro->fechafinal_Libro }}</td>
                     <td>{{ $libro->descripcion_Libro }}</td>
                     <td>
                         <a href="{{ route('libros.show', $libro->id_Libros) }}" class="btn btn-info btn-sm" title="Ver este libro"
@@ -70,7 +70,34 @@
         </table>
     </div>
 </div>
-
+@if(session('success_Libro'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: "El libro se ha actualizado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_Libro'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: "Hubo un problema al editar el libro. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
 <!-- Alerta de éxito de Eliminado-->
 @if(session('delete'))
 <script>

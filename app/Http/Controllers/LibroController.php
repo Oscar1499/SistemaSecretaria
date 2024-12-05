@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Libro;
-use Illuminate\Http\Request;
 use App\Models\Personal;
-
+use Illuminate\Http\Request;
 
 class LibroController extends Controller
 {
 
     public function index()
     {
-        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
-        $libros = Libro::all();
-        return view('libros.index', compact('libros', 'alcalde',));
-    }
 
+        $libros = Libro::all();
+        return view('libros.index', compact('libros'));
+    }
 
     public function create()
     {
@@ -28,8 +26,24 @@ class LibroController extends Controller
     public function store(Request $request)
     {
         try {
-            // Guardar libro
-            Libro::create($request->all());
+
+            // Validación de campos requeridos
+            $request->validate([
+                'fechainicio_Libro' => 'required|date',
+                'fechafinal_Libro' => 'required|date',
+                'descripcion_Libro' => 'required|string',
+                'apertura_Libro' => 'required|string',
+            ]);
+
+            // Filtrando solo los campos necesarios para el modelo Libro
+            $data = $request->only([
+                'fechainicio_Libro',
+                'fechafinal_Libro',
+                'descripcion_Libro',
+                'apertura_Libro',
+            ]);
+
+            Libro::create($data);
 
             return redirect()->route('libros.create')->with('success', 'Libro agregado correctamente.');
         } catch (\Exception $e) {
@@ -45,18 +59,37 @@ class LibroController extends Controller
 
     public function edit(Libro $libro)
     {
-        return view('libros.edit', compact('libro'));
+        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
+        $sindico = Personal::where('cargo', 'Sindico')->get();
+        return view('libros.edit', compact('libro', 'sindico', 'alcalde'));
     }
 
     public function update(Request $request, Libro $libro)
     {
-        $request->validate([
-            'anio' => 'required|integer',
-            'descripcion_Libro' => 'required|string',
-        ]);
+        try {
 
-        $libro->update($request->all());
-        return redirect()->route('libros.index');
+            // Validación de campos requeridos
+            $request->validate([
+                'fechainicio_Libro' => 'required|date',
+                'fechafinal_Libro' => 'required|date',
+                'descripcion_Libro' => 'required|string',
+                'apertura_Libro' => 'required|string',
+            ]);
+
+            // Filtrando solo los campos necesarios para el modelo Libro
+            $data = $request->only([
+                'fechainicio_Libro',
+                'fechafinal_Libro',
+                'descripcion_Libro',
+                'apertura_Libro',
+            ]);
+            $libro->update($data);
+
+            return redirect()->route('libros.index')->with('success_Libro', 'Libro actualizado correctamente.');
+        } catch (\Exception $e) {
+
+            return redirect()->route('libros.index')->with('error_Libro', 'Hubo un problema al actualizar el libro.');
+        }
     }
 
     public function destroy(Libro $libro)
