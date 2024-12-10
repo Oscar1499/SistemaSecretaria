@@ -3,10 +3,16 @@
 @section('title', 'Agregar Libro')
 
 @section('content_header')
-<h1>Agregar Libro</h1>
+<h1>Apertura de Libro</h1>
 @stop
 
 @section('content')
+<?php date_default_timezone_set('America/El_Salvador'); // zona horaria de El Salvador
+
+$hora = date('G');?>
+<!-- TimeToText (para convertir horas en texto) -->
+<script src="https://cdn.jsdelivr.net/npm/time-to-text"></script>
+
 <!-- SweetAlert2 (para alertas) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -250,16 +256,8 @@
 
                 <p>&nbsp;</p>
             `;
-
-            const actaTexto = `<strong>ACTA NUMERO UNO DEL AÑO <?php echo date('Y'); ?> .- SESIÓN NÚMERO UNO DEL CONCEJO MUNICIPAL 2024-2027.</strong>
-            En las instalaciones de la Casa del Migrante, Lotificación Rubio, sector Cutuco;
-            distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión; a las
-            cero horas y cinco minutos del día uno de mayo de dos mil veinticuatro. Reunidas
-            las personas que resultaron electas para integrar el CONCEJO MUNICIPAL DE LA UNION SUR.
-            `;
-
             // Insertar el texto generado en Summernote
-            $('#notas').summernote('code', textoInicial + actaTexto);
+            $('#notas').summernote('code', textoInicial );
         });
     });
 </script>

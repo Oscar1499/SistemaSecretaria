@@ -54,10 +54,10 @@
                             data-bs-toggle="tooltip">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
-                        <form action="{{ route('libros.destroy', $libro->id_Libros) }}" method="POST" class="d-inline-block" id="deleteForm">
+                        <form action="{{ route('libros.destroy', $libro->id_Libros) }}" method="POST" class="d-inline-block" id="deleteForm-{{ $libro->id_Libros }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);" title="Eliminar este libro"
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event  , 'deleteForm-{{ $libro->id_Libros }}');" title="Eliminar este libro"
 
                                 data-bs-toggle="tooltip">
                                 <i class="bi bi-trash"></i> Eliminar
@@ -120,7 +120,7 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    function Eliminar(event) {
+    function Eliminar(event, formId) {
 
         event.preventDefault();
 
@@ -138,7 +138,7 @@
         }).then((result) => {
             // Si el usuario confirma, envía el formulario
             if (result.isConfirmed) {
-                document.getElementById('deleteForm').submit();
+                document.getElementById(formId).submit();
             }
         });
     }

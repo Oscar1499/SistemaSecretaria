@@ -94,8 +94,12 @@ class LibroController extends Controller
 
     public function destroy(Libro $libro)
     {
-        $libro->delete();
-        return redirect()->route('libros.index')->with('delete', 'Libro eliminado correctamente.');
+        try {
+            $libro->delete();
+            return redirect()->route('libros.index')->with('delete', 'Libro eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('libros.index')->with('error_delete', 'Error al eliminar el libro.');
+        }
     }
 
     // public function libroActual()

@@ -52,10 +52,10 @@
                         <a href="{{ route('actas.edit', $acta->id_Actas) }}" class="btn btn-warning btn-sm" title="Editar esta acta"
 
                             data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</a>
-                        <form action="{{ route('actas.destroy', $acta->id_Actas) }}" method="POST" style="display:inline;" id="deleteForm">
+                        <form action="{{ route('actas.destroy', $acta->id_Actas) }}" method="POST" style="display:inline;" id="deleteForm-{{ $acta->id_Actas }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);" title="Eliminar esta acta"
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event, 'deleteForm-{{ $acta->id_Actas }}');" title="Eliminar esta acta"
 
                                 data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
                         </form>
@@ -68,7 +68,7 @@
 </div>
 
 <!-- Alerta de éxito de Eliminado-->
-@if(session('success'))
+@if(session('success_delete'))
 <script>
     Swal.fire({
         icon: 'success',
@@ -82,37 +82,109 @@
     });
 </script>
 @endif
+@if(session('success_update'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Operación exitosa!',
+        text: "El acta ha sido actualizada correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('success_acta'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: "El acta se ha creado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_acta'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: "Hubo un problema al guardar el acta. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_update'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: "Hubo un problema al actualizar el acta. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_delete'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error!',
+        text: "Hubo un problema al borrar el acta. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
 <script>
     // Inicializar tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    function Eliminar(event) {
 
-        event.preventDefault();
+// Solucionado un bug donde al eliminar un registro, siempre eliminaba el primer registro en lugar del seleccionado
 
-        // Mostrar SweetAlert
-        Swal.fire({
-            icon: 'question',
-            title: '¿Confirmar eliminación del acta?',
-            text: 'Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar esta acta?',
-            confirmButtonText: 'Sí, eliminar',
-            showCancelButton: true,
-            timer: 5000,
-            cancelButtonText: 'No, cancelar',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-        }).then((result) => {
-            // Si el usuario confirma, envía el formulario
-            if (result.isConfirmed) {
-                document.getElementById('deleteForm').submit();
-            }
-        });
-    }
+//Funcion especifica para eliminar un registro donde de espera 2 parametros
+    function Eliminar(event, formId) {
+    event.preventDefault();
+
+    // Mostrar SweetAlert
+    Swal.fire({
+        icon: 'question',
+        title: '¿Confirmar eliminación del acta?',
+        text: 'Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar esta acta?',
+        confirmButtonText: 'Sí, eliminar',
+        showCancelButton: true,
+        timer: 5000,
+        cancelButtonText: 'No, cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+    }).then((result) => {
+        // Si el usuario confirma, envía el formulario
+        if (result.isConfirmed) {
+            document.getElementById(formId).submit();
+        }
+    });
+}
+
 </script>
-
 @stop
-
 @section('css')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 @stop
