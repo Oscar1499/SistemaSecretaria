@@ -3,13 +3,43 @@
 @section('title', 'Agregar Libro')
 
 @section('content_header')
-<h1>Apertura de Libro</h1>
+<h1><i class="fas fa-book-open mr-2"></i> Apertura de Libro</h1>
 @stop
 
 @section('content')
-<?php date_default_timezone_set('America/El_Salvador'); // zona horaria de El Salvador
+<?php
 
-$hora = date('G');?>
+$formatter = new NumberFormatter('es_SV', NumberFormatter::SPELLOUT);
+
+$anio = date('Y');
+$hora = date('H');
+$minutos = date('i');
+$dia = date('d');
+$mes = date('n'); // Obtener el número del mes
+// Convertir el año a texto
+$diaEnTexto = $formatter->format($dia);
+$horaEnTexto = $formatter->format($hora);
+$minutosEnTexto = $formatter->format($minutos);
+$anioEnTexto = $formatter->format($anio);
+
+// Convertir el mes a texto en español
+$mesEnTexto = [
+    1 => 'enero',
+    2 => 'febrero',
+    3 => 'marzo',
+    4 => 'abril',
+    5 => 'mayo',
+    6 => 'junio',
+    7 => 'julio',
+    8 => 'agosto',
+    9 => 'septiembre',
+    10 => 'octubre',
+    11 => 'noviembre',
+    12 => 'diciembre',
+][$mes];
+
+?>
+
 <!-- TimeToText (para convertir horas en texto) -->
 <script src="https://cdn.jsdelivr.net/npm/time-to-text"></script>
 
@@ -240,7 +270,7 @@ $hora = date('G');?>
             // Definir el texto inicial y sustituir el lugar con el valor seleccionado
             const textoInicial = `
                 <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-                a las cero horas y un minuto del día uno de mayo del año dos mil veinticuatro, EL PRIMER CONSEJO MUNICIPAL PLURAL,
+                a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día <?php echo $diaEnTexto ?> de <?php echo $mesEnTexto ?> del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
                 juramentado constitucionalmente para el periodo 2024-2027,  AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
                 debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
                 La Unión Sur, del departamento de La Unión, durante el periodo de mayo a diciembre del año dos mil veinticuatro, quienes en

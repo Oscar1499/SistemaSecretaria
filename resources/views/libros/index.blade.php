@@ -63,6 +63,16 @@
                                 <i class="bi bi-trash"></i> Eliminar
                             </button>
                         </form>
+                        @if (date('n') == 12)
+                        <a href="{{ route('libros.edit', $libro->id_Libros) }}" class="btn btn-secondary btn-sm" title="Cerrar este libro"
+                            data-bs-toggle="tooltip">
+                            <i class="bi bi-lock"></i> Cerrar libro
+                        </a>
+                        @else
+                        <button type="button" class="btn btn-secondary btn-sm" title="No disponible" disabled>
+                           <i class="bi bi-unlock"></i> No disponible
+                        </button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

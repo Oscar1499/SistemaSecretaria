@@ -3,7 +3,7 @@
 @section('title', 'Editar Libro')
 
 @section('content_header')
-<h1>Editar Libro</h1>
+<h1><i class="fas fa-book-open mr-2"></i> Editar Libro</h1>
 @stop
 
 @section('content')
@@ -210,26 +210,6 @@
         }
     });
 </script>
-<script>
-    // Función para validar los campos
-    function validar_Step1() {
-        var input = document.querySelector('input[name="fechainicio_Libro"]');
-        var input2 = document.querySelector('input[name="fechafinal_Libro"]');
-        var textarea = document.querySelector('textarea[name="descripcion_Libro"]');
-        const nextStepButton = document.querySelector('.next-step');
-
-        // Verificar si todos los campos tienen valores
-        if (input.value.trim() !== "" && input2.value.trim() !== "" && textarea.value.trim() !== "") {
-            nextStepButton.disabled = false;
-        } else {
-            nextStepButton.disabled = true;
-        }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.next-step').disabled = true;
-    });
-</script>
-
 <!-- Estilos personalizados -->
 <style>
     .step .bs-stepper-circle {
