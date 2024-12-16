@@ -18,26 +18,16 @@ class ActaController extends Controller
     public function create()
     {
 
-        // Comente esta parte por el cambios que se hicieron en libro los cambios que se hicieron en libro generan un error
-
-        // $anioActual = date('Y');
-
-        // // // $libros = Libro::where('anio', $anioActual)->get();
-
-        // // if ($libros->isEmpty()) {
-        // //     return back()->withErrors(['No hay libros disponibles para el año actual.']);
-        // // }
-
-        // $libroActual = $libros->first();
-
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
+        // Contar el número de actas en la base de datos para determinar el correlativo de la acta a editar
+        $numero_Actas = Acta::count();
         $secretario = Personal::where('cargo', 'Secretario')->first();
         $personal = Personal::all();
 
         // Aqui elimine las variables de libros y libroActual para que no se muestren en la vista
-        return view('actas.create', compact('tipoSesion', 'alcaldesa', 'secretario', 'personal'));
+        return view('actas.create', compact('tipoSesion', 'alcaldesa', 'secretario', 'personal', 'numero_Actas'));
     }
     public function store(Request $request)
     {
@@ -87,6 +77,7 @@ class ActaController extends Controller
 
     public function edit(Acta $acta)
     {
+
         $personal = Personal::all();
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
         $secretario = Personal::where('cargo', 'Secretario')->first();

@@ -183,7 +183,7 @@
                             <div class="form-group">
                                 <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                                 <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                    value="ACTA NÚMERO {{ $correlativo ?? '1' }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+                                    value="ACTA NÚMERO {{ $numero_Actas }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
                             </div>
                             <div class="form-group">
                                 <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>

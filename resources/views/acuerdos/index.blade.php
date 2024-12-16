@@ -46,10 +46,11 @@
                     <td>{{ $acuerdo->fecha_Acuerdos }}</td>
                     <td>{{ $acuerdo->descripcion_Acuerdos }}</td>
                     <td>
-                        <a href="#" class="btn btn-warning btn-sm" title="Ver este acuerdo"
+                                            <a href="{{ route('acuerdos.show', $acuerdo->id_Acuerdo) }}" class="btn btn-info btn-sm" title="Ver este acuerdo"
+                                            data-bs-toggle="tooltip"><i class="bi bi-eye"></i> Ver</a>
 
-                            data-bs-toggle="tooltip"><i class="bi bi-eye"> </i> ver</a>
-                        <a href="#" class="btn btn-danger btn-sm" title="Editar este acuerdo"
+
+                        <a href="{{ route('acuerdos.edit', $acuerdo->id_Acuerdo) }}" class="btn btn-warning btn-sm" title="Editar este acuerdo"
 
                             data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</a>
                         <form action="{{ route('acuerdos.destroy', $acuerdo->id_Acuerdo) }}" method="POST" style="display:inline;" id="deleteForm">

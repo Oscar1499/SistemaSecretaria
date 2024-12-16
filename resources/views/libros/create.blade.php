@@ -86,7 +86,10 @@ $mesEnTexto = [
                     Paso 1 de 3
                 </div>
             </div>
-
+            <input type="hidden" id="Mes" name="Mes" />
+            <script>
+                var mesxd = document.getElementById("Mes").value;
+            </script>
             <!-- Stepper -->
             <div class="bs-stepper">
                 <div class="bs-stepper-header" role="tablist">
@@ -124,7 +127,8 @@ $mesEnTexto = [
 
                         <!-- Paso 1: Configuración del libro-->
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
-                            <div class="form-group">
+
+                        <div class="form-group">
                                 <div class="form-group">
                                     <label for="fecha">
                                         <i class="bi bi-calendar-event me-2"></i>
@@ -132,12 +136,15 @@ $mesEnTexto = [
                                     </label>
 
                                     <div class="input-group">
-                                        <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fecha', now()->toDateString()) }}" required />
+                                        <input oninput="actualizarMesYTexto(); " type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fecha', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
                                     </div>
                                 </div>
+
+                                <!-- Aquí se mostrará el mes -->
+                                <input type="hidden" id="mesSeleccionado" name="mesSeleccionado" />
                                 <div class="form-group">
 
                                     <label for="fecha2">
@@ -146,7 +153,7 @@ $mesEnTexto = [
                                     </label>
 
                                     <div class="input-group">
-                                        <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
+                                        <input type="date"  class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
@@ -159,7 +166,7 @@ $mesEnTexto = [
                                         Descripción del libro
                                     </label>
 
-                                    <textarea oninput="validar_Step1()"
+                                    <textarea
                                         class="form-control input-with-icon"
                                         id="descripcion_Acuerdos"
                                         name="descripcion_Libro"
@@ -167,10 +174,10 @@ $mesEnTexto = [
                                         rows="5"
                                         required></textarea>
                                 </div>
-
                             </div>
+
                             <div class="mt-3">
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" class="btn btn-primary next-step" >Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
 
@@ -242,7 +249,58 @@ $mesEnTexto = [
 </html>
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
 <script>
+
+    // Función para extraer el mes del input de fecha y actualizar el campo oculto
+    function obtenerMes() {
+        const fecha = document.getElementById("fecha").value;
+        if (!fecha) return;
+
+        const fechaObj = new Date(fecha);
+        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        const nombreDelMes = meses[fechaObj.getMonth()]; // Obtener el nombre del mes
+
+        // Actualizar el valor del input oculto
+        document.getElementById('mesSeleccionado').value = nombreDelMes;
+        return nombreDelMes;
+    }
+
+    // Función para actualizar el texto en Summernote
+    function actualizarTexto() {
+        // Obtener valores dinámicos
+        const mesSeleccionadoVariable = document.getElementById('mesSeleccionado').value || 'el mes';
+        const alcaldeSeleccionado = $('#alcalde option:selected').text() || 'Nombre del Alcalde';
+        const sindicoSeleccionado = $('#sindico option:selected').text() || 'Nombre del Síndico';
+
+        // Generar el texto dinámico
+        const textoInicial = `
+            <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+            a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día <?php echo $diaEnTexto ?> de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
+            juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
+            debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
+            La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>, quienes en
+            representación de este Concejo firman.</p>
+
+            <p style="text-align: center;"><strong>______________________</strong></p>
+            <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
+
+            <p style="text-align: center;"><strong>______________________</strong></p>
+            <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
+
+            <p>&nbsp;</p>
+        `;
+
+        // Insertar el texto generado en Summernote
+        $('#notas').summernote('code', textoInicial);
+    }
+
+    // Función principal: obtiene el mes y actualiza Summernote
+    function actualizarMesYTexto() {
+        const mes = obtenerMes();
+        actualizarTexto();
+    }
+
     $(document).ready(function() {
         // Inicializar Summernote
         $('#notas').summernote({
@@ -261,36 +319,15 @@ $mesEnTexto = [
             ]
         });
 
-        // Obtener el texto de la opción seleccionada en el select
-        $('#alcalde, #sindico').on('change', function() {
-            var alcaldeSeleccionado = $('#alcalde option:selected').text();
-            var sindicoSeleccionado = $('#sindico option:selected').text();
+        // Eventos para actualizar dinámicamente
+        $('#fecha').on('change', actualizarMesYTexto);
+        $('#alcalde, #sindico').on('change', actualizarTexto);
 
-
-            // Definir el texto inicial y sustituir el lugar con el valor seleccionado
-            const textoInicial = `
-                <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-                a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día <?php echo $diaEnTexto ?> de <?php echo $mesEnTexto ?> del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
-                juramentado constitucionalmente para el periodo 2024-2027,  AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
-                debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
-                La Unión Sur, del departamento de La Unión, durante el periodo de mayo a diciembre del año dos mil veinticuatro, quienes en
-                representación de este Concejo firman.</p>
-
-                <p>&nbsp;</p>
-                <p style="text-align: center;"><strong>______________________</strong></p>
-                <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
-
-                <p>&nbsp;</p>
-                <p style="text-align: center;"><strong>______________________</strong></p>
-                <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
-
-                <p>&nbsp;</p>
-            `;
-            // Insertar el texto generado en Summernote
-            $('#notas').summernote('code', textoInicial );
-        });
+        // Actualizar el contenido de Summernote al cargar la página
+        actualizarMesYTexto();
     });
 </script>
+
 @endsection
 
 <script>
@@ -323,25 +360,8 @@ $mesEnTexto = [
         }
     });
 </script>
-<script>
-    // Función para validar los campos
-    function validar_Step1() {
-        var input = document.querySelector('input[name="fechainicio_Libro"]');
-        var input2 = document.querySelector('input[name="fechafinal_Libro"]');
-        var textarea = document.querySelector('textarea[name="descripcion_Libro"]');
-        const nextStepButton = document.querySelector('.next-step');
 
-        // Verificar si todos los campos tienen valores
-        if (input.value.trim() !== "" && input2.value.trim() !== "" && textarea.value.trim() !== "") {
-            nextStepButton.disabled = false;
-        } else {
-            nextStepButton.disabled = true;
-        }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.next-step').disabled = true;
-    });
-</script>
+
 <script>
     // Función para validar los campos de selección en el Paso 2
     function validar_Step2() {
