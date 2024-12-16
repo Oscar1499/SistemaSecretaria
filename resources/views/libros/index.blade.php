@@ -26,7 +26,7 @@
         </a>
     </div>
     <div class="card-body d-flex justify-content-center">
-        <table class="table table-striped table-bordered text-center">
+        <table id="librosTable" class="table table-striped table-bordered text-center">
             <thead>
                 <tr>
                     <th><i class="bi1 bi-person-badge-fill"></i> ID</th>
@@ -153,3 +153,6 @@
         });
     }
 </script>
+@section('css')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+@stop

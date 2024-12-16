@@ -59,6 +59,16 @@
 
                                 data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
                         </form>
+                        @if ("Abierto" == "Abierto")
+                        <a class="btn btn-secondary btn-sm" title="Cerrar esta acta"
+                            data-bs-toggle="tooltip">
+                            <i class="bi bi-lock"></i> Cerrar Acta
+                        </a>
+                        @else if ("Abierto" == "Cerrado")
+                        <button type="button" class="btn btn-secondary btn-sm" title="No disponible o cerrado" disabled>
+                            <i class="bi bi-unlock"></i> Acta cerrada
+                        </button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
@@ -158,31 +168,30 @@
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
 
-// Solucionado un bug donde al eliminar un registro, siempre eliminaba el primer registro en lugar del seleccionado
+    // Solucionado un bug donde al eliminar un registro, siempre eliminaba el primer registro en lugar del seleccionado
 
-//Funcion especifica para eliminar un registro donde de espera 2 parametros
+    //Funcion especifica para eliminar un registro donde de espera 2 parametros
     function Eliminar(event, formId) {
-    event.preventDefault();
+        event.preventDefault();
 
-    // Mostrar SweetAlert
-    Swal.fire({
-        icon: 'question',
-        title: '¿Confirmar eliminación del acta?',
-        text: 'Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar esta acta?',
-        confirmButtonText: 'Sí, eliminar',
-        showCancelButton: true,
-        timer: 5000,
-        cancelButtonText: 'No, cancelar',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-    }).then((result) => {
-        // Si el usuario confirma, envía el formulario
-        if (result.isConfirmed) {
-            document.getElementById(formId).submit();
-        }
-    });
-}
-
+        // Mostrar SweetAlert
+        Swal.fire({
+            icon: 'question',
+            title: '¿Confirmar eliminación del acta?',
+            text: 'Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar esta acta?',
+            confirmButtonText: 'Sí, eliminar',
+            showCancelButton: true,
+            timer: 5000,
+            cancelButtonText: 'No, cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+        }).then((result) => {
+            // Si el usuario confirma, envía el formulario
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
 </script>
 @stop
 @section('css')

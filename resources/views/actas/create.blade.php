@@ -7,13 +7,21 @@
 @stop
 
 @section('content')
+<?php
+function numToText($number)
+{
+    $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
+    return $formatter->format($number);
+}
+?>
 <form action="{{ route('actas.store') }}" method="POST" id="actaForm">
     @csrf
 
     <!-- Campos ocultos para almacenar los contenidos dinámicos -->
     <input type="hidden" id="presentes" name="presentes" required />
     <input type="hidden" id="ausentes" name="ausentes" required />
-    <input type="hidden" id="tipo_sesion" name="tipo_sesion" required value="hola" required />
+    <input type="hidden" id="tipo_sesion" name="tipo_sesion" value="{{  $tipoSesion }}" required />
+
     <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
 
 
@@ -183,7 +191,8 @@
                             <div class="form-group">
                                 <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                                 <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                    value="ACTA NÚMERO {{ $numero_Actas }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+                                    value="ACTA NÚMERO {{ numToText($numero_Actas) }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+
                             </div>
                             <div class="form-group">
                                 <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>
@@ -378,7 +387,7 @@
         function actualizarTextoFecha() {
             const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             const presentesTexto = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
-
+            const tipoSesion = document.getElementById('tipo_sesion').value;
             //Funcion para actualizar los campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
@@ -389,7 +398,7 @@
         <span id="diaTexto">${new Date().getDate()}</span> de <span id="mesTexto">${new Date().toLocaleString('es-ES', { month: 'long' })}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.
         En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código
-        Municipal, en sesión <strong><span id="tipoSesion"></span></strong>, convocada y presidida por
+        Municipal, en sesión ${tipoSesion} <strong><span id="tipoSesion"></span></strong>, convocada y presidida por
         <strong>${alcaldesaInfo}
             Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
         <strong>${secretarioInfo}</strong>;

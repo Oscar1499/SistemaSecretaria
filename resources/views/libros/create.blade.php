@@ -288,7 +288,6 @@ $mesEnTexto = [
             <p style="text-align: center;"><strong>______________________</strong></p>
             <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
 
-            <p>&nbsp;</p>
         `;
 
         // Insertar el texto generado en Summernote

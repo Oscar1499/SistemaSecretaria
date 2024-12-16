@@ -147,9 +147,9 @@
             <a href="{{ route('actas.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm me-2">
                 <i class="fas fa-arrow-left"></i> Atrás
             </a>
-            <a href="#" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
-                <i class="fas fa-print"></i> Imprimir
-            </a>
+            <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
+                    <i class="fas fa-file-pdf"></i> Descargar PDF
+                </button>
         </div>
     </div>
 </div>

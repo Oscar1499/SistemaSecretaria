@@ -17,12 +17,11 @@ class ActaController extends Controller
 
     public function create()
     {
-
         $dia = now()->day;
         $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
         // Contar el número de actas en la base de datos para determinar el correlativo de la acta a editar
-        $numero_Actas = Acta::count();
+        $numero_Actas = Acta::count() + 1;
         $secretario = Personal::where('cargo', 'Secretario')->first();
         $personal = Personal::all();
 
@@ -121,6 +120,7 @@ class ActaController extends Controller
 
     public function destroy(Acta $acta)
     {
+        // Función para eliminar una acta
         try {
 
             $acta->delete();

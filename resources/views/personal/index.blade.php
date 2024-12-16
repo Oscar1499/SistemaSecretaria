@@ -75,10 +75,10 @@
                         <td class="text-center">
                             <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})" title="Editar a este personal"
                                 data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</button>
-                            <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" id="deleteForm" style="display:inline-block;">
+                            <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" id="deleteForm-{{ $persona->id }}" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event);" title="Eliminar a este personal"
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event  , 'deleteForm-{{ $persona->id }}');" title="Eliminar a este personal"
                                     data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
                             </form>
                         </td>
@@ -112,16 +112,16 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    function Eliminar(event) {
+    function Eliminar(event, formId) {
 
         event.preventDefault();
 
         // Mostrar SweetAlert
         Swal.fire({
             icon: 'question',
-            title: '¿Confirmar eliminación del personal?',
-            text: 'Esta acción no se puede deshacer. ¿Está seguro de que desea eliminar este registro de personal?',
-            confirmButtonText: 'Sí, eliminar',
+            title: '¿Eliminar personal?',
+            text: 'Esta acción no se puede deshacer. ¿Está seguro de eliminar este Personal?',
+            confirmButtonText: 'Sí, eliminarlo',
             showCancelButton: true,
             timer: 5000,
             cancelButtonText: 'No, cancelar',
@@ -130,7 +130,7 @@
         }).then((result) => {
             // Si el usuario confirma, envía el formulario
             if (result.isConfirmed) {
-                document.getElementById('deleteForm').submit();
+                document.getElementById(formId).submit();
             }
         });
     }
@@ -174,7 +174,7 @@
         $('#nombre').val(persona.nombre);
         $('#apellido').val(persona.apellido);
         $('#cargo').val(persona.cargo);
-        $('#search-cargo').val(persona.cargo); 
+        $('#search-cargo').val(persona.cargo);
         $('#rubricas').val(persona.rubricas);
         $('#propietario').prop('checked', persona.propietario == 1);
     }

@@ -6,6 +6,7 @@
 <h1>Crear Nuevo Acuerdo</h1>
 @stop
 
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <body>
@@ -73,19 +74,32 @@
                                         onchange="checkSelect(this)">
                                         <option value="" disabled selected>Seleccione</option>
                                         @foreach($actas as $acta)
-                                        <option value="{{ $acta->id }}|{{ $acta->descripcion_acta }}">
+                                        <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->descripcion }}">
                                             {{ $acta->id_Actas }} - {{ $acta->descripcion }}
                                         </option>
                                         @endforeach
                                     </select>
+                                    <script>
+                                        function checkSelect(el) {
+                                            var selectedOption = el.options[el.selectedIndex];
+                                            var selectedActa = selectedOption.value;
+                                            var selectedDescripcion = selectedOption.getAttribute('data-descripcion');
+                                        }
+                                    </script>
+
                                 </div>
-                                <button type="button" id="nextStepBtn" class="btn btn-primary next-step" disabled>
+                                <button type="button" id="nextStepBtn" class="btn btn-primary next-step" d>
                                     Siguiente <i class="bi bi-arrow-right"></i>
                                 </button>
                             </div>
 
 
                             <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+                                <div class="form-group">
+                                    <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
+                                    <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                                        value="ACUERDO NUMERO. El consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                                </div>
                                 <div class="form-group">
                                     <label for="descripcion_Acuerdos"><i class="bi bi-journal-plus"></i> Descripción del Acuerdo</label>
                                     <textarea class="form-control" id="descripcion_Acuerdos" name="descripcion_Acuerdos" required placeholder="Ingrese una descripción del acuerdo"></textarea>
@@ -113,7 +127,7 @@
                                 </div>
 
 
-                                <button type="button" class="btn btn-primary" id="todos-a-favor"><i class="bi bi-hand-thumbs-up me-2"></i> Todos a Favor</button>
+                                <button type="button" class="btn btn-primary" id="todos-a-favor"><i class="bi bi-hand-thumbs-up me-2"></i> Todos a Favor </button>
 
                                 <!-- Tabla para mostrar los votos -->
                                 <table class="table table-bordered mt-3" id="tabla-votos">
@@ -249,6 +263,9 @@
 
     </script>
     <script>
+
+        // Insertar el texto generado en Summernote
+
         document.addEventListener('DOMContentLoaded', function() {
             var stepper = new Stepper(document.querySelector('.bs-stepper'));
 
@@ -262,7 +279,7 @@
             $('.select2').select2();
 
             $('#descripcion_Acuerdos').summernote({
-                height: 200,
+                height: 300,
                 toolbar: [
                     ['style', ['style']],
                     ['font', ['bold', 'italic', 'underline', 'clear']],

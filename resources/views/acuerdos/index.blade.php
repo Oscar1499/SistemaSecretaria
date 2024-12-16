@@ -46,13 +46,12 @@
                     <td>{{ $acuerdo->fecha_Acuerdos }}</td>
                     <td>{{ $acuerdo->descripcion_Acuerdos }}</td>
                     <td>
-                                            <a href="{{ route('acuerdos.show', $acuerdo->id_Acuerdo) }}" class="btn btn-info btn-sm" title="Ver este acuerdo"
-                                            data-bs-toggle="tooltip"><i class="bi bi-eye"></i> Ver</a>
-
+                        <a href="{{ route('acuerdos.show', $acuerdo->id_Acuerdo) }}" class="btn btn-info btn-sm" title="Ver este acuerdo"
+                            data-bs-toggle="tooltip"><i class="bi bi-eye"></i> Ver</a>
 
                         <a href="{{ route('acuerdos.edit', $acuerdo->id_Acuerdo) }}" class="btn btn-warning btn-sm" title="Editar este acuerdo"
-
                             data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</a>
+
                         <form action="{{ route('acuerdos.destroy', $acuerdo->id_Acuerdo) }}" method="POST" style="display:inline;" id="deleteForm">
                             @csrf
                             @method('DELETE')
@@ -67,13 +66,14 @@
         </table>
     </div>
 </div>
-<!-- Alerta de éxito de Eliminado-->
-@if(session('delete'))
+
+<!-- Alerta de éxito de Exitos-->
+@if(session('success_delete'))
 <script>
     Swal.fire({
         icon: 'success',
-        title: '¡Operación exitosa!',
-        text: "El acuerdo ha sido eliminado correctamente.",
+        title: '¡Acuerdo eliminado!',
+        text: "El acuerdo ha sido eliminado correctamente. Puedes ver la lista de acuerdos actualizada.",
         confirmButtonText: 'Aceptar',
         showConfirmButton: true,
         timer: 3000,
@@ -81,14 +81,14 @@
         position: 'top-end'
     });
 </script>
-
 @endif
-@if(session('success'))
+
+@if(session('success_create'))
 <script>
     Swal.fire({
         icon: 'success',
-        title: '¡Operación exitosa!',
-        text: "El acuerdo ha sido ingresado correctamente.",
+        title: '¡Acuerdo creado!',
+        text: "El acuerdo ha sido ingresado correctamente. Puedes verlo en la lista de acuerdos.",
         confirmButtonText: 'Aceptar',
         showConfirmButton: true,
         timer: 3000,
@@ -96,8 +96,69 @@
         position: 'top-end'
     });
 </script>
-
 @endif
+
+@if(session('success_update'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Operación exitosa!',
+        text: "El acuerdo se ha actualizado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
+<!-- Alertas de posibles errores -->
+@if(session('error_create'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al guardar el Acuerdo!',
+        text: "Verifica que hayas ingresado todos los campos obligatorios y que el Acuerdo no se encuentre duplicado. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
+@if(session('error_update'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al Actualizar el Acuerdo!',
+        text: "Verifica que hayas ingresado todos los campos obligatorios y que el Acuerdo no se encuentre duplicado. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
+@if(session('error_delete'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al intentar eliminar!',
+        text: "No se pudo eliminar el acuerdo. Asegúrate de que no está siendo usado en otra parte del sistema.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
 @stop
 <script>
     function Eliminar(event) {
@@ -123,7 +184,6 @@
         });
     }
 </script>
-
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
