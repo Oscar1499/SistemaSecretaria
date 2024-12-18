@@ -8,6 +8,7 @@
 
 @section('content')
 <?php
+// Funcion para convertir el numero de actas a texto
 function numToText($number)
 {
     $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
@@ -21,7 +22,7 @@ function numToText($number)
     <input type="hidden" id="presentes" name="presentes" required />
     <input type="hidden" id="ausentes" name="ausentes" required />
     <input type="hidden" id="tipo_sesion" name="tipo_sesion" value="{{  $tipoSesion }}" required />
-
+    <input type="hidden" id="estado" name="estado" value="Abierto" />
     <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
 
 

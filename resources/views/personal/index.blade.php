@@ -4,23 +4,10 @@
 
 @section('content_header')
 <h1>Gestión de Personal</h1>
-<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#personalModal">
+<button class="btn btn-primary mb-3" onclick="openCreateModal()">
     <i class="fas fa-plus"></i> Agregar Personal
 </button>
 @stop
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-
-<body>
-
-</body>
-<style>
-    .bi1 {
-        color: black;
-        /* Color personalizado */
-    }
-</style>
 
 @section('content')
 <div class="card">
@@ -32,54 +19,32 @@
             <table id="personalTable" class="table table-striped table-bordered table-hover w-100 mx-auto">
                 <thead>
                     <tr>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi bi-person-badge-fill"></i> ID
-                            </span>
-                        </th>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi1 bi-person-fill me-1"></i> Nombre
-                            </span>
-                        </th>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi bi-person-lines-fill me-1"></i> Apellido
-                            </span>
-                        </th>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi1 bi-briefcase-fill me-1"></i> Cargo
-                            </span>
-                        </th>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi1 bi-house-door-fill me-1"></i> Propietario
-                            </span>
-                        </th>
-                        <th class="text-center">
-                            <span class="d-inline-flex align-items-center">
-                                <i class="bi1 bi-save-fill me-1"></i> Acciones
-                            </span>
-                        </th>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cargo</th>
+                        <th>Propietario</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="text-center">
+                <tbody>
                     @foreach($personal as $persona)
                     <tr>
-                        <td class="text-center">{{ $persona->id }}</td>
-                        <td class="text-center">{{ $persona->nombre }}</td>
-                        <td class="text-center">{{ $persona->apellido }}</td>
-                        <td class="text-center">{{ $persona->cargo ?? 'Sin asignar' }}</td>
-                        <td class="text-center">{{ $persona->propietario ? 'Sí' : 'No' }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})" title="Editar a este personal"
-                                data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</button>
+                        <td>{{ $persona->id }}</td>
+                        <td>{{ $persona->nombre }}</td>
+                        <td>{{ $persona->apellido }}</td>
+                        <td>{{ $persona->cargo ?? 'Sin asignar' }}</td>
+                        <td>{{ $persona->propietario ? 'Sí' : 'No' }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
                             <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" id="deleteForm-{{ $persona->id }}" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event  , 'deleteForm-{{ $persona->id }}');" title="Eliminar a este personal"
-                                    data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="Eliminar(event, 'deleteForm-{{ $persona->id }}')">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -90,60 +55,16 @@
     </div>
 </div>
 
-<!-- Alerta de éxito de Eliminado-->
-@if(session('delete'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: '¡Operación exitosa!',
-        text: "El personal ha sido eliminado correctamente.",
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
-        timer: 3000,
-        toast: true,
-        position: 'top-end'
-    });
-</script>
-
-@endif
+@include('personal.modals.modal', ['propietarios' => $propietarios])
 @stop
-<script>
-    // Inicializar tooltips
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-    function Eliminar(event, formId) {
-
-        event.preventDefault();
-
-        // Mostrar SweetAlert
-        Swal.fire({
-            icon: 'question',
-            title: '¿Eliminar personal?',
-            text: 'Esta acción no se puede deshacer. ¿Está seguro de eliminar este Personal?',
-            confirmButtonText: 'Sí, eliminarlo',
-            showCancelButton: true,
-            timer: 5000,
-            cancelButtonText: 'No, cancelar',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-        }).then((result) => {
-            // Si el usuario confirma, envía el formulario
-            if (result.isConfirmed) {
-                document.getElementById(formId).submit();
-            }
-        });
-    }
-</script>
 
 @section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <style>
     #personalTable tbody tr {
         line-height: 1;
-        height: 30px;
+        height: 44px;
     }
 
     #personalTable td,
@@ -157,15 +78,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
         $('#personalTable').DataTable({
+            "language": {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron coincidencias",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna de manera ascendente",
+                    "sortDescending": ": activar para ordenar la columna de manera descendente"
+                }
+            },
+            "autoWidth": true,
             "responsive": true,
-            "scrollX": true,
-            "autoWidth": false,
+            initComplete: function() {
+                // Agregar placeholder al campo de búsqueda
+                $('.dataTables_filter input').attr('placeholder', 'Buscar registros...');
+            }
         });
     });
+
+    function openCreateModal() {
+        $('#personalModal').modal('show');
+        $('#personalForm').attr('action', '/personal');
+        $('#personalForm').find('input[name="_method"]').val('POST');
+        $('#personalForm').trigger('reset');
+        $('#propietario').prop('checked', false);
+    }
 
     function openEditModal(persona) {
         $('#personalModal').modal('show');
@@ -179,33 +135,41 @@
         $('#propietario').prop('checked', persona.propietario == 1);
     }
 
+
+    $('#personalModal').on('hidden.bs.modal', function() {
+        $('#personalForm').trigger('reset');
+        $('#personalForm').attr('action', '/personal');
+        $('#personalForm').find('input[name="_method"]').val('POST');
+    });
+
+    function Eliminar(event, formId) {
+        event.preventDefault();
+        Swal.fire({
+            icon: 'question',
+            title: '¿Eliminar personal?',
+            text: 'Esta acción no se puede deshacer. ¿Está seguro de eliminar este Personal?',
+            confirmButtonText: 'Sí, eliminarlo',
+            showCancelButton: true,
+            cancelButtonText: 'No, cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+
     @if(session('success'))
     Swal.fire({
         icon: 'success',
         title: '¡Éxito!',
-        text: "El personal se ha agregado correctamente.",
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
-        timer: 3000,
+        text: "{{ session('success') }}",
         toast: true,
-        position: 'top-end'
-    });
-    @endif
-
-    @if(session('success_update'))
-    Swal.fire({
-        icon: 'success',
-        title: '¡Éxito!',
-        text: "El personal se ha actualizado correctamente.",
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
+        position: 'top-end',
         timer: 3000,
-        toast: true,
-        position: 'top-end'
+        showConfirmButton: false
     });
     @endif
 </script>
 @stop
-
-{{-- Incluye el modal desde un archivo separado --}}
-@include('personal.modals.modal', ['propietarios' => $propietarios])

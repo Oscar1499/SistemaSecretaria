@@ -71,7 +71,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"  onclick="volverAtras()" data-dismiss="modal"><i class="bi bi-x-lg"> </i>Cerrar</button>
-                    <button type="submit" class="btn btn-primary" onclick="validar_Campos(event);"><i class="bi bi-floppy" ></i> Guardar</button>
+                    <button type="button" class="btn btn-primary" onclick="validar_Campos(event); "><i class="bi bi-floppy" ></i> Guardar</button>
                 </div>
             </form>
         </div>
@@ -122,20 +122,21 @@
     var input3 = document.querySelector('input[name="cargo"]');
     var input4 = document.querySelector('input[name="rubricas"]');
 
-    if (input.value === "" || input2.value === "" || input3.value === "" || input4.value === "") {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Campos Requeridos',
-            text: 'Por favor, complete todos los campos',
-            confirmButtonText: 'Aceptar',
-            showConfirmButton: true,
-            timer: 4000,
-            toast: true,
-            position: 'top-end'
-        });
-        return false;
+    if (input.value !== "" && input2.value !== "" && input3.value !== "" && input4.value !== "") {
+        document.getElementById('personalForm').submit();
+        return true;
     }
-    form.submit();
+    Swal.fire({
+        icon: 'warning',
+        title: 'Campos Requeridos',
+        text: 'Por favor, complete todos los campos',
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 4000,
+        toast: true,
+        position: 'top-end'
+    });
+    return false;
   }
 
 </script>

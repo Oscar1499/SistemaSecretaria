@@ -12,7 +12,8 @@ class ActaController extends Controller
     public function index()
     {
         $actas = Acta::all();
-        return view('actas.index', compact('actas'));
+        $acta_estado = Acta::where('estado')->get();
+        return view('actas.index', compact('actas', 'acta_estado'));
     }
 
     public function create()
@@ -35,6 +36,7 @@ class ActaController extends Controller
             $request->validate([
                 'fecha' => 'required|date',
                 // 'id_Personal' => 'required|integer',
+                'estado' => 'nullable|string',
                 'contenido_elaboracion' => 'required|string',
                 'presentes' => 'required|string',
                 'ausentes' => 'required|string',
@@ -47,6 +49,7 @@ class ActaController extends Controller
             // Crear una nueva instancia de Acta
             $acta = new Acta();
             $acta->id_libros = 7;
+            $acta->estado = $request->estado;
             // $acta->id_Personal = $request->id_Personal;
             $acta->fecha = $request->fecha;
             $acta->correlativo = $request->correlativo;
@@ -91,6 +94,7 @@ class ActaController extends Controller
             $request->validate([
                 'fecha' => 'required|date',
                 // 'id_Personal' => 'required|integer',
+                'estado' => 'nullable|string',
                 'contenido_elaboracion' => 'required|string',
                 'presentes' => 'required|string',
                 'ausentes' => 'required|string',
@@ -102,6 +106,7 @@ class ActaController extends Controller
             $data = $request->only([
                 'fecha',
                 // 'id_Personal',
+                'estado',
                 'contenido_elaboracion',
                 'presentes',
                 'ausentes',

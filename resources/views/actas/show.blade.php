@@ -33,10 +33,16 @@
 
             <!-- Sección: Descripción -->
             <div class="row mb-4">
-                <div class="col-12">
+                <div class="col-6">
                     <p class="mb-1"><strong><i class="fas fa-info-circle"></i> Descripción del acta:</strong></p>
                     <div class="bg-light rounded p-3">
                         <span id="descripcion" class="text-muted">{{ $acta->descripcion }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong><i class="fas fa-hashtag"></i> Correlativo:</strong></p>
+                    <div class="bg-light rounded p-2">
+                        <span id="correlativo" class="text-muted">{{ $acta->correlativo }}</span>
                     </div>
                 </div>
             </div>
@@ -120,9 +126,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <p class="mb-1"><strong><i class="fas fa-hashtag"></i> Correlativo:</strong></p>
+                    <p class="mb-1"><strong><i class="fas fa-calendar-alt"></i> Estado</strong></p>
                     <div class="bg-light rounded p-2">
-                        <span id="correlativo" class="text-muted">{{ $acta->correlativo }}</span>
+                        <span id="fecha" class="text-muted">{{ $acta->estado }}</span>
                     </div>
                 </div>
             </div>

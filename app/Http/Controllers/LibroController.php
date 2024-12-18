@@ -44,9 +44,9 @@ class LibroController extends Controller
 
             Libro::create($data);
 
-            return redirect()->route('libros.create')->with('success', 'Libro agregado correctamente.');
+            return redirect()->route('libros.index')->with('success_create', 'Libro agregado correctamente.');
         } catch (\Exception $e) {
-            return redirect()->route('libros.create')->with('error', 'Hubo un problema al agregar el libro.');
+            return redirect()->route('libros.index')->with('error_create', 'Hubo un problema al agregar el libro.');
         }
     }
 
@@ -84,10 +84,10 @@ class LibroController extends Controller
             ]);
             $libro->update($data);
 
-            return redirect()->route('libros.index')->with('success_Libro', 'Libro actualizado correctamente.');
+            return redirect()->route('libros.index')->with('success_update', 'Libro actualizado correctamente.');
         } catch (\Exception $e) {
 
-            return redirect()->route('libros.index')->with('error_Libro', 'Hubo un problema al actualizar el libro.');
+            return redirect()->route('libros.index')->with('error_update', 'Hubo un problema al actualizar el libro.');
         }
     }
 
@@ -95,7 +95,7 @@ class LibroController extends Controller
     {
         try {
             $libro->delete();
-            return redirect()->route('libros.index')->with('delete', 'Libro eliminado correctamente.');
+            return redirect()->route('libros.index')->with('success_delete', 'Libro eliminado correctamente.');
         } catch (\Exception $e) {
             return redirect()->route('libros.index')->with('error_delete', 'Error al eliminar el libro.');
         }

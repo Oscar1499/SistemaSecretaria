@@ -167,9 +167,6 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-
-    // Solucionado un bug donde al eliminar un registro, siempre eliminaba el primer registro en lugar del seleccionado
-
     //Funcion especifica para eliminar un registro donde de espera 2 parametros
     function Eliminar(event, formId) {
         event.preventDefault();

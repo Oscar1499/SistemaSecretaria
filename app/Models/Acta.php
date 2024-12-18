@@ -13,6 +13,7 @@ class Acta extends Model
     protected $fillable = [
         'id_libros',
         // 'id_Personal',
+        'estado',
         'fecha',
         'contenido_elaboracion',
         'presentes',
