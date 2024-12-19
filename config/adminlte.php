@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Sistema Secretaria',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -115,9 +115,9 @@ return [
         'img' => [
             'path' => 'img/logo-alcaldia.png',
             'alt' => 'AdminLTE Preloader Image',
-            'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'effect' => 'bounceInDown',
+            'width' => 500,
+            'height' => 300,
         ],
     ],
 
@@ -301,7 +301,7 @@ return [
         // Navbar items:
         [
             'type' => 'navbar-search',
-            'text' => 'search',
+            'text' => 'Buscar',
             'topnav_right' => true,
         ],
         [
