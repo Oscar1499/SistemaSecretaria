@@ -30,23 +30,27 @@ class PersonalController extends Controller
      */
     public function store(Request $request)
     {
-        // Convertimos el valor de 'propietario' en un booleano según el estado del checkbox
-        $request->merge(['propietario' => $request->has('propietario')]);
+        try {
+            // Convertimos el valor de 'propietario' en un booleano según el estado del checkbox
+            $request->merge(['propietario' => $request->has('propietario')]);
 
-        // Validación de los datos
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'cargo' => 'nullable|string|max:100',
-            'propietario' => 'required|boolean',
-            'rubricas' => 'required|string|max:100', // Ajusta el tipo de validación según tus necesidades
-        ]);
+            // Validación de los datos
+            $request->validate([
+                'nombre' => 'required|string|max:100',
+                'apellido' => 'required|string|max:100',
+                'cargo' => 'nullable|string|max:100',
+                'propietario' => 'required|boolean',
+                'rubricas' => 'required|string|max:100', // Ajusta el tipo de validación según tus necesidades
+            ]);
 
-        // Crear el nuevo registro en la base de datos
-        Personal::create($request->all());
+            // Crear el nuevo registro en la base de datos
+            Personal::create($request->all());
 
-        // Redireccionar con mensaje de éxito
-        return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente.');
+            // Redireccionar con mensaje de éxito
+            return redirect()->route('personal.index')->with('success_create', 'Personal creado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('personal.index')->with('error_create', 'Error al crear el personal.');
+        }
     }
 
     /**
@@ -72,16 +76,29 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'cargo' => 'nullable|string|max:100',
-            'propietario' => 'required|boolean',
-        ]);
+        try {
 
-        $personal = Personal::findOrFail($id);
-        $personal->update($request->all());
-        return redirect()->route('personal.index')->with('success_update', 'Personal actualizado exitosamente.');
+            // Convertimos el valor de 'propietario' en un booleano según el estado del checkbox
+            $request->merge(['propietario' => $request->has('propietario')]);
+
+            // Validación de los datos
+            $request->validate([
+                'nombre' => 'required|string|max:100',
+                'apellido' => 'required|string|max:100',
+                'cargo' => 'nullable|string|max:100',
+                'propietario' => 'required|boolean',
+                'rubricas' => 'required|string|max:100', // Ajusta el tipo de validación según tus necesidades
+            ]);
+
+            // Actualizar el registro en la base de datos
+            $personal = Personal::findOrFail($id);
+            $personal->update($request->all());
+
+            // Redireccionar con mensaje de éxito
+            return redirect()->route('personal.index')->with('success_update', 'Personal actualizado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('personal.index')->with('error_update', 'Error al actualizar el personal.');
+        }
     }
 
     /**
@@ -89,8 +106,12 @@ class PersonalController extends Controller
      */
     public function destroy($id)
     {
-        $personal = Personal::findOrFail($id);
-        $personal->delete();
-        return redirect()->route('personal.index')->with('delete', 'Personal eliminado exitosamente.');
+        try {
+            $personal = Personal::findOrFail($id);
+            $personal->delete();
+            return redirect()->route('personal.index')->with('success_delete', 'Personal eliminado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('personal.index')->with('error_delete', 'Error al eliminar el personal.');
+        }
     }
 }

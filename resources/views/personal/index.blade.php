@@ -19,12 +19,12 @@
             <table id="personalTable" class="table table-striped table-bordered table-hover w-100 mx-auto">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Cargo</th>
-                        <th>Propietario</th>
-                        <th>Acciones</th>
+                        <th style="width: 50px;"><i class="bi bi-person-badge-fill"></i> ID</th>
+                        <th><i class="bi1 bi-person-fill me-1"></i> Nombre</th>
+                        <th><i class="bi bi-person-lines-fill me-1"></i> Apellido</th>
+                        <th><i class="bi1 bi-briefcase-fill me-1"></i> Cargo</th>
+                        <th><i class="bi1 bi-house-door-fill me-1"></i>Propietario</th>
+                        <th><i class="bi1 bi-save-fill me-1"></i> Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,10 +63,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <style>
     #personalTable tbody tr {
-        line-height: 1;
         height: 44px;
     }
-
     #personalTable td,
     #personalTable th {
         padding: 0.25rem;
@@ -115,6 +113,7 @@
         });
     });
 
+    //Funcion para la creación de un nuevo registro en el formulario de agregar
     function openCreateModal() {
         $('#personalModal').modal('show');
         $('#personalForm').attr('action', '/personal');
@@ -123,6 +122,7 @@
         $('#propietario').prop('checked', false);
     }
 
+    // Funcion para la edición de un registro en el formulario de editar
     function openEditModal(persona) {
         $('#personalModal').modal('show');
         $('#personalForm').attr('action', `/personal/${persona.id}`);
@@ -135,7 +135,7 @@
         $('#propietario').prop('checked', persona.propietario == 1);
     }
 
-
+    // Resetea el formulario al cerrar el modal, y reestablece la acción a la ruta de creación
     $('#personalModal').on('hidden.bs.modal', function() {
         $('#personalForm').trigger('reset');
         $('#personalForm').attr('action', '/personal');
@@ -159,17 +159,92 @@
             }
         });
     }
+</script>
 
-    @if(session('success'))
+<!-- Sección de mensajes de alertas success -->
+
+@if(session('success_create'))
+<script>
     Swal.fire({
         icon: 'success',
-        title: '¡Éxito!',
-        text: "{{ session('success') }}",
+        title: '¡Personal creado!',
+        text: "El personal se ha creado correctamente. Puedes verlo en la lista de personal.",
         toast: true,
         position: 'top-end',
         timer: 3000,
         showConfirmButton: false
     });
-    @endif
+    </script>
+@endif
+@if(session('success_update'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Personal actualizado!',
+        text: "El personal se ha actualizado correctamente. Puedes ver los cambios en la lista de personal.",
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+    });
+    </script>
+@endif
+@if(session('success_delete'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Operación exitosa!',
+        text: "El personal ha sido eliminado correctamente. Puedes ver los cambios en la lista de personal.",
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+    });
 </script>
+@endif
+
+<!-- Seccion de alertas error  -->
+
+@if(session('error_create'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al crear!',
+        text: "Hubo un problema al crear el personal. Verifica que hayas ingresado todos los campos obligatorios y que el personal no se encuentre duplicado. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_update'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al actualizar!',
+        text: "Hubo un problema al actualizar el personal. Verifica que hayas ingresado todos los campos obligatorios y que el personal no se encuentre duplicado. Inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+@if(session('error_delete'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '¡Error al eliminar!',
+        text: "No se pudo eliminar el personal. Por favor, verifica si está asociado a otras entidades o en uso en el sistema e inténtalo de nuevo.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 5000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
 @stop

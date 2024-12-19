@@ -83,7 +83,8 @@
     </div>
 </div>
 
-<!-- Alerta de éxito de Eliminado-->
+<!-- Seccion de alertas de exito -->
+
 @if(session('success_delete'))
 <script>
     Swal.fire({
@@ -126,6 +127,9 @@
     });
 </script>
 @endif
+
+<!-- Seccion de alertas de error -->
+
 @if(session('error_create'))
 <script>
     Swal.fire({

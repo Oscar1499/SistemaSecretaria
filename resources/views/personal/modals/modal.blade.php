@@ -14,8 +14,8 @@
                 <input type="hidden" name="_method" value="POST">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="personalModalLabel"><i class="bi bi-person-fill-add"></i> Agregar /   <i class="bi bi-person-fill-gear"></i> Editar Personal</h5>
-                    <button type="button" class="close" data-dismiss="modal"  onclick="volverAtras()" aria-label="Cerrar">
+                    <h5 class="modal-title" id="personalModalLabel"><i class="bi bi-person-fill-add"></i> Agregar / <i class="bi bi-person-fill-gear"></i> Editar Personal</h5>
+                    <button type="button" class="close" data-dismiss="modal" onclick="volverAtras()" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -30,23 +30,70 @@
                         <input type="text" placeholder="Ingrese el apellido completo del personal (Ej: Pérez)" class="form-control" id="apellido" name="apellido" required>
                     </div>
                     <div class="form-group">
+                        <label for="genero"><i class="bi1 bi-gender-ambiguous me-1"></i> Genero</label>
+                        <select name="genero" id="genero" class="form-control" onchange="generoSeleccionado = this.value">
+                            <option value="" selected>Seleccione un genero</option>
+                            <option value="hombre">Masculino</option>
+                            <option value="mujer">Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="cargo"><i class="bi1 bi-briefcase-fill me-1"></i> Cargo</label>
                         <div class="custom-select-container">
                             <input type="text" id="search-cargo" class="form-control mb-2" placeholder="Buscar o seleccionar..." autocomplete="off">
                             <ul id="cargo-list" class="list-group">
-                                <li  class="list-group-item" data-value="Alcalde">Alcalde</li>
+                                <li class="list-group-item" data-value="Alcalde">Alcalde</li>
                                 <li class="list-group-item" data-value="Secretario">Secretario</li>
                                 <li class="list-group-item" data-value="Síndico">Síndico</li>
                                 <li class="list-group-item" data-value="Primer regidor">Primer regidor</li>
                                 <li class="list-group-item" data-value="Segundo regidor">Segundo regidor</li>
                                 <li class="list-group-item" data-value="Tercer regidor">Tercer regidor</li>
-                                <li class="list-group-item" data-value="Cuarto regidor_propietario">Cuarto regidor propietario</li>
+                                <li class="list-group-item" data-value="Cuarto regidor propietario">Cuarto regidor propietario</li>
                                 <li class="list-group-item" data-value="Primer regidor">Primer regidor</li>
                                 <li class="list-group-item" data-value="Cuarto regidor">Cuarto regidor</li>
                             </ul>
                             <input type="hidden" name="cargo" id="cargo" required>
                         </div>
                     </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const cargoList = document.querySelectorAll("#cargo-list .list-group-item");
+
+                            // Guardar los valores originales en un atributo adicional
+                            cargoList.forEach(item => {
+                                item.setAttribute("data-original", item.getAttribute("data-value"));
+                            });
+
+                            document.getElementById("genero").addEventListener("change", function() {
+                                const genero = this.value;
+
+                                const generoMap = {
+                                    "Alcalde": "Alcaldesa",
+                                    "Secretario": "Secretaria",
+                                    "Síndico": "Síndica",
+                                    "Primer regidor": "Primera regidora",
+                                    "Segundo regidor": "Segunda regidora",
+                                    "Tercer regidor": "Tercera regidora",
+                                    "Cuarto regidor propietario": "Cuarta regidora propietaria"
+                                };
+
+                                // Actualizar dinámicamente los textos y valores
+                                cargoList.forEach(item => {
+                                    const originalValue = item.getAttribute("data-original");
+                                    const femenino = generoMap[originalValue];
+
+                                    if (genero === "mujer" && femenino) {
+                                        item.textContent = femenino;
+                                        item.setAttribute("data-value", femenino);
+                                    } else if (genero === "hombre") {
+                                        item.textContent = originalValue;
+                                        item.setAttribute("data-value", originalValue);
+                                    }
+                                });
+                            });
+                        });
+                    </script>
 
                     <div class="form-group">
                         <label for="rubricas"><i class="bi bi-pencil-fill"></i> Rúbricas</label>
@@ -70,8 +117,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"  onclick="volverAtras()" data-dismiss="modal"><i class="bi bi-x-lg"> </i>Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="validar_Campos(event); "><i class="bi bi-floppy" ></i> Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="volverAtras()" data-dismiss="modal"><i class="bi bi-x-lg"> </i>Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="validar_Campos(event); "><i class="bi bi-floppy"></i> Guardar</button>
                 </div>
             </form>
         </div>
@@ -108,37 +155,36 @@
         }
     });
 
-  // Cierre del modal
-  function volverAtras() {
-    $('#personalModal').modal('hide');
-  }
-
-
-//   Validar campos antes de enviar el formulario
-  function validar_Campos(e) {
-    e.preventDefault();
-    var input = document.querySelector('input[name="nombre"]');
-    var input2 = document.querySelector('input[name="apellido"]');
-    var input3 = document.querySelector('input[name="cargo"]');
-    var input4 = document.querySelector('input[name="rubricas"]');
-
-    if (input.value !== "" && input2.value !== "" && input3.value !== "" && input4.value !== "") {
-        document.getElementById('personalForm').submit();
-        return true;
+    // Cierre del modal
+    function volverAtras() {
+        $('#personalModal').modal('hide');
     }
-    Swal.fire({
-        icon: 'warning',
-        title: 'Campos Requeridos',
-        text: 'Por favor, complete todos los campos',
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
-        timer: 4000,
-        toast: true,
-        position: 'top-end'
-    });
-    return false;
-  }
 
+
+    //   Validar campos antes de enviar el formulario
+    function validar_Campos(e) {
+        e.preventDefault();
+        var input = document.querySelector('input[name="nombre"]');
+        var input2 = document.querySelector('input[name="apellido"]');
+        var input3 = document.querySelector('input[name="cargo"]');
+        var input4 = document.querySelector('input[name="rubricas"]');
+
+        if (input.value !== "" && input2.value !== "" && input3.value !== "" && input4.value !== "") {
+            document.getElementById('personalForm').submit();
+            return true;
+        }
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campos Requeridos',
+            text: 'Por favor, complete todos los campos',
+            confirmButtonText: 'Aceptar',
+            showConfirmButton: true,
+            timer: 4000,
+            toast: true,
+            position: 'top-end'
+        });
+        return false;
+    }
 </script>
 
 <script>
