@@ -22,9 +22,9 @@ class AcuerdoController extends Controller
         // Obtén las actas y el personal disponibles en la base de datos
         $actas = Acta::all();
         $personal = Personal::all();
-
+        $numero_Acuerdo = Acuerdo::count() + 1;
         // Envía las variables a la vista
-        return view('acuerdos.create', compact('actas', 'personal'));
+        return view('acuerdos.create', compact('actas', 'personal', 'numero_Acuerdo'));
     }
 
     public function destroy(Acuerdo $acuerdo)

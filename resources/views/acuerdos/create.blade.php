@@ -13,6 +13,14 @@
 
 </body>
 @section('content')
+<?php
+// Funcion para convertir el numero de Acuerdos a texto
+function numToText($number)
+{
+    $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
+    return $formatter->format($number);
+}
+?>
 <div class="container">
     <div class="card">
         <div class="card-body">
@@ -98,7 +106,7 @@
                                 <div class="form-group">
                                     <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                                     <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                        value="ACUERDO NUMERO. El consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                                        value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="descripcion_Acuerdos"><i class="bi bi-journal-plus"></i> Descripción del Acuerdo</label>

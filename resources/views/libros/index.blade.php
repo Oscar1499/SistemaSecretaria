@@ -3,27 +3,24 @@
 @section('title', 'Lista de Libros')
 
 @section('content_header')
-<h1>Lista de Libros</h1>
+<h1><i class="bi bi-book-fill me-2"></i>Lista de Libros</h1>
 <a href="{{ route('libros.create') }}" class="btn btn-primary mb-3">
     <i class="fas fa-plus"></i> Añadir Nuevo Libro
 </a>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <body>
 
 </body>
-<style>
-    .bi1 {
-        color: black;
-    }
-</style>
+
 @stop
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title text-center">Libros Registrados</h3>
+        <h3 class="card-title text-center">Libros Actualmente Registrados en el Sistema</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -44,36 +41,33 @@
                         <td>{{ $libro->fechainicio_Libro }}</td>
                         <td>{{ $libro->fechafinal_Libro }}</td>
                         <td>
-                            <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            <div style="max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                 {{ $libro->descripcion_Libro }}
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex flex-wrap justify-content-center gap-2">
-                                <a href="{{ route('libros.show', $libro->id_Libros) }}" class="btn btn-info btn-sm" title="Ver este libro" data-bs-toggle="tooltip">
-                                    <i class="bi bi-eye"></i> Ver
-                                </a>
-                                <a href="{{ route('libros.edit', $libro->id_Libros) }}" class="btn btn-warning btn-sm" title="Editar este libro" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </a>
-                                <form action="{{ route('libros.destroy', $libro->id_Libros) }}" method="POST" class="d-inline-block" id="deleteForm-{{ $libro->id_Libros }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event, 'deleteForm-{{ $libro->id_Libros }}');" title="Eliminar este libro" data-bs-toggle="tooltip">
-                                        <i class="bi bi-trash"></i> Eliminar
-                                    </button>
-                                </form>
-                                @if (date('n') == 12)
-                                <a href="{{ route('libros.edit', $libro->id_Libros) }}" class="btn btn-secondary btn-sm" title="Cerrar este libro"
-                                    data-bs-toggle="tooltip">
-                                    <i class="bi bi-lock"></i> Cerrar libro
-                                </a>
-                                @else
-                                <button type="button" class="btn btn-secondary btn-sm" title="No disponible" disabled>
-                                    <i class="bi bi-unlock"></i> No disponible
-                                </button>
-                                @endif
-                            </div>
+                            <a href="{{ route('libros.show', $libro->id_Libros) }}" class="btn btn-info btn-sm" title="Ver este libro"
+
+                                data-bs-toggle="tooltip"><i class="bi bi-eye"></i> Ver</a>
+                            <a href="{{ route('libros.edit', $libro->id_Libros) }}" class="btn btn-warning btn-sm" title="Editar este libro"
+
+                                data-bs-toggle="tooltip"><i class="bi bi-pencil"></i> Editar</a>
+                            <form action="{{ route('libros.destroy', $libro->id_Libros) }}" method="POST" style="display:inline;" id="deleteForm-{{ $libro->id_Libros }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return Eliminar(event, 'deleteForm-{{ $libro->id_Libros }}');" title="Eliminar este libro"
+
+                                    data-bs-toggle="tooltip"><i class="bi bi-trash"></i> Eliminar</button>
+                            </form>
+                            @if (date('n') == 12)
+                            <a href="{{ route('libros.edit', $libro->id_Libros) }}" class="btn btn-secondary btn-sm " title="Cerrar este libro" data-bs-toggle="tooltip">
+                                <i class="bi bi-lock"></i> Cerrar libro
+                            </a>
+                            @else
+                            <button type="button" class="btn btn-secondary btn-sm m-1" title="No disponible" disabled>
+                                <i class="bi bi-unlock"></i> No disponible
+                            </button>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

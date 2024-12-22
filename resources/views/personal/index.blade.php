@@ -3,47 +3,58 @@
 @section('title', 'Gestión de Personal')
 
 @section('content_header')
-<h1>Gestión de Personal</h1>
+<h1><i class="bi bi-people-fill me-2"></i>Gestión de Personal</h1>
 <button class="btn btn-primary mb-3" onclick="openCreateModal()">
-    <i class="fas fa-plus"></i> Agregar Personal
+    <i class="fas fa-plus"></i> Añadir Nuevo Personal
 </button>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<body>
+
+</body>
 @stop
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Listado de Personal</h3>
+        <h3 class="card-title text-center">Personal actualmente registrado en el sistema</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="personalTable" class="table table-striped table-bordered table-hover w-100 mx-auto">
+            <table id="personalTable" class="table table-striped table-bordered text-center">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"><i class="bi bi-person-badge-fill"></i> ID</th>
+                    <th>
+
                         <th><i class="bi1 bi-person-fill me-1"></i> Nombre</th>
                         <th><i class="bi bi-person-lines-fill me-1"></i> Apellido</th>
                         <th><i class="bi1 bi-briefcase-fill me-1"></i> Cargo</th>
-                        <th><i class="bi1 bi-house-door-fill me-1"></i>Propietario</th>
+                        <th><i class="bi1 bi-house-door-fill me-1"></i> Propietario</th>
                         <th><i class="bi1 bi-save-fill me-1"></i> Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($personal as $persona)
+                @foreach($personal as $persona)
                     <tr>
                         <td>{{ $persona->id }}</td>
                         <td>{{ $persona->nombre }}</td>
                         <td>{{ $persona->apellido }}</td>
                         <td>{{ $persona->cargo ?? 'Sin asignar' }}</td>
                         <td>{{ $persona->propietario ? 'Sí' : 'No' }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="openEditModal({{ $persona }})">
+                        <td style="width: 250px;" >
+                            <button class="btn btn-info btn-sm " onclick="openShowModal({{ $persona }})">
+                            <i class="bi bi-eye"></i> Ver
+                            </button>
+                            <button class="btn btn-warning btn-sm " onclick="openEditModal({{ $persona }})">
                                 <i class="bi bi-pencil"></i> Editar
                             </button>
                             <form action="{{ route('personal.destroy', $persona->id) }}" method="POST" id="deleteForm-{{ $persona->id }}" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-danger btn-sm" onclick="Eliminar(event, 'deleteForm-{{ $persona->id }}')">
-                                    <i class="bi bi-trash"></i> Eliminar
+                                    <i class="bi bi-trash"></i>Eliminar
                                 </button>
                             </form>
                         </td>
@@ -55,6 +66,7 @@
     </div>
 </div>
 
+
 @include('personal.modals.modal', ['propietarios' => $propietarios])
 @stop
 
@@ -65,6 +77,7 @@
     #personalTable tbody tr {
         height: 44px;
     }
+
     #personalTable td,
     #personalTable th {
         padding: 0.25rem;
@@ -135,11 +148,32 @@
         $('#propietario').prop('checked', persona.propietario == 1);
     }
 
+    // Funcion para la visualización de un registro
+    function openShowModal(persona) {
+        $('#personalModal').modal('show');
+        $('#nombre').val(persona.nombre).prop('disabled', true);
+        $('#apellido').val(persona.apellido).prop('disabled', true);
+        $('#cargo').val(persona.cargo).prop('disabled', true);
+        $('#genero').val(persona.genero).prop('disabled', true);
+        $('#search-cargo').val(persona.cargo).prop('disabled', true);
+        $('#guardar').prop('disabled', true);
+        $('#rubricas').val(persona.rubricas).prop('disabled', true);
+        $('#propietario').prop('checked', persona.propietario == 1).prop('disabled', true);
+    }
+
     // Resetea el formulario al cerrar el modal, y reestablece la acción a la ruta de creación
     $('#personalModal').on('hidden.bs.modal', function() {
         $('#personalForm').trigger('reset');
         $('#personalForm').attr('action', '/personal');
         $('#personalForm').find('input[name="_method"]').val('POST');
+        $('#nombre').prop('disabled', false);
+        $('#apellido').prop('disabled', false);
+        $('#cargo').prop('disabled', false);
+        $('#genero').prop('disabled', false);
+        $('#search-cargo').prop('disabled', false);
+        $('#guardar').prop('disabled', false);
+        $('#rubricas').prop('disabled', false);
+        $('#propietario').prop('disabled', false);
     });
 
     function Eliminar(event, formId) {
@@ -174,7 +208,7 @@
         timer: 3000,
         showConfirmButton: false
     });
-    </script>
+</script>
 @endif
 @if(session('success_update'))
 <script>
@@ -187,7 +221,7 @@
         timer: 3000,
         showConfirmButton: false
     });
-    </script>
+</script>
 @endif
 @if(session('success_delete'))
 <script>

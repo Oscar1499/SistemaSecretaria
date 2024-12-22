@@ -75,7 +75,8 @@
                                     "Primer regidor": "Primera regidora",
                                     "Segundo regidor": "Segunda regidora",
                                     "Tercer regidor": "Tercera regidora",
-                                    "Cuarto regidor propietario": "Cuarta regidora propietaria"
+                                    "Cuarto regidor propietario": "Cuarta regidora propietaria",
+                                    "Cuarto regidor": "Cuarta regidora"
                                 };
 
                                 // Actualizar dinámicamente los textos y valores
@@ -118,7 +119,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="volverAtras()" data-dismiss="modal"><i class="bi bi-x-lg"> </i>Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="validar_Campos(event); "><i class="bi bi-floppy"></i> Guardar</button>
+                    <button id="guardar" type="button" class="btn btn-primary" onclick="validar_Campos(event); "><i class="bi bi-floppy"></i> Guardar</button>
                 </div>
             </form>
         </div>

@@ -17,8 +17,8 @@ class LibroController extends Controller
 
     public function create()
     {
-        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
-        $sindico = Personal::where('cargo', 'Sindico')->get();
+        $alcalde = Personal::whereIn('cargo', ['Alcaldesa', 'Alcalde'])->get();
+        $sindico = Personal::whereIn('cargo', ['Síndico', 'Síndica'])->get();
         return view('libros.create', compact('alcalde', 'sindico'));
     }
 
@@ -58,8 +58,8 @@ class LibroController extends Controller
 
     public function edit(Libro $libro)
     {
-        $alcalde = Personal::where('cargo', 'Alcaldesa')->get();
-        $sindico = Personal::where('cargo', 'Sindico')->get();
+        $alcalde = Personal::whereIn('cargo', ['Alcaldesa', 'Alcalde'])->get();
+        $sindico = Personal::whereIn('cargo', ['Síndico', 'Síndica'])->get();
         return view('libros.edit', compact('libro', 'sindico', 'alcalde'));
     }
 

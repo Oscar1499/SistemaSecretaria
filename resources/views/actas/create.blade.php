@@ -8,7 +8,7 @@
 
 @section('content')
 <?php
-// Funcion para convertir el numero de actas a texto
+// Funcion para convertir el numero de Actas a texto
 function numToText($number)
 {
     $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
@@ -192,8 +192,7 @@ function numToText($number)
                             <div class="form-group">
                                 <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                                 <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                    value="ACTA NÚMERO {{ numToText($numero_Actas) }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
-
+                                    value="ACTA NÚMERO {{ strtoupper(numToText($numero_Actas)) }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
                             </div>
                             <div class="form-group">
                                 <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>

@@ -128,7 +128,7 @@ $mesEnTexto = [
                         <!-- Paso 1: Configuración del libro-->
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
 
-                        <div class="form-group">
+                            <div class="form-group">
                                 <div class="form-group">
                                     <label for="fecha">
                                         <i class="bi bi-calendar-event me-2"></i>
@@ -153,7 +153,7 @@ $mesEnTexto = [
                                     </label>
 
                                     <div class="input-group">
-                                        <input type="date"  class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
+                                        <input type="date" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
                                         <span class="input-group-text">
                                             <i class="bi bi-calendar-plus"></i>
                                         </span>
@@ -177,7 +177,7 @@ $mesEnTexto = [
                             </div>
 
                             <div class="mt-3">
-                                <button type="button" class="btn btn-primary next-step" >Siguiente <i class="bi bi-arrow-right"></i></button>
+                                <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
 
@@ -245,49 +245,53 @@ $mesEnTexto = [
     </div>
 </div>
 </body>
-
 </html>
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 
 <script>
-
-    // Función para extraer el mes del input de fecha y actualizar el campo oculto
-    function obtenerMes() {
+    // Función para extraer el día y el mes del input de fecha
+    function obtenerFecha() {
         const fecha = document.getElementById("fecha").value;
-        if (!fecha) return;
+        if (!fecha) return null;
 
-        const fechaObj = new Date(fecha);
+        // Crear el objeto Date usando valores locales
+        const [year, month, day] = fecha.split('-');
+        const fechaObj = new Date(year, month - 1, day);
+
         const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        const nombreDelMes = meses[fechaObj.getMonth()]; // Obtener el nombre del mes
+        const nombreDelMes = meses[fechaObj.getMonth()];
+        const dia = fechaObj.getDate();
 
-        // Actualizar el valor del input oculto
-        document.getElementById('mesSeleccionado').value = nombreDelMes;
-        return nombreDelMes;
+        return {
+            dia,
+            mes: nombreDelMes
+        };
     }
 
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
-        // Obtener valores dinámicos
-        const mesSeleccionadoVariable = document.getElementById('mesSeleccionado').value || 'el mes';
+        const fecha = obtenerFecha();
+        const diaSeleccionado = fecha?.dia || 'el día';
+        const mesSeleccionadoVariable = fecha?.mes || 'el mes';
+
         const alcaldeSeleccionado = $('#alcalde option:selected').text() || 'Nombre del Alcalde';
         const sindicoSeleccionado = $('#sindico option:selected').text() || 'Nombre del Síndico';
 
         // Generar el texto dinámico
         const textoInicial = `
             <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-            a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día <?php echo $diaEnTexto ?> de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
+            a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
             juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
             debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
             La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>, quienes en
             representación de este Concejo firman.</p>
 
             <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
+            <p style="text-align: center;"><strong>${alcaldeSeleccionado} Municipal</strong></p>
 
             <p style="text-align: center;"><strong>______________________</strong></p>
             <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
-
         `;
 
         // Insertar el texto generado en Summernote
@@ -296,7 +300,6 @@ $mesEnTexto = [
 
     // Función principal: obtiene el mes y actualiza Summernote
     function actualizarMesYTexto() {
-        const mes = obtenerMes();
         actualizarTexto();
     }
 
@@ -392,6 +395,31 @@ $mesEnTexto = [
 
         selectAlcalde.addEventListener('change', validar_Step2);
         selectSindico.addEventListener('change', validar_Step2);
+    });
+    // Función para validar los campos en el Paso 1
+    function validar_Step1() {
+        const fechaIngreso = document.getElementById('fecha').value.trim();
+        const fechaFin = document.getElementById('fecha2').value.trim();
+        const descripcionLibro = document.getElementById('descripcion_Acuerdos').value.trim();
+        const nextStepButton = document.querySelector('#step-1 .next-step');
+
+        // Verificar si los campos están llenos
+        if (fechaIngreso !== "" && fechaFin !== "" && descripcionLibro !== "") {
+            nextStepButton.disabled = false;
+        } else {
+            nextStepButton.disabled = true;
+        }
+    }
+
+    // Deshabilitar botón al cargar la página y añadir eventos
+    document.addEventListener('DOMContentLoaded', () => {
+        const nextStepButton = document.querySelector('#step-1 .next-step');
+        nextStepButton.disabled = true;
+
+        // Asociar la validación al cambio de los campos
+        document.getElementById('fecha').addEventListener('input', validar_Step1);
+        document.getElementById('fecha2').addEventListener('input', validar_Step1);
+        document.getElementById('descripcion_Acuerdos').addEventListener('input', validar_Step1);
     });
 </script>
 <!-- Estilos personalizados -->
@@ -504,7 +532,6 @@ $mesEnTexto = [
     // Inicializar el primer paso como activo
     updateActiveStep(document.getElementById('step-1'));
 </script>
-
 
 <!-- Alerta de éxito de guardado-->
 @if(session('success'))
