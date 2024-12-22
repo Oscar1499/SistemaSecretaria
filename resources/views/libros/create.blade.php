@@ -8,6 +8,11 @@
 
 @section('content')
 <?php
+function numToText($number)
+{
+    $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
+    return $formatter->format($number);
+}
 
 $formatter = new NumberFormatter('es_SV', NumberFormatter::SPELLOUT);
 
@@ -16,8 +21,7 @@ $hora = date('H');
 $minutos = date('i');
 $dia = date('d');
 $mes = date('n'); // Obtener el número del mes
-// Convertir el año a texto
-$diaEnTexto = $formatter->format($dia);
+// Convertir el año a texto a texto en español
 $horaEnTexto = $formatter->format($hora);
 $minutosEnTexto = $formatter->format($minutos);
 $anioEnTexto = $formatter->format($anio);
@@ -234,6 +238,8 @@ $mesEnTexto = [
 
                             <!-- Botones de navegación -->
                             <div class="mt-3">
+                                <?php $diaSeleccionado = old('diaSeleccionado') ?? '';?>
+                                <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
                             </div>
@@ -245,9 +251,12 @@ $mesEnTexto = [
     </div>
 </div>
 </body>
+
 </html>
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<!-- Incluir la librería num2words desde el CDN -->
+<script src="https://cdn.jsdelivr.net/npm/num2words@1.0.1/num2words.min.js"></script>
 
 <script>
     // Función para extraer el día y el mes del input de fecha
@@ -269,10 +278,19 @@ $mesEnTexto = [
         };
     }
 
+    function numeroAPalabras(numero) {
+        const numerosEnPalabras = [
+            '', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez',
+            'Once', 'Doce', 'Trece', 'Catorce', 'Quince', 'Dieciséis', 'Diecisiete', 'Dieciocho', 'Diecinueve', 'Veinte',
+            'Veintiuno', 'Veintidós', 'Veintitrés', 'Veinticuatro', 'Veinticinco', 'Veintiséis', 'Veintisiete', 'Veintiocho', 'Veintinueve', 'Treinta', 'Treinta y uno'
+        ];
+        return numerosEnPalabras[numero] || 'el día';
+    }
+
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
         const fecha = obtenerFecha();
-        const diaSeleccionado = fecha?.dia || 'el día';
+        const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
         const mesSeleccionadoVariable = fecha?.mes || 'el mes';
 
         const alcaldeSeleccionado = $('#alcalde option:selected').text() || 'Nombre del Alcalde';

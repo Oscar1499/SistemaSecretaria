@@ -100,7 +100,8 @@ function numToText($number)
                         <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                             <div class="form-group">
                                 <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
-                                <input oninput="validarFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                                <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+
                             </div>
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                             <button type="button" class="btn btn-primary next-step" id="nextStepBtn" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
@@ -383,24 +384,47 @@ function numToText($number)
             // Actualizar el contenido
             actualizarTextoFecha();
         };
+
+        function obtenerDia() {
+            const fecha = document.getElementById("fecha").value;
+            if (!fecha) return null;
+
+            // Crear el objeto Date usando valores locales
+            const [year, month, day] = fecha.split('-');
+            const fechaObj = new Date(year, month - 1, day);
+
+            const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            const nombreDelMes = meses[fechaObj.getMonth()];
+            const dia = fechaObj.getDate();
+
+            return {
+                dia,
+                mes: nombreDelMes
+            };
+        }
+
         // Función para actualizar el contenido del texto en el Summernote
         function actualizarTextoFecha() {
+            const fecha = obtenerDia();
+            const diaSeleccionado = fecha?.dia || 'el día';
+            const mesSeleccionadoVariable = fecha?.mes || 'el mes';
+
             const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             const presentesTexto = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
             const tipoSesion = document.getElementById('tipo_sesion').value;
-            //Funcion para actualizar los campos ocultos antes de enviar el formulario
+
+            // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
 
             const fechaTexto = `
         En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
-        <span id="diaTexto">${new Date().getDate()}</span> de <span id="mesTexto">${new Date().toLocaleString('es-ES', { month: 'long' })}</span> del
+        <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.
         En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código
         Municipal, en sesión ${tipoSesion} <strong><span id="tipoSesion"></span></strong>, convocada y presidida por
-        <strong>${alcaldesaInfo}
-            Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
+        <strong>${alcaldesaInfo} Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
         <strong>${secretarioInfo}</strong>;
         presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal">${presentesTexto}</a>
         <strong>y Ausencia de: <span id="FaltaPersonal">${ausentesTexto}</span>.</strong>
@@ -409,8 +433,10 @@ function numToText($number)
             // Insertar el texto generado en Summernote
             $('#Notas').summernote('code', fechaTexto);
         }
+
         // Inicialización de Summernote y eventos
         $(document).ready(function() {
+            // Inicializar Summernote
             $('#Notas').summernote({
                 height: 400,
                 lang: 'es-SV',
@@ -428,13 +454,14 @@ function numToText($number)
                 ]
             });
 
-            // Enlazar eventos
-            document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
-            document.getElementById('selectAllPresentes').addEventListener('change', toggleSelectAllPresentes);
+            // Enlazar evento al cambio del campo de fecha
+            document.getElementById('fecha').addEventListener('change', actualizarTextoFecha);
 
             // Actualizar contenido inicial
             actualizarTextoFecha();
         });
+
+
 
 
         // Inicializar Flatpickr para el campo de fecha
