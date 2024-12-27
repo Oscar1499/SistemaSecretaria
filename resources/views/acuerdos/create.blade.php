@@ -1,451 +1,534 @@
 @extends('adminlte::page')
 
-@section('title', 'Crear Nuevo Acuerdo')
+@section('title', 'Crear nuevo Acuerdo')
 
 @section('content_header')
-<h1>Crear Nuevo Acuerdo</h1>
+<h1><i class="fas fa-book-open mr-2"></i> Crear Nuevo Acuerdo</h1>
 @stop
 
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-<body>
-
-</body>
 @section('content')
 <?php
-// Funcion para convertir el numero de Acuerdos a texto
 function numToText($number)
 {
     $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
     return $formatter->format($number);
 }
 ?>
+<!-- SweetAlert2 (para alertas) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- BS Stepper (para el paso a paso del formulario) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+
+<!-- Select2 (para mejorar los selectores de formularios) -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Bootstrap (framework de diseño) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Moment.js (para manejo de fechas y horas) -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+<!-- Flatpickr (para selección de fechas con calendario) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Bootstrap Icons (iconos adicionales para Bootstrap) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<body>
+
+</body>
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <div class="card-body">
-                <!-- Barra de Progreso -->
-                <div class="progress mb-4">
-                    <div
-                        class="progress-bar progress-bar-striped progress-bar-animated"
-                        role="progressbar"
-                        style="width: 33%;"
-                        id="progress-bar"
-                        aria-valuenow="33"
-                        aria-valuemin="0"
-                        aria-valuemax="100">
-                        <span>Paso 1 de 3</span> <!-- Añadir el span para el texto -->
+            <!-- Barra de Progreso -->
+            <div class="progress mb-4">
+                <div
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar"
+                    style="width: 33%;"
+                    id="progress-bar"
+                    aria-valuenow="33"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                    Paso 1 de 3
+                </div>
+            </div>
+            <!-- Stepper -->
+            <div class="bs-stepper">
+                <div class="bs-stepper-header" role="tablist">
+                    <!-- Paso 1 -->
+                    <div class="step" data-target="#step-1">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label">Seleccionar Acta</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+
+                    <!-- Paso 2 -->
+                    <div class="step" data-target="#step-2">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label">Redactar Memorando</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+
+                    <!-- Paso 3 -->
+                    <div class="step" data-target="#step-3">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label">Seleccionar Personal</span>
+                        </button>
                     </div>
                 </div>
-                <!-- Stepper -->
-                <div class="bs-stepper">
-                    <div class="bs-stepper-header" role="tablist">
-                        <!-- Paso 1 -->
-                        <div class="step" data-target="#step-1">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
-                                <span class="bs-stepper-circle">1</span>
-                                <span class="bs-stepper-label">Seleccionar Acta</span>
-                            </button>
+
+                <div class="bs-stepper-content">
+                    <!-- Formulario con pasos -->
+                    <form action="" method="POST">
+                        @csrf
+
+                        <!-- Paso 1: Configuración del libro-->
+                        <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
+                            <div class="form-group">
+                                <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
+                                <select id="id_Actas" name="id_Actas" class="form-control select2" required
+                                    onchange="checkSelect(this)">
+                                    <option value="" disabled selected>Seleccione</option>
+                                    @foreach($actas as $acta)
+                                    <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}">
+                                        {{ $acta->id_Actas }} - {{ $acta->correlativo }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                            </div>
                         </div>
 
-                        <div class="line"></div>
+                        <!-- Paso 2: Representación del consejo -->
+                        <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+                            <div class="form-group">
+                                <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
+                                <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                                    value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" id="notas" name="apertura_Libro"></textarea>
+                            </div>
+                            @section('css')
+                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+                            @endsection
 
-                        <!-- Paso 2 -->
-                        <div class="step" data-target="#step-2">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                                <span class="bs-stepper-circle">2</span>
-                                <span class="bs-stepper-label">Redactar Memorando</span>
-                            </button>
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                            </div>
                         </div>
-                        <div class="line"></div>
 
-                        <!-- Paso 3 -->
-                        <div class="step" data-target="#step-3">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                                <span class="bs-stepper-circle">3</span>
-                                <span class="bs-stepper-label">Seleccionar Personal</span>
-                            </button>
-                        </div>
-                    </div>
+                        {{-- Paso 3: Apertura del libro --}}
+                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+                            <div class="container mt-2">
+                                <!-- Botón de Unanimidad -->
 
-                    <div class="bs-stepper-content">
-                        <!-- Formulario con pasos -->
-                        <form action="{{ route('acuerdos.store') }}" method="POST">
-                            @csrf
-
-                            <!-- Paso 1: Seleccionar Acta -->
-                            <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
-                                <div class="form-group">
-                                    <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
-                                    <select id="id_Actas" name="id_Actas" class="form-control select2" required
-                                        onchange="checkSelect(this)">
-                                        <option value="" disabled selected>Seleccione</option>
-                                        @foreach($actas as $acta)
-                                        <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->descripcion }}">
-                                            {{ $acta->id_Actas }} - {{ $acta->descripcion }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                    <script>
-                                        function checkSelect(el) {
-                                            var selectedOption = el.options[el.selectedIndex];
-                                            var selectedActa = selectedOption.value;
-                                            var selectedDescripcion = selectedOption.getAttribute('data-descripcion');
-                                        }
-                                    </script>
-
-                                </div>
-                                <button type="button" id="nextStepBtn" class="btn btn-primary next-step" d>
-                                    Siguiente <i class="bi bi-arrow-right"></i>
+                                <button type="button" class="btn btn-info py-2 px-4 shadow-sm" onclick="voto_Unimidad();">
+                                    <i class="fas fa-users"></i> Voto por Unanimidad
                                 </button>
-                            </div>
+                                <script>
+                                </script>
+                                <!-- Miembros del Consejo -->
+                                <div class="row mt-2">
+                                    <?php
+// Ejemplo de datos de miembros, puedes reemplazar esto con datos dinámicos.
+$miembros = [
+    ['nombre' => 'Pedro Perez Flores', 'cargo' => 'Presidente'],
+    ['nombre' => 'Maria Lopez', 'cargo' => 'Alcalde'],
+    ['nombre' => 'Juan Gonzalez', 'cargo' => 'Consejal'],
+    ['nombre' => 'Ana Torres', 'cargo' => 'Consejal'],
+    ['nombre' => 'Carlos Ramirez', 'cargo' => 'Vicepresidente'],
+    ['nombre' => 'Laura Martinez', 'cargo' => 'Consejal'],
+];
 
+foreach ($miembros as $miembro): ?>
+                                        <div class="col-md-3">
+                                            <div class="card shadow-lg border-0 rounded-3 p-2">
+                                                <div class="card-body text-center">
+                                                    <!-- Icono del Miembro con tamaño más grande -->
+                                                    <div class="mb-2">
+                                                        <i class="fas fa-user-circle fa-5x text-primary"></i>
+                                                    </div>
+                                                    <!-- Nombre y Cargo -->
+                                                    <h6 class="card-title text-center mb-1 text-dark font-weight-bold"><?php echo $miembro['nombre']; ?></h6>
+                                                    <p class="card-text text-muted mb-2">Cargo: <?php echo $miembro['cargo']; ?></p>
+                                                    <!-- Botones de Votación -->
+                                                    <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
+                                                        <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                                                            class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
+                                                            onclick="toggleVote(this, 'success', '<?php echo $miembro['cargo']; ?>')">
+                                                            <i class="fas fa-thumbs-up"></i> A favor
+                                                        </button>
+                                                        <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                                                            class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
+                                                            onclick="toggleVote(this, 'danger', '<?php echo $miembro['cargo']; ?>')">
+                                                            <i class="fas fa-thumbs-down"></i> En contra
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach;?>
+                                </div>
 
-                            <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                                <div class="form-group">
-                                    <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
-                                    <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                        value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                                <!-- Resultados de la votación -->
+                                <div class="vote-counts text-center">
+                                    <div class="row justify-content-center">
+                                        <div class="col-6">
+                                            <div class="card border-success mb-1">
+                                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                                                    <h6 class="card-title text-success">Miembros del Consejo a Favor</h6>
+                                                    <p id="vote-favor" class="card-text text-success mb-0">Nadie ha votado a favor</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="card border-danger mb-1">
+                                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                                                    <h6 class="card-title text-danger">Miembros del Consejo en contra</h6>
+                                                    <p id="vote-contra" class="card-text text-danger mb-0">Nadie ha votado en contra</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="descripcion_Acuerdos"><i class="bi bi-journal-plus"></i> Descripción del Acuerdo</label>
-                                    <textarea class="form-control" id="descripcion_Acuerdos" name="descripcion_Acuerdos" required placeholder="Ingrese una descripción del acuerdo"></textarea>
-                                </div>
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                                <button type="button" class="btn btn-primary next-step" id="nextStepBtn2" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
+                                 <script>
+                                    // Variables de conteo
+                                    let votosFavor = 0;
+                                    let votosContra = 0;
 
-                            <!-- Paso 3: Seleccionar Personal -->
-                            <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                                <div class="form-group">
-                                    <label for="id_Personal"><i class="bi bi-people-fill"></i> Personal</label>
-                                    <select id="id_Personal" name="id_Personal" class="form-control select2" required>
-                                        <option value="" disabled selected>Seleccione el Personal</option>
-                                        @foreach($personal as $persona)
-                                        <option value="{{ $persona->id }}" data-nombre="{{ $persona->nombre }} {{ $persona->apellido }}">
-                                            {{ $persona->nombre }} {{ $persona->apellido }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    // Función principal de votación
+                                    function toggleVote(button, type, cargo) {
+                                        let voto = 1; // Valor por defecto del voto
+                                        if (cargo === 'Alcaldesa' || cargo === 'Alcalde') {
+                                            Swal.fire({
+                                                title: '¿Cómo desea votar?',
+                                                text: "Seleccione una opción:",
+                                                icon: 'question',
+                                                showCancelButton: true,
+                                                confirmButtonText: '<i class="fas fa-check"></i> Voto Simple',
+                                                cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+                                                showDenyButton: true,
+                                                denyButtonText: '<i class="fas fa-check-double"></i> Voto Doble',
+                                                reverseButtons: false
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    voto = 1; // Voto simple
+                                                    procesarVoto(button, type, voto);
+                                                } else if (result.isDenied) {
+                                                    voto = 2; // Voto doble
+                                                    procesarVoto(button, type, voto);
+                                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                                    Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
+                                                }
+                                            });
+                                        } else {
+                                            // Si no es Alcalde/Alcaldesa, procesar directamente con voto simple
+                                            procesarVoto(button, type, voto);
+                                        }
+                                    }
+
+                                    function voto_Unimidad() {
+                                        const botones = document.querySelectorAll('.btn-group[role="group"] button');
+                                        Swal.fire({
+                                            title: '¿Cómo desea votar?',
+                                            text: "Seleccione una opción:",
+                                            icon: 'question',
+                                            showCancelButton: true,
+                                            confirmButtonText: '<i class="fas fa-thumbs-up"></i> Unánime a favor',
+                                            confirmButtonColor: '#198754',
+                                            cancelButtonText: '<i class="fas fa-ban"></i> Cancelar',
+                                            showDenyButton: true,
+                                            denyButtonText: '<i class="fas fa-thumbs-down"></i> Unánime en contra',
+                                            denyButtonColor: '#dc3545',
+                                            reverseButtons: false
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                // Seleccionar todos los botones "A favor"
+                                                botones.forEach(btn => {
+                                                    if (btn.classList.contains('btn-success')) {
+                                                        btn.innerHTML = '<i class="fas fa-check"></i> A favor';
+                                                        procesarVoto(btn, 'success', 1);
+                                                    } else {
+                                                        btn.innerHTML = '<i class="fas fa-thumbs-down"></i> En contra';
+                                                    }
+                                                });
+
+                                            } else if (result.isDenied) {
+                                                botones.forEach(btn => {
+                                                    if (btn.classList.contains('btn-danger')) {
+                                                        btn.innerHTML = '<i class="fas fa-check"></i> En contra';
+                                                        procesarVoto(btn, 'danger', 1);
+                                                    } else {
+                                                        btn.innerHTML = '<i class="fas fa-thumbs-up"></i> A favor';
+                                                    }
+                                                });
+
+                                            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                                Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
+                                            }
+                                        });
+                                    }
+
+                                    function procesarVoto(button, type, voto) {
+
+                                        const buttons = button.parentNode.querySelectorAll('.btn-group[role="group"] button');
+
+                                        // Restar el voto del botón previamente seleccionado (si existe)
+                                        buttons.forEach(btn => {
+                                            if (btn.classList.contains('selected')) {
+                                                const previoTipo = btn.classList.contains('btn-success') ? 'success' : 'danger';
+                                                const previoVoto = parseInt(btn.dataset.voto || 1);
+                                                if (previoTipo === 'success') {
+                                                    votosFavor -= previoVoto;
+                                                } else if (previoTipo === 'danger') {
+                                                    votosContra -= previoVoto;
+                                                }
+                                                btn.classList.remove('selected');
+                                                btn.disabled = false;
+                                                // Manejar icono individualmente
+                                                btn.innerHTML = previoTipo === 'success' ? '<i class="fas fa-thumbs-up"></i> A favor' : '<i class="fas fa-thumbs-down"></i> En contra';
+                                            }
+                                        });
+
+                                        // Marcar el botón actual como seleccionado
+                                        button.classList.add('selected');
+                                        button.disabled = true;
+                                        button.dataset.voto = voto; // Guardar el valor del voto en el botón
+                                        // Manejar icono individualmente
+                                        button.innerHTML = type === 'success' ? '<i class="fas fa-check"></i> A favor' : '<i class="fas fa-check"></i> En contra';
+
+                                        // Actualizar el conteo de votos
+                                        if (type === 'success') {
+                                            votosFavor += voto;
+                                        } else if (type === 'danger') {
+                                            votosContra += voto;
+                                        }
+
+                                        // Actualizar los textos en el DOM
+                                        document.getElementById('vote-favor').textContent =
+                                            votosFavor > 1 ?
+                                            `${votosFavor} puntos a favor` :
+                                            votosFavor === 1 ?
+                                            '1 punto a favor' :
+                                            'Nadie ha votado a favor';
+
+                                        document.getElementById('vote-contra').textContent =
+                                            votosContra > 1 ?
+                                            `${votosContra} puntos en contra` :
+                                            votosContra === 1 ?
+                                            '1 punto en contra' :
+                                            'Nadie ha votado en contra';
+                                    }
+                                </script>
+                                <!-- Botones de navegación -->
                                 <div class="mt-3">
-                                    <p id="porcentaje-favor">0% a favor</p>
-                                    <p id="porcentaje-contra">0% en contra</p>
+                                    <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
                                 </div>
-
-
-                                <button type="button" class="btn btn-primary" id="todos-a-favor"><i class="bi bi-hand-thumbs-up me-2"></i> Todos a Favor </button>
-
-                                <!-- Tabla para mostrar los votos -->
-                                <table class="table table-bordered mt-3" id="tabla-votos">
-                                    <thead>
-                                        <tr>
-                                            <th>Personal</th>
-                                            <th>Voto</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Acuerdo</button>
                             </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    @stop
+</div>
+</body>
 
-    @section('css')
-    @section('css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+</html>
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<!-- Incluir la librería num2words desde el CDN -->
+<script src="https://cdn.jsdelivr.net/npm/num2words@1.0.1/num2words.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 
-    <script>
-        function checkSelect(select) {
-            if (select.value === "") {
-                document.getElementById("nextStepBtn").disabled = true;
-            } else {
-                document.getElementById("nextStepBtn").disabled = false;
-            }
-        }
-
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const nextButtons = document.querySelectorAll('.next-step');
-            const prevButtons = document.querySelectorAll('.previous-step');
-            const progressBar = document.getElementById('progress-bar');
-            const progressBarText = progressBar.querySelector('span');
-            const steps = document.querySelectorAll('.step');
-            const totalSteps = steps.length;
-            let currentStep = 0;
-
-            // Actualizar barra de progreso
-            function updateProgressBar() {
-                const stepWidth = (100 / totalSteps) * (currentStep + 1);
-                progressBar.style.width = `${stepWidth}%`;
-                progressBar.setAttribute('aria-valuenow', stepWidth);
-                progressBarText.textContent = `Paso ${currentStep + 1} de ${totalSteps}`;
-            }
-
-            function showStep(stepIndex) {
-                steps.forEach((step, index) => {
-                    const stepContent = document.querySelector(step.getAttribute('data-target'));
-
-                    if (index === stepIndex) {
-                        step.classList.add('active', 'active-step');
-                        stepContent.style.display = 'block';
-                    } else {
-                        step.classList.remove('active', 'active-step');
-                        stepContent.style.display = 'none';
-                    }
-                });
-
-                updateProgressBar(); // Actualiza la barra de progreso
-            }
-
-            // Botón "Siguiente"
-            nextButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (currentStep < totalSteps - 1) {
-                        currentStep++;
-                        showStep(currentStep);
-                    }
-                });
-            });
-
-            // Botón "Atrás"
-            prevButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    if (currentStep > 0) {
-                        currentStep--;
-                        showStep(currentStep);
-                    }
-                });
-            });
-
-            // Inicializar en el primer paso
-            showStep(currentStep);
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+    // Inicialización de Select2
+    $(document).ready(function() {
+        $('#id_Actas').select2({
+            placeholder: 'Seleccione un acta',
+            allowClear: true
         });
-    </script>
-    <style>
-        .step .bs-stepper-circle {
-            background-color: #ccc;
-            /* Color por defecto */
-            color: #fff;
-        }
+    });
+</script>
+<script>
+    // Función para actualizar el texto en Summernote
+    function actualizarTexto() {
 
-        .active-step .bs-stepper-circle {
-            background-color: #007bff;
-            /* Azul cuando está activo */
-            color: #fff;
-        }
+        // Generar el texto dinámico
+        const textoInicial = `
+            <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+            a las  horas y  minutos del día de del año , EL PRIMER CONSEJO MUNICIPAL PLURAL,
+            juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
+            debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
+            La Unión Sur, del departamento de La Unión, durante el periodo de  a diciembre del año
 
-        /* Forzar que Select2 ocupe el 100% del ancho */
-        .select2-container {
-            width: 100% !important;
-        }
+            <p style="text-align: center;"><strong>______________________</strong></p>
+            <p style="text-align: center;"><strongMunicipal</strong></p>
 
-        .select2-selection {
-            height: calc(1.5em + .75rem + 2px) !important;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #495057;
-            background-color: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-        }
-    </style>
-    @stop
-    @section('js')
-    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-
-    </script>
-    <script>
+            <p style="text-align: center;"><strong>______________________</strong></p>
+            <p style="text-align: center;"><strong>nicipal</strong></p>
+        `;
 
         // Insertar el texto generado en Summernote
+        $('#notas').summernote('code', textoInicial);
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            var stepper = new Stepper(document.querySelector('.bs-stepper'));
+    // Función principal: obtiene el mes y actualiza Summernote
+    function actualizarMesYTexto() {
+        actualizarTexto();
+    }
 
-            document.querySelectorAll('.next-step').forEach(button => {
-                button.addEventListener('click', () => stepper.next());
-            });
-            document.querySelectorAll('.previous-step').forEach(button => {
-                button.addEventListener('click', () => stepper.previous());
-            });
-
-            $('.select2').select2();
-
-            $('#descripcion_Acuerdos').summernote({
-                height: 300,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
-            });
-            $('#descripcion_Acuerdos').on('summernote.keyup', function() {
-                const contenido = $('#descripcion_Acuerdos').summernote('isEmpty'); // Verificar si está vacío
-
-                $('#nextStepBtn2').prop('disabled', contenido);
-            });
-
-            let votos = {}; // Almacena los votos por ID
-            let totalFavor = 0;
-            let totalContra = 0;
-            const tablaVotos = document.querySelector('#tabla-votos tbody');
-            const porcentajeFavor = document.querySelector('#porcentaje-favor');
-            const porcentajeContra = document.querySelector('#porcentaje-contra');
-
-            function actualizarPorcentajes() {
-                const totalVotos = totalFavor + totalContra;
-                const favor = totalVotos ? ((totalFavor / totalVotos) * 100).toFixed(2) : 0;
-                const contra = totalVotos ? ((totalContra / totalVotos) * 100).toFixed(2) : 0;
-
-                porcentajeFavor.textContent = `${favor}% a favor`;
-                porcentajeContra.textContent = `${contra}% en contra`;
-            }
-
-            function actualizarTabla() {
-                tablaVotos.innerHTML = '';
-                Object.keys(votos).forEach(id => {
-                    const {
-                        nombre,
-                        voto
-                    } = votos[id];
-                    const fila = `
-                <tr>
-                    <td>${nombre}</td>
-                    <td>${voto}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm eliminar-voto" data-id="${id}"><i class="bi bi-trash me-2"></i>Eliminar</button>
-                    </td>
-                </tr>`;
-                    tablaVotos.innerHTML += fila;
-
-                });
-
-                document.querySelectorAll('.eliminar-voto').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = this.dataset.id;
-                        const voto = votos[id]?.voto;
-
-                        if (voto === 'A favor') totalFavor--;
-                        if (voto === 'En contra') totalContra--;
-
-                        delete votos[id];
-                        actualizarTabla();
-                        actualizarPorcentajes();
-                    });
-                });
-            }
-
-            if (typeof Swal === 'undefined') {
-                console.error('SweetAlert2 no está disponible.');
-                return;
-            }
-
-            $('#id_Personal').on('select2:select', function(e) {
-                const data = e.params.data;
-                const id = parseInt(data.id);
-                const nombre = data.element.dataset.nombre;
-
-                if (votos[id]) {
-                    Swal.fire('Error', 'Ya se ha votado por esta persona.', 'error');
-                    $(this).val(null).trigger('change');
-                    return;
-                }
-
-                if (id === 1) {
-                    Swal.fire({
-                        text: '¿Quieres usar el voto doble o simple?',
-                        icon: 'question',
-                        showDenyButton: true,
-                        confirmButtonText: 'Voto Doble',
-                        denyButtonText: 'Voto Simple',
-                    }).then(result => {
-                        const votosTotal = result.isConfirmed ? 2 : 1;
-
-                        Swal.fire({
-                            text: '¿El voto es a favor o en contra?',
-                            icon: 'question',
-                            showDenyButton: true,
-                            confirmButtonText: 'A favor',
-                            denyButtonText: 'En contra',
-                        }).then(result2 => {
-                            const decision = result2.isConfirmed ? 'A favor' : 'En contra';
-
-                            if (decision === 'A favor') totalFavor += votosTotal;
-                            if (decision === 'En contra') totalContra += votosTotal;
-
-                            votos[id] = {
-                                nombre,
-                                voto: `${decision} (${votosTotal})`
-                            };
-                            actualizarTabla();
-                            actualizarPorcentajes();
-                            $('#id_Personal').val(null).trigger('change');
-                        });
-                    });
-                } else {
-                    Swal.fire({
-                        text: '¿El voto es a favor o en contra?',
-                        icon: 'question',
-                        showDenyButton: true,
-                        confirmButtonText: 'A favor',
-                        denyButtonText: 'En contra',
-                    }).then(result => {
-                        const decision = result.isConfirmed ? 'A favor' : 'En contra';
-
-                        if (decision === 'A favor') totalFavor++;
-                        if (decision === 'En contra') totalContra++;
-
-                        votos[id] = {
-                            nombre,
-                            voto: decision
-                        };
-                        actualizarTabla();
-                        actualizarPorcentajes();
-                        $('#id_Personal').val(null).trigger('change');
-                    });
-                }
-            });
-
-            document.querySelector('#todos-a-favor').addEventListener('click', function() {
-                $('#id_Personal option').each(function() {
-                    const id = parseInt(this.value);
-                    const nombre = this.dataset.nombre;
-
-                    if (id && !votos[id]) { // Verificar si no existe el voto
-                        const votosTotal = id === 1 ? 1 : 1; // La alcaldesa tiene voto simple
-                        votos[id] = {
-                            nombre,
-                            voto: 'A favor'
-                        };
-                        totalFavor += votosTotal;
-                    }
-                });
-
-                actualizarTabla();
-                actualizarPorcentajes();
-            });
+    $(document).ready(function() {
+        // Inicializar Summernote
+        $('#notas').summernote({
+            height: 400,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
         });
-    </script>
-    @stop
+
+        // Eventos para actualizar dinámicamente
+        $('#fecha').on('change', actualizarMesYTexto);
+        $('#alcalde, #sindico').on('change', actualizarTexto);
+
+        // Actualizar el contenido de Summernote al cargar la página
+        actualizarMesYTexto();
+    });
+</script>
+
+@endsection
+
+<style>
+    .step .bs-stepper-circle {
+        background-color: #ccc;
+        /* Color por defecto */
+        color: #fff;
+    }
+
+    .active-step .bs-stepper-circle {
+        background-color: #007bff;
+        /* Azul cuando está activo */
+        color: #fff;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-selection {
+        height: calc(1.5em + .75rem + 2px) !important;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    .form-select {
+        height: calc(1.5em + .75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        width: 100%;
+    }
+</style>
+
+<script>
+    // Seleccionamos los botones de "Siguiente" y "Anterior"
+    const nextButtons = document.querySelectorAll('.next-step');
+    const previousButtons = document.querySelectorAll('.previous-step');
+
+    // Función para cambiar al siguiente paso
+    nextButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            let currentStep = e.target.closest('.content');
+            let nextStep = currentStep.nextElementSibling;
+
+            if (nextStep) {
+                currentStep.classList.remove('active');
+                nextStep.classList.add('active');
+
+                updateActiveStep(nextStep);
+
+                updateProgressBar();
+            }
+        });
+    });
+
+    // Función para volver al paso anterior
+    previousButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            let currentStep = e.target.closest('.content');
+            let previousStep = currentStep.previousElementSibling;
+
+            if (previousStep) {
+
+                currentStep.classList.remove('active');
+                previousStep.classList.add('active');
+
+                updateActiveStep(previousStep);
+
+                updateProgressBar();
+            }
+        });
+    });
+
+    // Función para actualizar el paso activo en los botones
+    function updateActiveStep(currentStep) {
+        document.querySelectorAll('.step .step-trigger').forEach(button => {
+            button.classList.remove('active-step');
+        });
+
+        const activeButton = document.querySelector(`#stepper-step-${currentStep.id.split('-')[1]}`);
+        activeButton.classList.add('active-step');
+    }
+
+    // Función para actualizar la barra de progreso
+    function updateProgressBar() {
+        const steps = document.querySelectorAll('.content');
+        const progressBar = document.getElementById('progress-bar');
+        const activeStepIndex = Array.from(steps).findIndex(step => step.classList.contains('active'));
+
+        // Aseguramos que siempre haya 3 pasos
+        const totalSteps = 3;
+        const progressPercent = (activeStepIndex / totalSteps) * 100;
+
+        progressBar.style.width = `${progressPercent}%`;
+        progressBar.setAttribute('aria-valuenow', progressPercent);
+        progressBar.textContent = `Paso ${activeStepIndex} de ${totalSteps}`;
+    }
+
+    // Inicializar el primer paso como activo
+    updateActiveStep(document.getElementById('step-1'));
+</script>
+@stop

@@ -20,7 +20,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title text-center">Libros Actualmente Registrados en el Sistema</h3>
+        <h3 class="card-title text-center">Libros Registrados en el Sistema</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">

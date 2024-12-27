@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<!-- Alerta de éxito de Eliminado-->
+<!-- Alerta de éxito de Creación, Actualización y Eliminación-->
 @if(session('success_delete'))
 <script>
     Swal.fire({
@@ -104,7 +104,7 @@
     });
 </script>
 @endif
-@if(session('success_acta'))
+@if(session('success_create'))
 <script>
     Swal.fire({
         icon: 'success',
@@ -118,7 +118,9 @@
     });
 </script>
 @endif
-@if(session('error_acta'))
+
+<!-- Alerta de error de Creación, Actualización y Eliminación-->
+@if(session('error_create'))
 <script>
     Swal.fire({
         icon: 'error',

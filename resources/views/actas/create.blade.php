@@ -461,9 +461,6 @@ function numToText($number)
             actualizarTextoFecha();
         });
 
-
-
-
         // Inicializar Flatpickr para el campo de fecha
         flatpickr("#fecha", {
             dateFormat: "Y-m-d",

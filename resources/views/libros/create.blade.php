@@ -551,35 +551,4 @@ $mesEnTexto = [
     updateActiveStep(document.getElementById('step-1'));
 </script>
 
-<!-- Alerta de éxito de guardado-->
-@if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: '¡Éxito!',
-        text: "El libro se ha agregado correctamente.",
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
-        timer: 3000,
-        toast: true,
-        position: 'top-end'
-    });
-</script>
-@endif
-
-<!-- Alerta de error de al agregar -->
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: '¡Error!',
-        text: "Hubo un problema al agregar el libro. Inténtalo de nuevo.",
-        confirmButtonText: 'Aceptar',
-        showConfirmButton: true,
-        timer: 5000,
-        toast: true,
-        position: 'top-end'
-    });
-</script>
-@endif
 @stop

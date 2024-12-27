@@ -64,10 +64,10 @@ class ActaController extends Controller
             $acta->save();
 
             // Redireccionar con mensaje de éxito
-            return redirect()->route('actas.index')->with('success_acta', 'Acta creada exitosamente.');
+            return redirect()->route('actas.index')->with('success_create', 'Acta creada exitosamente.');
         } catch (\Exception $e) {
             // Redireccionar un mensaje de error
-            return redirect()->route('actas.index')->with('error_acta', 'Error al crear un acta.');
+            return redirect()->route('actas.index')->with('error_create', 'Error al crear un acta.');
         }
     }
 
