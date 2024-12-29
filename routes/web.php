@@ -18,6 +18,7 @@ Route::post('/actas', [ActaController::class, 'store'])->name('actas.store');
 Route::resource('actas', ActaController::class)->middleware('auth');
 Route::resource('acuerdos', AcuerdoController::class);
 Route::resource('personal', PersonalController::class);
+Route::post('/obtener-presentes', [AcuerdoController::class, 'obtenerPresentes'])->name('obtener.presentes');
 
 Auth::routes();
 

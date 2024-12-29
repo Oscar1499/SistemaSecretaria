@@ -16,6 +16,24 @@ class AcuerdoController extends Controller
         return view('acuerdos.index', compact('acuerdos'));
     }
 
+
+    public function obtenerPresentes(Request $request) {
+        $id_actas = $request->input('id_Actas');
+        $acta = Acta::where('id_Actas', $id_actas)->first();
+    
+        if ($acta) {
+            //'Presentes' es una cadena de nombres separados por comas
+            $presentes = explode(',', $acta->presentes);
+            
+            //Limpiar los espacios en blanco alrededor de los nombres
+            $presentes = array_map('trim', $presentes);
+    
+            return response()->json($presentes);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Acta no encontrada']);
+        }
+    }
+    
     // Método para mostrar el formulario de creación
     public function create()
     {

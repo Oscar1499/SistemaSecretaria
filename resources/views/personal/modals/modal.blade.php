@@ -179,10 +179,7 @@
             title: 'Campos Requeridos',
             text: 'Por favor, complete todos los campos',
             confirmButtonText: 'Aceptar',
-            showConfirmButton: true,
-            timer: 4000,
-            toast: true,
-            position: 'top-end'
+            showConfirmButton: true
         });
         return false;
     }

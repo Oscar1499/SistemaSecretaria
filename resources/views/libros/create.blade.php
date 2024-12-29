@@ -3,7 +3,9 @@
 @section('title', 'Agregar Libro')
 
 @section('content_header')
-<h1><i class="fas fa-book-open mr-2"></i> Apertura de Libro</h1>
+<h1><i class="bi bi-book-fill me-2"></i> Apertura de Libro</h1>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
 @section('content')
@@ -43,12 +45,6 @@ $mesEnTexto = [
 ][$mes];
 
 ?>
-
-<!-- TimeToText (para convertir horas en texto) -->
-<script src="https://cdn.jsdelivr.net/npm/time-to-text"></script>
-
-<!-- SweetAlert2 (para alertas) -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- BS Stepper (para el paso a paso del formulario) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
@@ -298,18 +294,17 @@ $mesEnTexto = [
 
         // Generar el texto dinámico
         const textoInicial = `
-            <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+            <p style="text-align: justify;"><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
             a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
             juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
             debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
-            La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>, quienes en
-            representación de este Concejo firman.</p>
+            La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>.</p>
 
             <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>${alcaldeSeleccionado} Municipal</strong></p>
+            <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
 
             <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>${sindicoSeleccionado} Municipal</strong></p>
+            <p style="text-align: center;"><strong>${sindicoSeleccionado}</strong></p>
         `;
 
         // Insertar el texto generado en Summernote

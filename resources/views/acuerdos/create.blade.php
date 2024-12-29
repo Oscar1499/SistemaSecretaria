@@ -94,8 +94,7 @@ function numToText($number)
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
                             <div class="form-group">
                                 <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
-                                <select id="id_Actas" name="id_Actas" class="form-control select2" required
-                                    onchange="checkSelect(this)">
+                                <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value)">
                                     <option value="" disabled selected>Seleccione</option>
                                     @foreach($actas as $acta)
                                     <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}">
@@ -140,46 +139,92 @@ function numToText($number)
                                 <script>
                                 </script>
                                 <!-- Miembros del Consejo -->
-                                <div class="row mt-2">
-                                    <?php
-// Ejemplo de datos de miembros, puedes reemplazar esto con datos dinámicos.
-$miembros = [
-    ['nombre' => 'Pedro Perez Flores', 'cargo' => 'Presidente'],
-    ['nombre' => 'Maria Lopez', 'cargo' => 'Alcalde'],
-    ['nombre' => 'Juan Gonzalez', 'cargo' => 'Consejal'],
-    ['nombre' => 'Ana Torres', 'cargo' => 'Consejal'],
-    ['nombre' => 'Carlos Ramirez', 'cargo' => 'Vicepresidente'],
-    ['nombre' => 'Laura Martinez', 'cargo' => 'Consejal'],
-];
+                                <div id="contenedorPresentes" class="row mt-2">
+                                    <script>
+                                        async function obtenerPresentes(idActas) {
+                                            if (!idActas) return;
 
-foreach ($miembros as $miembro): ?>
-                                        <div class="col-md-3">
-                                            <div class="card shadow-lg border-0 rounded-3 p-2">
-                                                <div class="card-body text-center">
-                                                    <!-- Icono del Miembro con tamaño más grande -->
-                                                    <div class="mb-2">
-                                                        <i class="fas fa-user-circle fa-5x text-primary"></i>
-                                                    </div>
-                                                    <!-- Nombre y Cargo -->
-                                                    <h6 class="card-title text-center mb-1 text-dark font-weight-bold"><?php echo $miembro['nombre']; ?></h6>
-                                                    <p class="card-text text-muted mb-2">Cargo: <?php echo $miembro['cargo']; ?></p>
-                                                    <!-- Botones de Votación -->
-                                                    <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
-                                                        <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                                                            class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
-                                                            onclick="toggleVote(this, 'success', '<?php echo $miembro['cargo']; ?>')">
-                                                            <i class="fas fa-thumbs-up"></i> A favor
-                                                        </button>
-                                                        <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                                                            class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
-                                                            onclick="toggleVote(this, 'danger', '<?php echo $miembro['cargo']; ?>')">
-                                                            <i class="fas fa-thumbs-down"></i> En contra
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach;?>
+                                            try {
+                                                const response = await fetch("{{ route('obtener.presentes') }}", {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                                    },
+                                                    body: JSON.stringify({
+                                                        id_Actas: idActas
+                                                    })
+                                                });
+
+                                                const data = await response.json();
+
+                                                if (data && Array.isArray(data)) {
+
+                                                    const contenedor = document.getElementById('contenedorPresentes');
+                                                    contenedor.innerHTML = ''; // Limpiar el contenedor antes de insertar
+
+                                                    // Reiniciar contadores de votos y texto de los botones de votación
+                                                    // antes de agregar las tarjetas de los presentes
+                                                    votosFavor = 0;
+                                                    votosContra = 0;
+                                                    document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
+                                                    document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
+
+                                                    // Iterar sobre los datos (nombres de los presentes)
+                                                    data.forEach(presente => {
+                                                        agregarTarjeta(contenedor, presente);
+                                                    });
+                                                } else {
+                                                    alert("No se encontraron presentes.");
+                                                }
+                                            } catch (error) {
+                                                console.error("Error al obtener los presentes:", error);
+                                            }
+                                        }
+
+                                        function resaltarCargos(texto) {
+                                            const palabrasClave = [
+                                                'Alcalde', 'Alcaldesa', 'Cuarto regidor propietario',
+                                                'Cuarta regidora propietaria', 'Tercer regidor', 'Tercera regidora',
+                                                'Segundo regidor', 'Segunda regidora', 'Secretario', 'Secretaria',
+                                                'Síndico', 'Síndica', 'Primer regidor', 'Primera regidora',
+                                                'Cuarto regidor', 'Cuarta regidora'
+                                            ];
+                                            const regEx = new RegExp(`\\b(${palabrasClave.join("|")})\\b`, "gi");
+                                            const match = texto.match(regEx);
+                                            return match ? match[0] : 'Ninguno';
+                                        }
+
+                                        function agregarTarjeta(contenedor, presente) {
+                                            const contenido = `
+            <div class="col-md-3">
+                <div class="card shadow-lg border-0 rounded-3 p-2">
+                    <div class="card-body text-center">
+                        <div class="mb-2">
+                            <i class="fas fa-user-circle fa-5x text-primary"></i>
+                        </div>
+                        <h6 class="card-title text-center mb-1 text-dark font-weight-bold">
+                            ${presente.split(' ').slice(0, 3).join(' ')}
+                        </h6>
+                        <p class="card-text text-muted mb-2">Cargo: ${resaltarCargos(presente)} </p>
+                        <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
+                            <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                                class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
+                                onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
+                                <i class="fas fa-thumbs-up"></i> A favor
+                            </button>
+                            <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                                class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
+                                onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
+                                <i class="fas fa-thumbs-down"></i> En contra
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+                                            contenedor.insertAdjacentHTML('beforeend', contenido);
+                                        }
+                                    </script>
                                 </div>
 
                                 <!-- Resultados de la votación -->
@@ -203,135 +248,7 @@ foreach ($miembros as $miembro): ?>
                                         </div>
                                     </div>
                                 </div>
-                                 <script>
-                                    // Variables de conteo
-                                    let votosFavor = 0;
-                                    let votosContra = 0;
 
-                                    // Función principal de votación
-                                    function toggleVote(button, type, cargo) {
-                                        let voto = 1; // Valor por defecto del voto
-                                        if (cargo === 'Alcaldesa' || cargo === 'Alcalde') {
-                                            Swal.fire({
-                                                title: '¿Cómo desea votar?',
-                                                text: "Seleccione una opción:",
-                                                icon: 'question',
-                                                showCancelButton: true,
-                                                confirmButtonText: '<i class="fas fa-check"></i> Voto Simple',
-                                                cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
-                                                showDenyButton: true,
-                                                denyButtonText: '<i class="fas fa-check-double"></i> Voto Doble',
-                                                reverseButtons: false
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    voto = 1; // Voto simple
-                                                    procesarVoto(button, type, voto);
-                                                } else if (result.isDenied) {
-                                                    voto = 2; // Voto doble
-                                                    procesarVoto(button, type, voto);
-                                                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                                    Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
-                                                }
-                                            });
-                                        } else {
-                                            // Si no es Alcalde/Alcaldesa, procesar directamente con voto simple
-                                            procesarVoto(button, type, voto);
-                                        }
-                                    }
-
-                                    function voto_Unimidad() {
-                                        const botones = document.querySelectorAll('.btn-group[role="group"] button');
-                                        Swal.fire({
-                                            title: '¿Cómo desea votar?',
-                                            text: "Seleccione una opción:",
-                                            icon: 'question',
-                                            showCancelButton: true,
-                                            confirmButtonText: '<i class="fas fa-thumbs-up"></i> Unánime a favor',
-                                            confirmButtonColor: '#198754',
-                                            cancelButtonText: '<i class="fas fa-ban"></i> Cancelar',
-                                            showDenyButton: true,
-                                            denyButtonText: '<i class="fas fa-thumbs-down"></i> Unánime en contra',
-                                            denyButtonColor: '#dc3545',
-                                            reverseButtons: false
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                // Seleccionar todos los botones "A favor"
-                                                botones.forEach(btn => {
-                                                    if (btn.classList.contains('btn-success')) {
-                                                        btn.innerHTML = '<i class="fas fa-check"></i> A favor';
-                                                        procesarVoto(btn, 'success', 1);
-                                                    } else {
-                                                        btn.innerHTML = '<i class="fas fa-thumbs-down"></i> En contra';
-                                                    }
-                                                });
-
-                                            } else if (result.isDenied) {
-                                                botones.forEach(btn => {
-                                                    if (btn.classList.contains('btn-danger')) {
-                                                        btn.innerHTML = '<i class="fas fa-check"></i> En contra';
-                                                        procesarVoto(btn, 'danger', 1);
-                                                    } else {
-                                                        btn.innerHTML = '<i class="fas fa-thumbs-up"></i> A favor';
-                                                    }
-                                                });
-
-                                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                                Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
-                                            }
-                                        });
-                                    }
-
-                                    function procesarVoto(button, type, voto) {
-
-                                        const buttons = button.parentNode.querySelectorAll('.btn-group[role="group"] button');
-
-                                        // Restar el voto del botón previamente seleccionado (si existe)
-                                        buttons.forEach(btn => {
-                                            if (btn.classList.contains('selected')) {
-                                                const previoTipo = btn.classList.contains('btn-success') ? 'success' : 'danger';
-                                                const previoVoto = parseInt(btn.dataset.voto || 1);
-                                                if (previoTipo === 'success') {
-                                                    votosFavor -= previoVoto;
-                                                } else if (previoTipo === 'danger') {
-                                                    votosContra -= previoVoto;
-                                                }
-                                                btn.classList.remove('selected');
-                                                btn.disabled = false;
-                                                // Manejar icono individualmente
-                                                btn.innerHTML = previoTipo === 'success' ? '<i class="fas fa-thumbs-up"></i> A favor' : '<i class="fas fa-thumbs-down"></i> En contra';
-                                            }
-                                        });
-
-                                        // Marcar el botón actual como seleccionado
-                                        button.classList.add('selected');
-                                        button.disabled = true;
-                                        button.dataset.voto = voto; // Guardar el valor del voto en el botón
-                                        // Manejar icono individualmente
-                                        button.innerHTML = type === 'success' ? '<i class="fas fa-check"></i> A favor' : '<i class="fas fa-check"></i> En contra';
-
-                                        // Actualizar el conteo de votos
-                                        if (type === 'success') {
-                                            votosFavor += voto;
-                                        } else if (type === 'danger') {
-                                            votosContra += voto;
-                                        }
-
-                                        // Actualizar los textos en el DOM
-                                        document.getElementById('vote-favor').textContent =
-                                            votosFavor > 1 ?
-                                            `${votosFavor} puntos a favor` :
-                                            votosFavor === 1 ?
-                                            '1 punto a favor' :
-                                            'Nadie ha votado a favor';
-
-                                        document.getElementById('vote-contra').textContent =
-                                            votosContra > 1 ?
-                                            `${votosContra} puntos en contra` :
-                                            votosContra === 1 ?
-                                            '1 punto en contra' :
-                                            'Nadie ha votado en contra';
-                                    }
-                                </script>
                                 <!-- Botones de navegación -->
                                 <div class="mt-3">
                                     <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
@@ -357,6 +274,135 @@ foreach ($miembros as $miembro): ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
+    // Variables de conteo
+    let votosFavor = 0;
+    let votosContra = 0;
+
+    // Función principal de votación
+    function toggleVote(button, type, cargo) {
+        let voto = 1; // Valor por defecto del voto
+        if (cargo === 'Alcaldesa' || cargo === 'Alcalde') {
+            Swal.fire({
+                title: '¿Cómo desea votar?',
+                text: "Seleccione una opción:",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-check"></i> Voto Simple',
+                cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+                showDenyButton: true,
+                denyButtonText: '<i class="fas fa-check-double"></i> Voto Doble',
+                reverseButtons: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    voto = 1; // Voto simple
+                    procesarVoto(button, type, voto);
+                } else if (result.isDenied) {
+                    voto = 2; // Voto doble
+                    procesarVoto(button, type, voto);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
+                }
+            });
+        } else {
+            // Si no es Alcalde/Alcaldesa, procesar directamente con voto simple
+            procesarVoto(button, type, voto);
+        }
+    }
+
+    function voto_Unimidad() {
+        const botones = document.querySelectorAll('.btn-group[role="group"] button');
+        Swal.fire({
+            title: '¿Cómo desea votar?',
+            text: "Seleccione una opción:",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-thumbs-up"></i> Unánime a favor',
+            confirmButtonColor: '#198754',
+            cancelButtonText: '<i class="fas fa-ban"></i> Cancelar',
+            showDenyButton: true,
+            denyButtonText: '<i class="fas fa-thumbs-down"></i> Unánime en contra',
+            denyButtonColor: '#dc3545',
+            reverseButtons: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Seleccionar todos los botones "A favor"
+                botones.forEach(btn => {
+                    if (btn.classList.contains('btn-success')) {
+                        btn.innerHTML = '<i class="fas fa-check"></i> A favor';
+                        procesarVoto(btn, 'success', 1);
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-thumbs-down"></i> En contra';
+                    }
+                });
+
+            } else if (result.isDenied) {
+                botones.forEach(btn => {
+                    if (btn.classList.contains('btn-danger')) {
+                        btn.innerHTML = '<i class="fas fa-check"></i> En contra';
+                        procesarVoto(btn, 'danger', 1);
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-thumbs-up"></i> A favor';
+                    }
+                });
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
+            }
+        });
+    }
+
+    function procesarVoto(button, type, voto) {
+
+        const buttons = button.parentNode.querySelectorAll('.btn-group[role="group"] button');
+
+        // Restar el voto del botón previamente seleccionado (si existe)
+        buttons.forEach(btn => {
+            if (btn.classList.contains('selected')) {
+                const previoTipo = btn.classList.contains('btn-success') ? 'success' : 'danger';
+                const previoVoto = parseInt(btn.dataset.voto || 1);
+                if (previoTipo === 'success') {
+                    votosFavor -= previoVoto;
+                } else if (previoTipo === 'danger') {
+                    votosContra -= previoVoto;
+                }
+                btn.classList.remove('selected');
+                btn.disabled = false;
+                // Manejar icono individualmente
+                btn.innerHTML = previoTipo === 'success' ? '<i class="fas fa-thumbs-up"></i> A favor' : '<i class="fas fa-thumbs-down"></i> En contra';
+            }
+        });
+
+        // Marcar el botón actual como seleccionado
+        button.classList.add('selected');
+        button.disabled = true;
+        button.dataset.voto = voto; // Guardar el valor del voto en el botón
+        // Manejar icono individualmente
+        button.innerHTML = type === 'success' ? '<i class="fas fa-check"></i> A favor' : '<i class="fas fa-check"></i> En contra';
+
+        // Actualizar el conteo de votos
+        if (type === 'success') {
+            votosFavor += voto;
+        } else if (type === 'danger') {
+            votosContra += voto;
+        }
+
+        // Actualizar los textos en el DOM
+        document.getElementById('vote-favor').textContent =
+            votosFavor > 1 ?
+            `${votosFavor} puntos a favor` :
+            votosFavor === 1 ?
+            '1 punto a favor' :
+            'Nadie ha votado a favor';
+
+        document.getElementById('vote-contra').textContent =
+            votosContra > 1 ?
+            `${votosContra} puntos en contra` :
+            votosContra === 1 ?
+            '1 punto en contra' :
+            'Nadie ha votado en contra';
+    }
+</script>
+<script>
     // Inicialización de Select2
     $(document).ready(function() {
         $('#id_Actas').select2({
@@ -378,10 +424,10 @@ foreach ($miembros as $miembro): ?>
             La Unión Sur, del departamento de La Unión, durante el periodo de  a diciembre del año
 
             <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strongMunicipal</strong></p>
+            <p style="text-align: center;"><strong>Municipal</strong></p>
 
             <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>nicipal</strong></p>
+            <p style="text-align: center;"><strong>Municipal</strong></p>
         `;
 
         // Insertar el texto generado en Summernote
@@ -396,7 +442,7 @@ foreach ($miembros as $miembro): ?>
     $(document).ready(function() {
         // Inicializar Summernote
         $('#notas').summernote({
-            height: 400,
+            height: 300,
             toolbar: [
                 ['style', ['style']],
                 ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -406,14 +452,11 @@ foreach ($miembros as $miembro): ?>
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
                 ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
+                ['insert', ['link', 'picture']],
                 ['view', ['fullscreen', 'codeview', 'help']]
             ]
         });
 
-        // Eventos para actualizar dinámicamente
-        $('#fecha').on('change', actualizarMesYTexto);
-        $('#alcalde, #sindico').on('change', actualizarTexto);
 
         // Actualizar el contenido de Summernote al cargar la página
         actualizarMesYTexto();

@@ -4,6 +4,9 @@
 
 @section('content_header')
 <h1>Crear Acta</h1>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
 @section('content')
@@ -416,9 +419,8 @@ function numToText($number)
             // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
-
             const fechaTexto = `
-        En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
+        <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
         <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.
@@ -427,7 +429,7 @@ function numToText($number)
         <strong>${alcaldesaInfo} Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
         <strong>${secretarioInfo}</strong>;
         presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal">${presentesTexto}</a>
-        <strong>y Ausencia de: <span id="FaltaPersonal">${ausentesTexto}</span>.</strong>
+        <strong>y Ausencia de: <span id="FaltaPersonal">${ausentesTexto}</span>.</strong></p>
     `;
 
             // Insertar el texto generado en Summernote
