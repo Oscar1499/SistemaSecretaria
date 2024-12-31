@@ -4,7 +4,6 @@
 
 @section('content_header')
 <h1><i class="bi bi-book-fill me-2"></i> Apertura de Libro</h1>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
@@ -70,7 +69,7 @@ $mesEnTexto = [
 <body>
 
 </body>
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-body">
             <!-- Barra de Progreso -->
@@ -193,7 +192,7 @@ $mesEnTexto = [
                                     <select class="form-select form-select-sm" id="alcalde" name="alcalde">
                                         <option selected>Seleccione</option>
                                         @foreach($alcalde as $alcaldes)
-                                        <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}} ({{$alcaldes->cargo}})</option>
+                                        <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -209,7 +208,7 @@ $mesEnTexto = [
                                     <select class="form-select form-select-sm" id="sindico" name="sindico">
                                         <option selected>Seleccione</option>
                                         @foreach($sindico as $sindicos)
-                                        <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}} ({{$sindicos->cargo}})</option>
+                                        <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -234,7 +233,7 @@ $mesEnTexto = [
 
                             <!-- Botones de navegación -->
                             <div class="mt-3">
-                                <?php $diaSeleccionado = old('diaSeleccionado') ?? '';?>
+                                <?php $diaSeleccionado = old('diaSeleccionado') ?? ''; ?>
                                 <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
@@ -300,11 +299,17 @@ $mesEnTexto = [
             debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
             La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>.</p>
 
-            <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>${alcaldeSeleccionado}</strong></p>
 
-            <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>${sindicoSeleccionado}</strong></p>
+        <p style="display: none;" class="invisible-line"></p>
+        <p style="display: none;" class="invisible-line"></p>
+         <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>______________________________________</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>${alcaldeSeleccionado}</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>Alcalde Municipal</strong></p>
+        <p style="display: none;" class="invisible-line"></p>
+        <p style="display: none;" class="invisible-line"></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>______________________________________</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>${sindicoSeleccionado}</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>Síndico Municipal</strong></p>
         `;
 
         // Insertar el texto generado en Summernote

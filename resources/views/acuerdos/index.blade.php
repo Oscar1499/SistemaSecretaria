@@ -3,13 +3,12 @@
 @section('title', 'Listado de Acuerdos')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i>Listado de Acuerdos</h1>
+<h1><i class="bi bi-book-fill me-2"></i> Listado de Acuerdos</h1>
 <a href="{{ route('acuerdos.create') }}" class="btn btn-primary mb-3">
     <i class="fas fa-plus"></i> Añadir Nuevo Acuerdo
 </a>
 @stop
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <body>
 
 </body>
@@ -182,6 +181,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
 @stop
 
 @section('js')

@@ -9,7 +9,6 @@
 </a>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <body>
@@ -21,7 +20,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title text-center">Actas registradas en el sistema</h3>
+        <h3 class="card-title text-center">Actas registradas</h3>
     </div>
     <div class="card-body">
         <table id="actasTable" class="table table-striped table-bordered table-hover text-center w-100">

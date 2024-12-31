@@ -2,11 +2,19 @@
 @section('title', 'Detalles Acuerdos')
 
 @section('content_header')
-<h1>Detalles del acuerdo</h1>
+<h1><i class="bi bi-book-fill me-2"></i> Detalles del acuerdo</h1>
+@stop
+
+@section('css')
+<!-- Bootstrap Icons y estilos adicionales -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 @stop
 
 @section('content')
-<div class="shadow-lg border-0">
+<div class="container-fluid">
+    <div class="card">
         <!-- Encabezado -->
         <div class="card-header bg-gradient-primary text-white text-center">
             <h5 class="mb-0">📋 Información del acuerdo</h5>
@@ -57,5 +65,6 @@
             </a>
         </div>
     </div>
+</div>
 </div>
 @stop

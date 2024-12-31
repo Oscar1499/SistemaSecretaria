@@ -9,7 +9,6 @@
 </button>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <body>
 
@@ -19,7 +18,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title text-center">Personal registrado en el sistema</h3>
+        <h3 class="card-title text-center">Personal registrado</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -27,7 +26,6 @@
                 <thead>
                     <tr>
                     <th>
-
                         <th><i class="bi1 bi-person-fill me-1"></i> Nombre</th>
                         <th><i class="bi bi-person-lines-fill me-1"></i> Apellido</th>
                         <th><i class="bi1 bi-briefcase-fill me-1"></i> Cargo</th>
@@ -89,6 +87,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {

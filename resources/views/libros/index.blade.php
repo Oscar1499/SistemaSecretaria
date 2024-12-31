@@ -11,6 +11,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
 <body>
 
 </body>
@@ -20,7 +21,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title text-center">Libros Registrados en el Sistema</h3>
+        <h3 class="card-title text-center">Libros Registrados</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">
