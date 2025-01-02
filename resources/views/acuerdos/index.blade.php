@@ -4,16 +4,17 @@
 
 @section('content_header')
 <h1><i class="bi bi-book-fill me-2"></i> Listado de Acuerdos</h1>
-<a href="{{ route('acuerdos.create') }}" class="btn btn-primary mb-3">
+<a href="{{ route('acuerdos.create') }}" class="btn btn-primary mt-1">
     <i class="fas fa-plus"></i> Añadir Nuevo Acuerdo
 </a>
 @stop
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body>
 
 </body>
 @section('content')
-<div class="card">
+<div class="card container-fluid pt-0">
     <div class="card-header">
         <h3 class="card-title">Acuerdos Registrados</h3>
     </div>

@@ -3,7 +3,7 @@
 @section('title', 'Editar Libro')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i>  Editar Libro</h1>
+<h1><i class="bi bi-book-fill me-2"></i>Editar Libro</h1>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
@@ -32,126 +32,123 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <!-- Bootstrap Icons (iconos adicionales para Bootstrap) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <body>
 
 </body>
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-body">
-            <!-- Barra de Progreso -->
-            <div class="progress mb-4">
-                <div
-                    class="progress-bar progress-bar-striped progress-bar-animated"
-                    role="progressbar"
-                    style="width: 33%;"
-                    id="progress-bar"
-                    aria-valuenow="33"
-                    aria-valuemin="0"
-                    aria-valuemax="100">
-                    Paso 1 de 2
+<div class="card container-fluid p-0">
+    <div class="card-body">
+        <!-- Barra de Progreso -->
+        <div class="progress mb-4">
+            <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style="width: 33%;"
+                id="progress-bar"
+                aria-valuenow="33"
+                aria-valuemin="0"
+                aria-valuemax="100">
+                Paso 1 de 2
+            </div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="bs-stepper">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- Paso 1 -->
+                <div class="step" data-target="#step-1">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
+                        <span class="bs-stepper-circle">1</span>
+                        <span class="bs-stepper-label">Configuración del libro</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 2 -->
+                <div class="step" data-target="#step-3">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
+                        <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-label">Apertura del libro</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Stepper -->
-            <div class="bs-stepper">
-                <div class="bs-stepper-header" role="tablist">
-                    <!-- Paso 1 -->
-                    <div class="step" data-target="#step-1">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
-                            <span class="bs-stepper-circle">1</span>
-                            <span class="bs-stepper-label">Configuración del libro</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
-
-                    <!-- Paso 2 -->
-                    <div class="step" data-target="#step-3">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                            <span class="bs-stepper-circle">2</span>
-                            <span class="bs-stepper-label">Apertura del libro</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bs-stepper-content">
-                    <!-- Formulario con pasos -->
-                    <form action="{{ route('libros.update', $libro) }}" id="form-libro" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <!-- Paso 1: Configuración del libro-->
-                        <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
+            <div class="bs-stepper-content">
+                <!-- Formulario con pasos -->
+                <form action="{{ route('libros.update', $libro) }}" id="form-libro" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <!-- Paso 1: Configuración del libro-->
+                    <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
+                        <div class="form-group">
                             <div class="form-group">
-                                <div class="form-group">
-                                    <label for="fecha">
-                                        <i class="bi bi-calendar-event me-2"></i>
-                                        Fecha de ingreso
-                                    </label>
+                                <label for="fecha">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    Fecha de ingreso
+                                </label>
 
-                                    <div class="input-group">
-                                        <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fechainicio_Libro', $libro->fechainicio_Libro) }}" required />
-                                        <span class="input-group-text">
-                                            <i class="bi bi-calendar-plus"></i>
-                                        </span>
-                                    </div>
+                                <div class="input-group">
+                                    <input oninput="validar_Step1()" type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fechainicio_Libro', $libro->fechainicio_Libro) }}" required />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
                                 </div>
-                                <div class="form-group">
-
-                                    <label for="fecha2">
-                                        <i class="bi bi-calendar-x me-2"></i>
-                                        Fecha de fin
-                                    </label>
-
-                                    <div class="input-group">
-                                        <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fechafinal_Libro', $libro->fechafinal_Libro) }}" required />
-                                        <span class="input-group-text">
-                                            <i class="bi bi-calendar-plus"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group position-relative">
-
-                                    <label for="descripcion_Acuerdos">
-                                        <i class="bi bi-file-text me-2"></i>
-                                        Descripción del libro
-                                    </label>
-
-                                    <textarea oninput="validar_Step1()"
-                                        class="form-control input-with-icon"
-                                        id="descripcion_Acuerdos"
-                                        name="descripcion_Libro"
-                                        placeholder="Escriba una descripción detallada del libro"
-                                        rows="5"
-                                        required>{{$libro->descripcion_Libro}}</textarea>
-                                </div>
-
                             </div>
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                            <div class="form-group">
+
+                                <label for="fecha2">
+                                    <i class="bi bi-calendar-x me-2"></i>
+                                    Fecha de fin
+                                </label>
+
+                                <div class="input-group">
+                                    <input type="date" oninput="validar_Step1()" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fechafinal_Libro', $libro->fechafinal_Libro) }}" required />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
+                                </div>
                             </div>
+                            <div class="form-group position-relative">
+
+                                <label for="descripcion_Acuerdos">
+                                    <i class="bi bi-file-text me-2"></i>
+                                    Descripción del libro
+                                </label>
+
+                                <textarea oninput="validar_Step1()"
+                                    class="form-control input-with-icon"
+                                    id="descripcion_Acuerdos"
+                                    name="descripcion_Libro"
+                                    placeholder="Escriba una descripción detallada del libro"
+                                    rows="5"
+                                    required>{{$libro->descripcion_Libro}}</textarea>
+                            </div>
+
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    {{-- Paso 2: Apertura del libro editar --}}
+                    <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+
+                        <div class="form-group">
+                            <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
+                            <textarea class="form-control" id="notas" name="apertura_Libro" required>{{$libro->apertura_Libro}}</textarea>
                         </div>
 
-                        {{-- Paso 2: Apertura del libro editar --}}
-                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+                        @section('css')
+                        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+                        @endsection
 
-                            <div class="form-group">
-                                <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
-                                <textarea class="form-control" id="notas" name="apertura_Libro" required>{{$libro->apertura_Libro}}</textarea>
-                            </div>
-
-                            @section('css')
-                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-                            @endsection
-
-                            <!-- Botones de navegación -->
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Actualizar Libro</button>
-                            </div>
+                        <!-- Botones de navegación -->
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Actualizar Libro</button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

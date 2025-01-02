@@ -3,7 +3,7 @@
 @section('title', 'Detalles del Libro')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i> Detalles del Libro</h1>
+<h1><i class="bi bi-book-fill me-2"></i>Detalles del Libro</h1>
 @stop
 
 @section('css')
@@ -15,54 +15,54 @@
 
 @section('content')
 <div class="card container-fluid p-0">
-        <div class="card-header bg-gradient-primary text-white">
-            <h5 class="text-center mb-0">📚 Información del Libro</h5>
+    <div class="card-header bg-gradient-primary text-white">
+        <h5 class="text-center mb-0">📚 Información del Libro</h5>
+    </div>
+    <div class="card-body p-3">
+        <!-- Información del Libro -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Fecha de Inicio:</strong></p>
+                <div class="bg-light rounded p-2">
+                    <span id="fechainicio_Libro">{{ $libro->fechainicio_Libro }}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Fecha Final:</strong></p>
+                <div class="bg-light rounded p-2">
+                    <span id="fechafinal_Libro">{{ $libro->fechafinal_Libro }}</span>
+                </div>
+            </div>
         </div>
-        <div class="card-body p-3">
-            <!-- Información del Libro -->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <p><strong>Fecha de Inicio:</strong></p>
-                    <div class="bg-light rounded p-2">
-                        <span id="fechainicio_Libro">{{ $libro->fechainicio_Libro }}</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Fecha Final:</strong></p>
-                    <div class="bg-light rounded p-2">
-                        <span id="fechafinal_Libro">{{ $libro->fechafinal_Libro }}</span>
-                    </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <p><strong>Descripción:</strong></p>
+                <div class="bg-light rounded p-3">
+                    <span id="descripcion_Libro">{{ $libro->descripcion_Libro }}</span>
                 </div>
             </div>
+        </div>
 
-            <div class="row mb-3">
-                <div class="col-12">
-                    <p><strong>Descripción:</strong></p>
-                    <div class="bg-light rounded p-3">
-                        <span id="descripcion_Libro">{{ $libro->descripcion_Libro }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-12">
-                    <p><strong>Apertura del Libro:</strong></p>
-                    <textarea name="apertura_Libro_inicio" id="apertura_Libro_inicio">
+        <div class="row mb-3">
+            <div class="col-12">
+                <p><strong>Apertura del Libro:</strong></p>
+                <textarea name="apertura_Libro_inicio" id="apertura_Libro_inicio">
                         {!! $libro->apertura_Libro !!}
                     </textarea>
-                </div>
-            </div>
-
-            <!-- Botones -->
-            <div class="mt-3">
-                <a href="{{ route('libros.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm">
-                    <i class="fas fa-arrow-left"></i> Atrás
-                </a>
-                <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
-                    <i class="fas fa-file-pdf"></i> Descargar PDF
-                </button>
             </div>
         </div>
+
+        <!-- Botones -->
+        <div class="mt-3">
+            <a href="{{ route('libros.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm">
+                <i class="fas fa-arrow-left"></i> Atrás
+            </a>
+            <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </button>
+        </div>
+    </div>
 </div>
 @stop
 
@@ -148,7 +148,7 @@
                         orientation: 'portrait' // Orientación vertical
                     }
                 })
-                .from(tempContainer[0]) 
+                .from(tempContainer[0])
                 .save();
         });
 

@@ -4,6 +4,8 @@
 
 @section('content_header')
 <h1><i class="fas fa-book-open mr-2"></i> Crear Nuevo Acuerdo</h1>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
 @section('content')
@@ -39,174 +41,175 @@ function numToText($number)
 <body>
 
 </body>
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <!-- Barra de Progreso -->
-            <div class="progress mb-4">
-                <div
-                    class="progress-bar progress-bar-striped progress-bar-animated"
-                    role="progressbar"
-                    style="width: 33%;"
-                    id="progress-bar"
-                    aria-valuenow="33"
-                    aria-valuemin="0"
-                    aria-valuemax="100">
-                    Paso 1 de 3
+<div class="card container-fluid pt-0">
+    <div class="card-body">
+        <!-- Barra de Progreso -->
+        <div class="progress mb-4">
+            <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style="width: 33%;"
+                id="progress-bar"
+                aria-valuenow="33"
+                aria-valuemin="0"
+                aria-valuemax="100">
+                Paso 1 de 3
+            </div>
+        </div>
+        <!-- Stepper -->
+        <div class="bs-stepper">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- Paso 1 -->
+                <div class="step" data-target="#step-1">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
+                        <span class="bs-stepper-circle">1</span>
+                        <span class="bs-stepper-label">Seleccionar Acta</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 2 -->
+                <div class="step" data-target="#step-2">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
+                        <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-label">Redactar Memorando</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 3 -->
+                <div class="step" data-target="#step-3">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
+                        <span class="bs-stepper-circle">3</span>
+                        <span class="bs-stepper-label">Seleccionar Personal</span>
+                    </button>
                 </div>
             </div>
-            <!-- Stepper -->
-            <div class="bs-stepper">
-                <div class="bs-stepper-header" role="tablist">
-                    <!-- Paso 1 -->
-                    <div class="step" data-target="#step-1">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
-                            <span class="bs-stepper-circle">1</span>
-                            <span class="bs-stepper-label">Seleccionar Acta</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
 
-                    <!-- Paso 2 -->
-                    <div class="step" data-target="#step-2">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                            <span class="bs-stepper-circle">2</span>
-                            <span class="bs-stepper-label">Redactar Memorando</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
+            <div class="bs-stepper-content">
+                <!-- Formulario con pasos -->
+                <form action="" method="POST">
+                    @csrf
 
-                    <!-- Paso 3 -->
-                    <div class="step" data-target="#step-3">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                            <span class="bs-stepper-circle">3</span>
-                            <span class="bs-stepper-label">Seleccionar Personal</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bs-stepper-content">
-                    <!-- Formulario con pasos -->
-                    <form action="" method="POST">
-                        @csrf
-
-                        <!-- Paso 1: Configuración del libro-->
-                        <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
-                            <div class="form-group">
-                                <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
-                                <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value)">
-                                    <option value="" disabled selected>Seleccione</option>
-                                    @foreach($actas as $acta)
-                                    <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}">
-                                        {{ $acta->id_Actas }} - {{ $acta->correlativo }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
+                    <!-- Paso 1: Configuración del libro-->
+                    <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
+                        <div class="form-group">
+                            <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
+                            <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value)">
+                                <option value="" disabled selected>Seleccione</option>
+                                @foreach($actas as $acta)
+                                <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}">
+                                    {{ $acta->id_Actas }} - {{ $acta->correlativo }}
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
-
-                        <!-- Paso 2: Representación del consejo -->
-                        <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                            <div class="form-group">
-                                <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
-                                <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                    value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control" id="notas" name="apertura_Libro"></textarea>
-                            </div>
-                            @section('css')
-                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-                            @endsection
-
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
+                    </div>
 
-                        {{-- Paso 3: Apertura del libro --}}
-                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                            <div class="container mt-2">
-                                <!-- Botón de Unanimidad -->
+                    <!-- Paso 2: Representación del consejo -->
+                    <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+                        <div class="form-group">
+                            <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
+                            <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                                value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="notas" name="apertura_Libro"></textarea>
+                        </div>
+                        @section('css')
+                        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+                        @endsection
 
-                                <button type="button" class="btn btn-info py-2 px-4 shadow-sm" onclick="voto_Unimidad();">
-                                    <i class="fas fa-users"></i> Voto por Unanimidad
-                                </button>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    {{-- Paso 3: Apertura del libro --}}
+                    <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+                        <div class="container mt-2">
+                            <!-- Botón de Unanimidad -->
+
+                            <button type="button" class="btn btn-info py-2 px-4 shadow-sm" onclick="voto_Unimidad();">
+                                <i class="fas fa-users"></i> Voto por Unanimidad
+                            </button>
+                            <script>
+                            </script>
+                            <!-- Miembros del Consejo -->
+                            <div id="contenedorPresentes" class="row mt-2">
                                 <script>
-                                </script>
-                                <!-- Miembros del Consejo -->
-                                <div id="contenedorPresentes" class="row mt-2">
-                                    <script>
-                                        async function obtenerPresentes(idActas) {
-                                            if (!idActas) return;
+                                    async function obtenerPresentes(idActas) {
+                                        if (!idActas) return;
 
-                                            try {
-                                                const response = await fetch("{{ route('obtener.presentes') }}", {
-                                                    method: "POST",
-                                                    headers: {
-                                                        "Content-Type": "application/json",
-                                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                                    },
-                                                    body: JSON.stringify({
-                                                        id_Actas: idActas
-                                                    })
+                                        try {
+                                            const response = await fetch("{{ route('obtener.presentes') }}", {
+                                                method: "POST",
+                                                headers: {
+                                                    "Content-Type": "application/json",
+                                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                                },
+                                                body: JSON.stringify({
+                                                    id_Actas: idActas
+                                                })
+                                            });
+
+                                            const data = await response.json();
+
+                                            if (data && Array.isArray(data)) {
+
+                                                const contenedor = document.getElementById('contenedorPresentes');
+                                                contenedor.innerHTML = ''; // Limpiar el contenedor antes de insertar
+
+                                                // Reiniciar contadores de votos y texto de los botones de votación
+                                                // antes de agregar las tarjetas de los presentes
+                                                votosFavor = 0;
+                                                votosContra = 0;
+                                                document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
+                                                document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
+
+                                                // Iterar sobre los datos (nombres de los presentes)
+                                                data.forEach(presente => {
+                                                    agregarTarjeta(contenedor, presente);
                                                 });
-
-                                                const data = await response.json();
-
-                                                if (data && Array.isArray(data)) {
-
-                                                    const contenedor = document.getElementById('contenedorPresentes');
-                                                    contenedor.innerHTML = ''; // Limpiar el contenedor antes de insertar
-
-                                                    // Reiniciar contadores de votos y texto de los botones de votación
-                                                    // antes de agregar las tarjetas de los presentes
-                                                    votosFavor = 0;
-                                                    votosContra = 0;
-                                                    document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
-                                                    document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
-
-                                                    // Iterar sobre los datos (nombres de los presentes)
-                                                    data.forEach(presente => {
-                                                        agregarTarjeta(contenedor, presente);
-                                                    });
-                                                } else {
-                                                    alert("No se encontraron presentes.");
-                                                }
-                                            } catch (error) {
-                                                console.error("Error al obtener los presentes:", error);
+                                            } else {
+                                                alert("No se encontraron presentes.");
                                             }
+                                        } catch (error) {
+                                            console.error("Error al obtener los presentes:", error);
                                         }
+                                    }
 
-                                        function resaltarCargos(texto) {
-                                            const palabrasClave = [
-                                                'Alcalde', 'Alcaldesa', 'Cuarto regidor propietario',
-                                                'Cuarta regidora propietaria', 'Tercer regidor', 'Tercera regidora',
-                                                'Segundo regidor', 'Segunda regidora', 'Secretario', 'Secretaria',
-                                                'Síndico', 'Síndica', 'Primer regidor', 'Primera regidora',
-                                                'Cuarto regidor', 'Cuarta regidora'
-                                            ];
-                                            const regEx = new RegExp(`\\b(${palabrasClave.join("|")})\\b`, "gi");
-                                            const match = texto.match(regEx);
-                                            return match ? match[0] : 'Ninguno';
-                                        }
+                                    function resaltarCargos(texto) {
+                                        const palabrasClave = [
+                                            'Alcalde', 'Alcaldesa', 'Cuarto regidor propietario',
+                                            'Cuarta regidora propietaria', 'Tercer regidor', 'Tercera regidora',
+                                            'Segundo regidor', 'Segunda regidora', 'Secretario', 'Secretaria',
+                                            'Síndico', 'Síndica', 'Primer regidor', 'Primera regidora',
+                                            'Cuarto regidor', 'Cuarta regidora'
+                                        ];
+                                        const regEx = new RegExp(`\\b(${palabrasClave.join("|")})\\b`, "gi");
+                                        const match = texto.match(regEx);
+                                        return match ? match[0] : 'Ninguno';
+                                    }
 
-                                        function agregarTarjeta(contenedor, presente) {
-                                            const contenido = `
-            <div class="col-md-3">
-                <div class="card shadow-lg border-0 rounded-3 p-2">
+                                    function agregarTarjeta(contenedor, presente) {
+                                        const contenido = `
+            <div class="col-md-3 ">
+                <div class="card shadow-lg border-0 rounded-3 p-2 h100">
                     <div class="card-body text-center">
                         <div class="mb-2">
                             <i class="fas fa-user-circle fa-5x text-primary"></i>
                         </div>
-                        <h6 class="card-title text-center mb-1 text-dark font-weight-bold">
+                        <h6 class="card-title mb-1 text-dark font-weight-bold">
                             ${presente.split(' ').slice(0, 3).join(' ')}
                         </h6>
-                        <p class="card-text text-muted mb-2">Cargo: ${resaltarCargos(presente)} </p>
+                        <span class="d-inline-block text-truncate text-center" style="max-width: 197px;">
+                            Cargo: ${resaltarCargos(presente)}
+                        </span>
                         <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
                             <button type="button" style="font-size: 1rem; border-radius: 20px;"
                                 class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
@@ -222,52 +225,50 @@ function numToText($number)
                     </div>
                 </div>
             </div>`;
-                                            contenedor.insertAdjacentHTML('beforeend', contenido);
-                                        }
-                                    </script>
-                                </div>
 
-                                <!-- Resultados de la votación -->
-                                <div class="vote-counts text-center">
-                                    <div class="row justify-content-center">
-                                        <div class="col-6">
-                                            <div class="card border-success mb-1">
-                                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                                                    <h6 class="card-title text-success">Miembros del Consejo a Favor</h6>
-                                                    <p id="vote-favor" class="card-text text-success mb-0">Nadie ha votado a favor</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="card border-danger mb-1">
-                                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
-                                                    <h6 class="card-title text-danger">Miembros del Consejo en contra</h6>
-                                                    <p id="vote-contra" class="card-text text-danger mb-0">Nadie ha votado en contra</p>
-                                                </div>
-                                            </div>
+                                        contenedor.insertAdjacentHTML('beforeend', contenido);
+                                    }
+                                </script>
+                            </div>
+
+                            <!-- Resultados de la votación -->
+                            <div class="vote-counts text-center d-flex justify-content-between">
+                                <div class="left">
+                                    <div class="card border-success mb-1">
+                                        <div class="card-body d-flex flex-column justify-content-left align-items-center p-3">
+                                            <h6 class="card-title text-success">Miembros del Consejo a Favor</h6>
+                                            <p id="vote-favor" class="card-text text-success mb-0">Nadie ha votado a favor</p>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Botones de navegación -->
-                                <div class="mt-3">
-                                    <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                    <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                                <div class="right">
+                                    <div class="card border-danger mb-1">
+                                        <div class="card-body d-flex flex-column justify-content-left align-items-center p-3">
+                                            <h6 class="card-title text-danger">Miembros del Consejo en contra</h6>
+                                            <p id="vote-contra" class="card-text text-danger mb-0">Nadie ha votado en contra</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                    </form>
-                </div>
+
+                            <!-- Botones de navegación -->
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                            </div>
+                        </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 </body>
 
 </html>
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<!-- Incluir la librería num2words desde el CDN -->
-<script src="https://cdn.jsdelivr.net/npm/num2words@1.0.1/num2words.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 

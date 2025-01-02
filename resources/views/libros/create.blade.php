@@ -69,178 +69,176 @@ $mesEnTexto = [
 <body>
 
 </body>
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-body">
-            <!-- Barra de Progreso -->
-            <div class="progress mb-4">
-                <div
-                    class="progress-bar progress-bar-striped progress-bar-animated"
-                    role="progressbar"
-                    style="width: 33%;"
-                    id="progress-bar"
-                    aria-valuenow="33"
-                    aria-valuemin="0"
-                    aria-valuemax="100">
-                    Paso 1 de 3
+<div class="card container-fluid p-0">
+    <div class="card-body">
+        <!-- Barra de Progreso -->
+        <div class="progress mb-4">
+            <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style="width: 33%;"
+                id="progress-bar"
+                aria-valuenow="33"
+                aria-valuemin="0"
+                aria-valuemax="100">
+                Paso 1 de 3
+            </div>
+        </div>
+        <input type="hidden" id="Mes" name="Mes" />
+        <script>
+            var mesxd = document.getElementById("Mes").value;
+        </script>
+        <!-- Stepper -->
+        <div class="bs-stepper">
+            <div class="bs-stepper-header" role="tablist">
+                <!-- Paso 1 -->
+                <div class="step" data-target="#step-1">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
+                        <span class="bs-stepper-circle">1</span>
+                        <span class="bs-stepper-label">Configuración del libro</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 2 -->
+                <div class="step" data-target="#step-2">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
+                        <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-label">Representación del consejo</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 3 -->
+                <div class="step" data-target="#step-3">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
+                        <span class="bs-stepper-circle">3</span>
+                        <span class="bs-stepper-label">Apertura del libro</span>
+                    </button>
                 </div>
             </div>
-            <input type="hidden" id="Mes" name="Mes" />
-            <script>
-                var mesxd = document.getElementById("Mes").value;
-            </script>
-            <!-- Stepper -->
-            <div class="bs-stepper">
-                <div class="bs-stepper-header" role="tablist">
-                    <!-- Paso 1 -->
-                    <div class="step" data-target="#step-1">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
-                            <span class="bs-stepper-circle">1</span>
-                            <span class="bs-stepper-label">Configuración del libro</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
 
-                    <!-- Paso 2 -->
-                    <div class="step" data-target="#step-2">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                            <span class="bs-stepper-circle">2</span>
-                            <span class="bs-stepper-label">Representación del consejo</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
+            <div class="bs-stepper-content">
+                <!-- Formulario con pasos -->
+                <form action="{{ route('libros.store') }}" method="POST">
+                    @csrf
 
-                    <!-- Paso 3 -->
-                    <div class="step" data-target="#step-3">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                            <span class="bs-stepper-circle">3</span>
-                            <span class="bs-stepper-label">Apertura del libro</span>
-                        </button>
-                    </div>
-                </div>
+                    <!-- Paso 1: Configuración del libro-->
+                    <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
 
-                <div class="bs-stepper-content">
-                    <!-- Formulario con pasos -->
-                    <form action="{{ route('libros.store') }}" method="POST">
-                        @csrf
-
-                        <!-- Paso 1: Configuración del libro-->
-                        <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
-
+                        <div class="form-group">
                             <div class="form-group">
-                                <div class="form-group">
-                                    <label for="fecha">
-                                        <i class="bi bi-calendar-event me-2"></i>
-                                        Fecha de ingreso
-                                    </label>
-
-                                    <div class="input-group">
-                                        <input oninput="actualizarMesYTexto(); " type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fecha', now()->toDateString()) }}" required />
-                                        <span class="input-group-text">
-                                            <i class="bi bi-calendar-plus"></i>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Aquí se mostrará el mes -->
-                                <input type="hidden" id="mesSeleccionado" name="mesSeleccionado" />
-                                <div class="form-group">
-
-                                    <label for="fecha2">
-                                        <i class="bi bi-calendar-x me-2"></i>
-                                        Fecha de fin
-                                    </label>
-
-                                    <div class="input-group">
-                                        <input type="date" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
-                                        <span class="input-group-text">
-                                            <i class="bi bi-calendar-plus"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group position-relative">
-
-                                    <label for="descripcion_Acuerdos">
-                                        <i class="bi bi-file-text me-2"></i>
-                                        Descripción del libro
-                                    </label>
-
-                                    <textarea
-                                        class="form-control input-with-icon"
-                                        id="descripcion_Acuerdos"
-                                        name="descripcion_Libro"
-                                        placeholder="Escriba una descripción detallada del libro"
-                                        rows="5"
-                                        required></textarea>
-                                </div>
-                            </div>
-
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
-
-                        <!-- Paso 2: Representación del consejo -->
-                        <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                            <div class="form-group">
-
-                                <label for="alcalde">
-                                    <i class="bi bi-person-badge me-2"></i>
-                                    Seleccione Alcalde
-                                </label>
-                                <div class="input-group">
-                                    <select class="form-select form-select-sm" id="alcalde" name="alcalde">
-                                        <option selected>Seleccione</option>
-                                        @foreach($alcalde as $alcaldes)
-                                        <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <label for="sindico">
-                                    <i class="bi bi-person-badge me-2"></i>
-                                    Seleccione Sindico
+                                <label for="fecha">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    Fecha de ingreso
                                 </label>
 
                                 <div class="input-group">
-                                    <select class="form-select form-select-sm" id="sindico" name="sindico">
-                                        <option selected>Seleccione</option>
-                                        @foreach($sindico as $sindicos)
-                                        <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}}</option>
-                                        @endforeach
-                                    </select>
+                                    <input oninput="actualizarMesYTexto(); " type="date" class="form-control" id="fecha" name="fechainicio_Libro" value="{{ old('fecha', now()->toDateString()) }}" required />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
 
-                        {{-- Paso 3: Apertura del libro --}}
-                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-
+                            <!-- Aquí se mostrará el mes -->
+                            <input type="hidden" id="mesSeleccionado" name="mesSeleccionado" />
                             <div class="form-group">
-                                <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
-                                <textarea class="form-control" id="notas" name="apertura_Libro" required></textarea>
+
+                                <label for="fecha2">
+                                    <i class="bi bi-calendar-x me-2"></i>
+                                    Fecha de fin
+                                </label>
+
+                                <div class="input-group">
+                                    <input type="date" class="form-control" id="fecha2" name="fechafinal_Libro" value="{{ old('fecha2', now()->toDateString()) }}" required />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
+                                </div>
                             </div>
+                            <div class="form-group position-relative">
 
-                            @section('css')
-                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-                            @endsection
+                                <label for="descripcion_Acuerdos">
+                                    <i class="bi bi-file-text me-2"></i>
+                                    Descripción del libro
+                                </label>
 
-                            <!-- Botones de navegación -->
-                            <div class="mt-3">
-                                <?php $diaSeleccionado = old('diaSeleccionado') ?? ''; ?>
-                                <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                                <textarea
+                                    class="form-control input-with-icon"
+                                    id="descripcion_Acuerdos"
+                                    name="descripcion_Libro"
+                                    placeholder="Escriba una descripción detallada del libro"
+                                    rows="5"
+                                    required></textarea>
                             </div>
                         </div>
-                    </form>
-                </div>
+
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Representación del consejo -->
+                    <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+                        <div class="form-group">
+
+                            <label for="alcalde">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Seleccione Alcalde
+                            </label>
+                            <div class="input-group">
+                                <select class="form-select form-select-sm" id="alcalde" name="alcalde">
+                                    <option selected>Seleccione</option>
+                                    @foreach($alcalde as $alcaldes)
+                                    <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <label for="sindico">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Seleccione Sindico
+                            </label>
+
+                            <div class="input-group">
+                                <select class="form-select form-select-sm" id="sindico" name="sindico">
+                                    <option selected>Seleccione</option>
+                                    @foreach($sindico as $sindicos)
+                                    <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    {{-- Paso 3: Apertura del libro --}}
+                    <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+
+                        <div class="form-group">
+                            <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
+                            <textarea class="form-control" id="notas" name="apertura_Libro" required></textarea>
+                        </div>
+
+                        @section('css')
+                        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+                        @endsection
+
+                        <!-- Botones de navegación -->
+                        <div class="mt-3">
+                            <?php $diaSeleccionado = old('diaSeleccionado') ?? ''; ?>
+                            <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

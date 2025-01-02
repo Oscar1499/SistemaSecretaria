@@ -4,7 +4,7 @@
 
 @section('content_header')
 <h1><i class="bi bi-book-fill me-2"></i>Lista de Libros</h1>
-<a href="{{ route('libros.create') }}" class="btn btn-primary mb-3">
+<a href="{{ route('libros.create') }}" class="btn btn-primary mt-1">
     <i class="fas fa-plus"></i> Añadir Nuevo Libro
 </a>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -19,7 +19,7 @@
 @stop
 
 @section('content')
-<div class="card">
+<div class="card container-fluid p-0">
     <div class="card-header">
         <h3 class="card-title text-center">Libros Registrados</h3>
     </div>

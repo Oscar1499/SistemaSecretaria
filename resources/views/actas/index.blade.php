@@ -4,7 +4,7 @@
 
 @section('content_header')
 <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Lista de Actas</h1>
-<a href="{{ route('actas.create') }}" class="btn btn-primary mb-3">
+<a href="{{ route('actas.create') }}" class="btn btn-primary mt-1">
     <i class="fas fa-plus"></i> Añadir Nueva Acta
 </a>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -18,7 +18,7 @@
 @stop
 
 @section('content')
-<div class="card">
+<div class="card container-fluid p-0">
     <div class="card-header">
         <h3 class="card-title text-center">Actas registradas</h3>
     </div>
@@ -198,7 +198,7 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 <script>
-  $(document).ready(function() {
+    $(document).ready(function() {
         $('#actasTable').DataTable({
             "language": {
                 "decimal": "",

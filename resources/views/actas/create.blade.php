@@ -3,7 +3,7 @@
 @section('title', 'Crear Acta')
 
 @section('content_header')
-<h1>Crear Acta</h1>
+<h1><i class="bi bi-file-earmark-text-fill me-2"></i>Crear Acta</h1>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -32,142 +32,141 @@ function numToText($number)
     <input type="hidden" id="alcaldesaInfo" value="{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}">
     <input type="hidden" id="secretarioInfo" value="{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido .' '. $secretario->cargo : 'No definido' }}">
 
-    <div class="container">
-        <div class="card">
-            <div class="card-body">
-                <!-- Barra de Progreso -->
-                <div class="progress mb-4">
-                    <div
-                        class="progress-bar progress-bar-striped progress-bar-animated"
-                        role="progressbar"
-                        style="width: 33%;"
-                        id="progress-bar"
-                        aria-valuenow="33"
-                        aria-valuemin="0"
-                        aria-valuemax="100">
-                        <span>Paso 1 de 4</span>
+    <div class="card container-fluid p-0">
+        <div class="card-body">
+            <!-- Barra de Progreso -->
+            <div class="progress mb-4">
+                <div
+                    class="progress-bar progress-bar-striped progress-bar-animated"
+                    role="progressbar"
+                    style="width: 33%;"
+                    id="progress-bar"
+                    aria-valuenow="33"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                    <span>Paso 1 de 4</span>
+                </div>
+            </div>
+            <!-- Stepper -->
+            <div class="bs-stepper">
+                <div class="bs-stepper-header" role="tablist">
+                    <!-- Paso 1 -->
+                    <div class="step" data-target="#step-1">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label">Libro</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <!-- Paso 2 -->
+                    <div class="step" data-target="#step-2">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label">Fecha</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <!-- Paso 3 -->
+                    <div class="step" data-target="#step-3">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label">Funcionarios Ausentes</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <!-- Paso 4 -->
+                    <div class="step" data-target="#step-4">
+                        <button type="button" class="step-trigger" role="tab" id="stepper-step-4" aria-controls="step-4">
+                            <span class="bs-stepper-circle">4</span>
+                            <span class="bs-stepper-label">Acta</span>
+                        </button>
                     </div>
                 </div>
-                <!-- Stepper -->
-                <div class="bs-stepper">
-                    <div class="bs-stepper-header" role="tablist">
-                        <!-- Paso 1 -->
-                        <div class="step" data-target="#step-1">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-1" aria-controls="step-1">
-                                <span class="bs-stepper-circle">1</span>
-                                <span class="bs-stepper-label">Libro</span>
-                            </button>
+                <div class="bs-stepper-content">
+                    <!-- Paso 1: Seleccionar Acta -->
+                    <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
+                        <div class="form-group">
+                            <label for="id_libros"><i class="bi bi-book"></i> Libro</label>
+                            <select class="form-control" id="id_libros" name="id_libros" required>
+                                <option value="" selected>Seleccione un libro</option>
+
+                            </select>
                         </div>
-                        <div class="line"></div>
-                        <!-- Paso 2 -->
-                        <div class="step" data-target="#step-2">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                                <span class="bs-stepper-circle">2</span>
-                                <span class="bs-stepper-label">Fecha</span>
-                            </button>
+                        <div class="form-group">
+                            <label for="descripcion"><i class="bi bi-info-circle"></i> Descripción de la sesión</label>
+                            <textarea oninput="validartextarea();" class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required></textarea>
                         </div>
-                        <div class="line"></div>
-                        <!-- Paso 3 -->
-                        <div class="step" data-target="#step-3">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                                <span class="bs-stepper-circle">3</span>
-                                <span class="bs-stepper-label">Funcionarios Ausentes</span>
-                            </button>
-                        </div>
-                        <div class="line"></div>
-                        <!-- Paso 4 -->
-                        <div class="step" data-target="#step-4">
-                            <button type="button" class="step-trigger" role="tab" id="stepper-step-4" aria-controls="step-4">
-                                <span class="bs-stepper-circle">4</span>
-                                <span class="bs-stepper-label">Acta</span>
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-primary next-step" id="nextStepBtn1" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                     </div>
-                    <div class="bs-stepper-content">
-                        <!-- Paso 1: Seleccionar Acta -->
-                        <div id="step-1" class="content" role="tabpanel" aria-labelledby="stepper-step-1">
-                            <div class="form-group">
-                                <label for="id_libros"><i class="bi bi-book"></i> Libro</label>
-                                <select class="form-control" id="id_libros" name="id_libros" required>
-                                    <option value="" selected>Seleccione un libro</option>
+                    <!-- Paso 2: Redactar el Memorando -->
+                    <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+                        <div class="form-group">
+                            <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
+                            <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
 
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="descripcion"><i class="bi bi-info-circle"></i> Descripción de la sesión</label>
-                                <textarea oninput="validartextarea();" class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required></textarea>
-                            </div>
-                            <button type="button" class="btn btn-primary next-step" id="nextStepBtn1" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
-                        <!-- Paso 2: Redactar el Memorando -->
-                        <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                            <div class="form-group">
-                                <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
-                                <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                        <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
+                        <button type="button" class="btn btn-primary next-step" id="nextStepBtn" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+                    </div>
+                    <script>
+                        function validarFecha() {
+                            const fechaInput = document.getElementById("fecha");
 
-                            </div>
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                            <button type="button" class="btn btn-primary next-step" id="nextStepBtn" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
-                        </div>
-                        <script>
-                            function validarFecha() {
-                                const fechaInput = document.getElementById("fecha");
+                            const nextStepButton = document.getElementById("nextStepBtn");
 
-                                const nextStepButton = document.getElementById("nextStepBtn");
-
-                                if (fechaInput.value.trim() !== "") {
-                                    nextStepButton.disabled = false;
-                                } else {
-                                    nextStepButton.disabled = true;
-                                }
+                            if (fechaInput.value.trim() !== "") {
+                                nextStepButton.disabled = false;
+                            } else {
+                                nextStepButton.disabled = true;
                             }
+                        }
 
-                            function validartextarea() {
-                                const textarea = document.getElementById("descripcion");
-                                const nextStepButton = document.getElementById("nextStepBtn1");
+                        function validartextarea() {
+                            const textarea = document.getElementById("descripcion");
+                            const nextStepButton = document.getElementById("nextStepBtn1");
 
-                                if (textarea.value.trim() !== "") {
-                                    nextStepButton.disabled = false;
-                                } else {
-                                    nextStepButton.disabled = true;
-                                }
+                            if (textarea.value.trim() !== "") {
+                                nextStepButton.disabled = false;
+                            } else {
+                                nextStepButton.disabled = true;
                             }
-                        </script>
-                        <!-- Paso 3: Seleccionar Personal -->
-                        <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                            <div class="form-group">
-                                <label for="personal"><i class="bi bi-person-x-fill me-2"></i> Seleccionar Funcionarios Ausentes</label>
-                                <div class="accordion" id="accordionPersonal">
-                                    <div class="card">
-                                        <div class="card-header" id="headingOne">
-                                            <h5 class="mb-0">
-                                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePersonal">
-                                                    Seleccionar Todos
-                                                </button>
-                                            </h5>
-                                        </div>
-                                        <div id="collapsePersonal" class="collapse" aria-labelledby="headingOne" data-parent="#accordionPersonal">
-                                            <div class="card-body">
-                                                <div class="form-check">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
-                                                        Todos Ausentes
-                                                    </label><br>
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" id="selectAllPresentes" onchange="toggleSelectAll()">
-                                                        Todos Presentes
-                                                    </label><br>
-                                                    @foreach ($personal as $persona)
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance(); Personal_xd();"><span id="icono-{{ $persona->id }}"></span>
-                                                        {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }}
-                                                        <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }}) <span id="icono-{{ $persona->id }}"></span></small>
-                                                    </label><br>
-                                                    @endforeach
+                        }
+                    </script>
+                    <!-- Paso 3: Seleccionar Personal -->
+                    <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+                        <div class="form-group">
+                            <label for="personal"><i class="bi bi-person-x-fill me-2"></i> Seleccionar Funcionarios Ausentes</label>
+                            <div class="accordion" id="accordionPersonal">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePersonal">
+                                                Seleccionar Todos
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapsePersonal" class="collapse" aria-labelledby="headingOne" data-parent="#accordionPersonal">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
+                                                    Todos Ausentes
+                                                </label><br>
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" id="selectAllPresentes" onchange="toggleSelectAll()">
+                                                    Todos Presentes
+                                                </label><br>
+                                                @foreach ($personal as $persona)
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance(); Personal_xd();"><span id="icono-{{ $persona->id }}"></span>
+                                                    {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }}
+                                                    <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }}) <span id="icono-{{ $persona->id }}"></span></small>
+                                                </label><br>
+                                                @endforeach
 
 
-                                                    <!-- Comentado por el momento -->
-                                                    <!-- <script>
+                                                <!-- Comentado por el momento -->
+                                                <!-- <script>
                                                         function Personal_xd() {
 
                                                             const checkboxes = document.querySelectorAll('input[name="personal[]"]:checked');
@@ -181,47 +180,47 @@ function numToText($number)
 
                                                         }
                                                     </script> -->
-                                                </div>
-
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
-                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
-                        <!-- Paso 4: Acta -->
-                        <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
-                            <div class="form-group">
-                                <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
-                                <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                    value="ACTA NÚMERO {{ strtoupper(numToText($numero_Actas)) }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="motivo_ausencia"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Motivo de Ausencia</label>
-                                <textarea
-                                    disabled
-                                    class="form-control"
-                                    id="motivo_ausencia"
-                                    name="motivo_ausencia"
-                                    placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
-                                <button type="button" class="btn btn-secondary previous-step mt-3">
-                                    <i class="bi bi-arrow-left"></i> Atrás
-                                </button>
-                                <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">
-                                    <i class="bi bi-floppy"></i> Guardar
-                                </button>
-                            </div>
+                        <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
+                        <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                    </div>
+                    <!-- Paso 4: Acta -->
+                    <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
+                        <div class="form-group">
+                            <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
+                            <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                                value="ACTA NÚMERO {{ strtoupper(numToText($numero_Actas)) }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="motivo_ausencia"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Motivo de Ausencia</label>
+                            <textarea
+                                disabled
+                                class="form-control"
+                                id="motivo_ausencia"
+                                name="motivo_ausencia"
+                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
+                            <button type="button" class="btn btn-secondary previous-step mt-3">
+                                <i class="bi bi-arrow-left"></i> Atrás
+                            </button>
+                            <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">
+                                <i class="bi bi-floppy"></i> Guardar
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </form>
 
 <!-- Función para enviar el formulario -->
