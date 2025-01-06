@@ -415,7 +415,6 @@ function numToText($number)
 <script>
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
-
         // Generar el texto dinámico
         const textoInicial = `
             <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
