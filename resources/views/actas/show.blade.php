@@ -6,6 +6,7 @@
 <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Detalles del Acta</h1>
 
 @stop
+
 @section('css')
 <!-- Bootstrap Icons y estilos adicionales -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -66,6 +67,7 @@
         <div class="card shadow-sm mb-3">
             <div class="card-body bg-light">
                 <div class="row">
+
                     <div class="col-md-6">
                         <p class="mb-1"><i class="fas fa-user-check"></i> <strong>Miembros presentes en la sesión:</strong></p>
                         <div class="bg-light rounded shadow-sm p-3">
@@ -77,9 +79,23 @@
                                 </li>
                                 @endforeach
                             </ol>
-                            <button class="btn btn-link p-0 mt-2 toggle-button" data-target="lista-presentes">Mostrar más</button>
+                            <button class="btn btn-link p-0 mt-2 toggle-button" data-target="lista-presentes" onclick="toggleList(this)">Mostrar más</button>
                         </div>
                     </div>
+
+                    <script>
+                        function toggleList(button) {
+                            const list = document.getElementById(button.dataset.target);
+                            if (list.style.maxHeight) {
+                                list.style.maxHeight = null;
+                                button.innerText = "Mostrar menos";
+                            } else {
+                                list.style.maxHeight = "150px";
+                                button.innerText = "Mostrar más";
+                            }
+                        }
+                    </script>
+
                     <div class="col-md-6">
                         <p class="mb-1"><i class="fas fa-user-times"></i> <strong>Miembros ausentes en la sesión:</strong></p>
                         <div class="bg-light rounded shadow-sm p-3">
@@ -91,9 +107,10 @@
                                 </li>
                                 @endforeach
                             </ol>
-                            <button class="btn btn-link p-0 mt-2 toggle-button" data-target="lista-ausentes">Mostrar más</button>
+                            <button class="btn btn-link p-0 mt-2 toggle-button" data-target="lista-ausentes" onclick="toggleList(this)">Mostrar más</button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -133,7 +150,6 @@
         </div>
     </div>
 </div>
-
 @stop
 
 @section('js')

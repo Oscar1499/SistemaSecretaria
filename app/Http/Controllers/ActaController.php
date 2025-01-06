@@ -33,7 +33,7 @@ class ActaController extends Controller
             // Validar los campos requeridos
             $request->validate([
                 'fecha' => 'required|date',
-                // 'id_Personal' => 'required|integer',
+                'id_Personal' => 'nullable|string',
                 'estado' => 'nullable|string',
                 'contenido_elaboracion' => 'required|string',
                 'presentes' => 'required|string',
@@ -48,7 +48,7 @@ class ActaController extends Controller
             $acta = new Acta();
             $acta->id_libros = 7;
             $acta->estado = $request->estado;
-            // $acta->id_Personal = $request->id_Personal;
+            $acta->id_Personal = $request->id_Personal;
             $acta->fecha = $request->fecha;
             $acta->correlativo = $request->correlativo;
             $acta->motivo_ausencia = $request->motivo_ausencia ?? 'Ninguno'; // Valor predeterminado si no se proporciona
@@ -77,7 +77,6 @@ class ActaController extends Controller
 
     public function edit(Acta $acta)
     {
-
         $personal = Personal::all();
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
         $secretario = Personal::where('cargo', 'Secretario')->first();

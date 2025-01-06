@@ -5,20 +5,32 @@
 @section('content_header')
 <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Editar Acta</h1>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stop
 
 @section('content')
-<form action="{{ route('actas.update', $acta->id_Actas) }}" method="POST" id="actaForm">
+<?php
+$texto = $acta->contenido_elaboracion; // El texto completo
+// Expresión regular para extraer los presentes
+preg_match('/<a id="presentPersonal">(.*?)<\/a>/', $texto, $coincidenciasPresentes);
+$presentesTexto = !empty($coincidenciasPresentes[1]) ? $coincidenciasPresentes[1] : 'No se encontró texto válido para los presentes.';
+
+// Expresión regular para extraer los ausentes
+preg_match('/<span id="FaltaPersonal">(.*?)<\/span>/', $texto, $coincidenciasAusentes);
+$ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] : 'No se encontró texto válido para los ausentes.';;
+
+?>
+<form action="{{ route('actas.store') }}" method="POST" id="actaForm">
     @csrf
-    @method('PUT')
 
     <!-- Campos ocultos para almacenar los contenidos dinámicos -->
-    <input type="hidden" id="presentes" name="presentes" value="{{$acta->presentes}}" required>
-    <input type="hidden" id="ausentes" name="ausentes" value="{{$acta->ausentes}}" required>
-    <input type="hidden" id="tipo_sesion" name="tipo_sesion" required value="hola" required>
+    <input type="hidden" id="presentes" name="presentes" required />
+    <input type="hidden" id="ausentes" name="ausentes" required />
+    <input type="hidden" id="estado" name="estado" value="Abierto" />
+    <input type="hidden" id="tipo_sesion" name="tipo_sesion" required />
 
+    <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
 
     <input type="hidden" id="alcaldesaInfo" value="{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}">
     <input type="hidden" id="secretarioInfo" value="{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido .' '. $secretario->cargo : 'No definido' }}">
@@ -85,7 +97,7 @@
                         </div>
                         <div class="form-group">
                             <label for="descripcion"><i class="bi bi-info-circle"></i> Descripción de la sesión</label>
-                            <textarea class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required>{{$acta->descripcion}}</textarea>
+                            <textarea oninput="validartextarea();" class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required></textarea>
                         </div>
                         <button type="button" class="btn btn-primary next-step" id="nextStepBtn1">Siguiente <i class="bi bi-arrow-right"></i></button>
                     </div>
@@ -93,12 +105,12 @@
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                         <div class="form-group">
                             <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
-                            <input value="{{ old('fecha', $acta->fecha) }}" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                            <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+
                         </div>
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                         <button type="button" class="btn btn-primary next-step" id="nextStepBtn">Siguiente <i class="bi bi-arrow-right"></i></button>
                     </div>
-
                     <!-- Paso 3: Seleccionar Personal -->
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                         <div class="form-group">
@@ -110,25 +122,25 @@
                                             <button class="btn btn-link" type="button" onclick="confirmCollapse()">
                                                 Seleccionar Todos
                                             </button>
-                                            <script>
-                                                function confirmCollapse() {
-                                                    Swal.fire({
-                                                        title: '¿Desea modificar los funcionarios ausentes o presentes?',
-                                                        text: 'Al seleccionar Sí, podrá editar la lista de funcionarios y cambiar su estado entre ausente y presente.',
-                                                        icon: 'question',
-                                                        showCancelButton: true,
-                                                        confirmButtonText: 'Sí, modificar',
-                                                        cancelButtonText: 'No, cancelar',
-                                                        confirmButtonColor: '#d33',
-                                                        cancelButtonColor: '#3085d6',
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            $('#collapsePersonal').collapse('toggle');
-                                                        }
-                                                    });
-                                                }
-                                            </script>
                                         </h5>
+                                        <script>
+                                            function confirmCollapse() {
+                                                Swal.fire({
+                                                    title: '¿Desea modificar los funcionarios ausentes o presentes?',
+                                                    text: 'Al seleccionar Sí, podrá editar la lista de funcionarios y cambiar su estado entre ausente y presente.',
+                                                    icon: 'question',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Sí, modificar',
+                                                    cancelButtonText: 'No, cancelar',
+                                                    confirmButtonColor: '#d33',
+                                                    cancelButtonColor: '#3085d6',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        $('#collapsePersonal').collapse('toggle');
+                                                    }
+                                                });
+                                            }
+                                        </script>
                                     </div>
                                     <div id="collapsePersonal" class="collapse" aria-labelledby="headingOne" data-parent="#accordionPersonal">
                                         <div class="card-body">
@@ -143,7 +155,7 @@
                                                 </label><br>
                                                 @foreach ($personal as $persona)
                                                 <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance()"><span id="icono-{{ $persona->id }}"></span>
+                                                    <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance(); Personal_xd();"><span id="icono-{{ $persona->id }}"></span>
                                                     {{ $persona->nombre }} {{ $persona->apellido }} {{ $persona->cargo }}
                                                     <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }}) <span id="icono-{{ $persona->id }}"></span></small>
                                                 </label><br>
@@ -162,10 +174,10 @@
                         <div class="form-group">
                             <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                             <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                value="{{ $acta->correlativo }}" readonly>
+                                value="{{$acta->correlativo}}" readonly>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="Notas" name="contenido_elaboracion" required>{{ $acta->contenido_elaboracion }}</textarea>
+                            <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="motivo_ausencia"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i> Motivo de Ausencia</label>
@@ -174,12 +186,12 @@
                                 class="form-control"
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
-                                placeholder="Escriba el motivo de ausencia para los que no se marcaron"></textarea>
+                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
                             <button type="button" class="btn btn-secondary previous-step mt-3">
                                 <i class="bi bi-arrow-left"></i> Atrás
                             </button>
                             <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">
-                                <i class="bi bi-floppy"></i> Guardar
+                                <i class="bi bi-floppy"></i> Actualizar acta
                             </button>
                         </div>
                     </div>
@@ -187,6 +199,7 @@
             </div>
         </div>
     </div>
+
 </form>
 
 <!-- Función para enviar el formulario -->
@@ -256,8 +269,6 @@
         showStep(currentStep);
     });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
@@ -265,7 +276,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Inicializar el stepper
@@ -328,7 +338,6 @@
                     checkbox.checked = false;
                 });
             }
-
             updatePersonalAttendance();
         };
 
@@ -353,48 +362,81 @@
             // Actualizar el contenido
             actualizarTextoFecha();
         };
+
+        function obtenerDia() {
+            const fecha = document.getElementById("fecha").value;
+            if (!fecha) return null;
+
+            // Crear el objeto Date usando valores locales
+            const [year, month, day] = fecha.split('-');
+            const fechaObj = new Date(year, month - 1, day);
+
+            const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            const nombreDelMes = meses[fechaObj.getMonth()];
+            const dia = fechaObj.getDate();
+
+            return {
+                dia,
+                mes: nombreDelMes
+            };
+        }
+
         // Función para actualizar el contenido del texto en el Summernote
         function actualizarTextoFecha() {
-            const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
-            const presentesTexto = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
+            const fecha = obtenerDia();
+            const diaSeleccionado = fecha?.dia || 'el día';
+            const mesSeleccionadoVariable = fecha?.mes || 'el mes';
 
-            //Funcion para actualizar los campos ocultos antes de enviar el formulario
+            let tipo_Sesion = (diaSeleccionado >= 1 && diaSeleccionado <= 5) || (diaSeleccionado >= 10 && diaSeleccionado <= 15) ? 'Ordinaria' : 'Extraordinaria';
+            document.getElementById('tipo_sesion').value = tipo_Sesion;
+
+            const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : '<?php echo $ausentesTexto ?> ';
+            const presentesTexto = presentes.length > 0 ? presentes.join(', ') : '<?php echo $presentesTexto ?> ';
+
+            // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
-
             const fechaTexto = `
-        En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
+        <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
-        <span id="diaTexto">${new Date().getDate()}</span> de <span id="mesTexto">${new Date().toLocaleString('es-ES', { month: 'long' })}</span> del
+        <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.
         En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código
-        Municipal, en sesión <strong><span id="tipoSesion"></span></strong>, convocada y presidida por
-        <strong>${alcaldesaInfo}
-            Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
+        Municipal, en sesión ${tipo_Sesion}, convocada y presidida por
+        <strong>${alcaldesaInfo} Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
         <strong>${secretarioInfo}</strong>;
         presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal">${presentesTexto}</a>
-        <strong>y Ausencia de: <span id="FaltaPersonal">${ausentesTexto}</span>.</strong>
+        <strong>y Ausencia de: <span id="FaltaPersonal">${ausentesTexto}</span>.</strong></p>
     `;
-
             // Insertar el texto generado en Summernote
             $('#Notas').summernote('code', fechaTexto);
         }
+
         // Inicialización de Summernote y eventos
-        $('#Notas').summernote({
-            height: 400,
-            lang: 'es-SV',
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']]
-            ]
+        $(document).ready(function() {
+            // Inicializar Summernote
+            $('#Notas').summernote({
+                height: 400,
+                lang: 'es-SV',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+
+            // Enlazar evento al cambio del campo de fecha
+            document.getElementById('fecha').addEventListener('change', actualizarTextoFecha);
+
+            // Actualizar contenido inicial
+            actualizarTextoFecha();
         });
 
         // Inicializar Flatpickr para el campo de fecha
@@ -417,12 +459,6 @@
             document.getElementById('anoTexto').innerText = ano;
         }
 
-        function actualizarTipoSesion(fechaSeleccionada) {
-            const dia = fechaSeleccionada.getDate();
-            const tipoSesion = (dia >= 1 && dia <= 5) || (dia >= 15 && dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
-            document.getElementById('tipoSesion').innerText = tipoSesion;
-        }
-
         // Ajustar la fecha y tipo de sesión al cargar la página
         const fechaInput = document.getElementById("fecha");
         const fechaHoy = new Date(fechaInput.value + 'T00:00:00'); // Asegura que la fecha sea correcta
@@ -436,6 +472,26 @@
             actualizarTipoSesion(fechaSeleccionada);
         });
 
+        // Función para actualizar los campos ocultos antes de enviar el formulario
+        function actualizarCamposOcultos() {
+            // Obtener el contenido de 'contenido_elaboracion' como HTML
+            const contenidoElaboracion = document.getElementById('fechaTexto').outerHTML +
+                document.getElementById('tipoSesion').outerHTML +
+                document.getElementById('presentPersonal').outerHTML +
+                document.getElementById('FaltaPersonal').outerHTML;
+
+            // Obtener los nombres de presentes y ausentes
+            const presentes = document.getElementById('presentPersonal').innerText || 'Ninguno';
+            const ausentes = document.getElementById('FaltaPersonal').innerText || 'Ninguno';
+            const tipoSesion = document.getElementById('tipoSesion').innerText || 'No definido';
+
+            // Asignar los valores a los campos ocultos
+            document.getElementById('contenido_elaboracion').value = contenidoElaboracion;
+            document.getElementById('presentes').value = presentes;
+            document.getElementById('ausentes').value = ausentes;
+            document.getElementById('tipo_sesion').value = tipoSesion;
+        }
+
         // Actualizar campos ocultos al cambiar cualquier dato relevante
         document.querySelectorAll('.next-step, .previous-step, input, select, textarea').forEach(element => {
             element.addEventListener('change', actualizarCamposOcultos);
@@ -448,7 +504,6 @@
             // e.preventDefault();
             // console.log("Datos del formulario:", new FormData(this));
         });
-
 
         // Función para manejar cambios individuales en los checkboxes
         window.handleCheckboxChange = function() {
@@ -527,7 +582,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     /* Forzar que Select2 ocupe el 100% del ancho */
     .select2-container {

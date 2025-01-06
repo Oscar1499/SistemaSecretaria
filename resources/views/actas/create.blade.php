@@ -164,23 +164,6 @@ function numToText($number)
                                                     <small class="text-muted">({{ $persona->propietario ? 'Suplente' : 'Propietario' }}) <span id="icono-{{ $persona->id }}"></span></small>
                                                 </label><br>
                                                 @endforeach
-
-
-                                                <!-- Comentado por el momento -->
-                                                <!-- <script>
-                                                        function Personal_xd() {
-
-                                                            const checkboxes = document.querySelectorAll('input[name="personal[]"]:checked');
-
-                                                            const ids = [];
-
-                                                            checkboxes.forEach(checkbox => {
-                                                                ids.push(parseInt(checkbox.value, 10));
-                                                            });
-                                                            document.getElementById('id_Personal').value = ids.join('');
-
-                                                        }
-                                                    </script> -->
                                             </div>
 
                                         </div>
@@ -221,7 +204,6 @@ function numToText($number)
             </div>
         </div>
     </div>
-
 </form>
 
 <!-- Función para enviar el formulario -->
@@ -299,7 +281,6 @@ function numToText($number)
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Inicializar el stepper
@@ -483,12 +464,6 @@ function numToText($number)
             document.getElementById('diaTexto').innerText = dia;
             document.getElementById('mesTexto').innerText = mes;
             document.getElementById('anoTexto').innerText = ano;
-        }
-
-        function actualizarTipoSesion(fechaSeleccionada) {
-            const dia = fechaSeleccionada.getDate();
-            const tipoSesion = (dia >= 1 && dia <= 5) || (dia >= 15 && dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
-            document.getElementById('tipoSesion').innerText = tipoSesion;
         }
 
         // Ajustar la fecha y tipo de sesión al cargar la página
