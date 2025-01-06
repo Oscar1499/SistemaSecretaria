@@ -18,8 +18,6 @@ class ActaController extends Controller
 
     public function create()
     {
-        $dia = now()->day;
-        $tipoSesion = ($dia >= 1 && $dia <= 5) || ($dia >= 15 && $dia <= 20) ? 'Ordinaria' : 'Extraordinaria';
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
         // Contar el número de actas en la base de datos para determinar el correlativo de la acta a editar
         $numero_Actas = Acta::count() + 1;
@@ -27,7 +25,7 @@ class ActaController extends Controller
         $personal = Personal::all();
 
         // Aqui elimine las variables de libros y libroActual para que no se muestren en la vista
-        return view('actas.create', compact('tipoSesion', 'alcaldesa', 'secretario', 'personal', 'numero_Actas'));
+        return view('actas.create', compact( 'alcaldesa', 'secretario', 'personal', 'numero_Actas'));
     }
     public function store(Request $request)
     {

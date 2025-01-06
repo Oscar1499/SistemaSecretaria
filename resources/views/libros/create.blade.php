@@ -3,7 +3,7 @@
 @section('title', 'Agregar Libro')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i> Apertura de Libro</h1>
+<h1><i class="bi bi-book-fill me-2"></i>Apertura de Libro</h1>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
@@ -85,9 +85,7 @@ $mesEnTexto = [
             </div>
         </div>
         <input type="hidden" id="Mes" name="Mes" />
-        <script>
-            var mesxd = document.getElementById("Mes").value;
-        </script>
+
         <!-- Stepper -->
         <div class="bs-stepper">
             <div class="bs-stepper-header" role="tablist">
@@ -166,7 +164,7 @@ $mesEnTexto = [
 
                                 <textarea
                                     class="form-control input-with-icon"
-                                    id="descripcion_Acuerdos"
+                                    id="descripcion_Libro"
                                     name="descripcion_Libro"
                                     placeholder="Escriba una descripción detallada del libro"
                                     rows="5"
@@ -219,11 +217,54 @@ $mesEnTexto = [
                     </div>
 
                     {{-- Paso 3: Apertura del libro --}}
-                    <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-
+                       <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
+                        <!-- Formulario para la apertura del libro -->
                         <div class="form-group">
-                            <label for="notas"><i class="bi bi-pencil-fill me-2"></i> Apertura del libro</label>
-                            <textarea class="form-control" id="notas" name="apertura_Libro" required></textarea>
+                            <label for="notas" class="form-label">
+                                <i class="bi bi-pencil-fill me-1"></i> Apertura del libro
+                            </label>
+
+                            <!-- Selectores de hora y minutos -->
+                            <div class="d-flex flex-wrap align-items-center mt-2">
+                                <!-- Hora de Apertura -->
+                                <div class="d-flex flex-column me-3">
+                                    <label for="horaApertura" class="form-label mb-1">
+                                        <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
+                                    </label>
+                                    <select id="horaApertura" name="horaApertura" class="form-select" required>
+                                        <option value="" disabled selected>Hora de apertura</option>
+                                        <option value="">Cancelar la apertura manual</option>
+                                        <!-- Opciones de 0 a 23 -->
+                                        <script>
+                                            for (let i = 0; i < 24; i++) {
+                                                document.write(`<option value="${i}">${i.toString().padStart(1, '0')} Horas</option>`);
+                                            }
+                                        </script>
+                                    </select>
+                                </div>
+
+                                <!-- Minutos de Apertura -->
+                                <div class="d-flex flex-column">
+                                    <label for="minutosApertura" class="form-label mb-1">
+                                        <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
+                                    </label>
+                                    <select id="minutosApertura" name="minutosApertura" class="form-select" required>
+                                        <option value="" disabled selected>Minutos de apertura</option>
+                                        <option value="">Cancelar la apertura manual</option>
+                                        <!-- Opciones de 0 a 59 -->
+                                        <script>
+                                            for (let i = 0; i < 60; i++) {
+                                                document.write(`<option value="${i}">${i.toString().padStart(2, '0')} Minutos</option>`);
+                                            }
+                                        </script>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Área de texto para notas -->
+                        <div>
+                            <textarea class="form-control mt-2" id="notas" name="apertura_Libro" required></textarea>
                         </div>
 
                         @section('css')
@@ -234,8 +275,12 @@ $mesEnTexto = [
                         <div class="mt-3">
                             <?php $diaSeleccionado = old('diaSeleccionado') ?? ''; ?>
                             <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                            <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                            <button type="button" class="btn btn-secondary previous-step">
+                                <i class="bi bi-arrow-left"></i> Anterior
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-floppy"></i> Guardar Libro
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -273,11 +318,14 @@ $mesEnTexto = [
 
     function numeroAPalabras(numero) {
         const numerosEnPalabras = [
-            '', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez',
-            'Once', 'Doce', 'Trece', 'Catorce', 'Quince', 'Dieciséis', 'Diecisiete', 'Dieciocho', 'Diecinueve', 'Veinte',
-            'Veintiuno', 'Veintidós', 'Veintitrés', 'Veinticuatro', 'Veinticinco', 'Veintiséis', 'Veintisiete', 'Veintiocho', 'Veintinueve', 'Treinta', 'Treinta y uno'
+            'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
+            'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
+            'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta', 'treinta y uno',
+            'treinta y dos', 'treinta y tres', 'treinta y cuatro', 'treinta y cinco', 'treinta y seis', 'treinta y siete', 'treinta y ocho', 'treinta y nueve', 'cuarenta',
+            'cuarenta y uno', 'cuarenta y dos', 'cuarenta y tres', 'cuarenta y cuatro', 'cuarenta y cinco', 'cuarenta y seis', 'cuarenta y siete', 'cuarenta y ocho', 'cuarenta y nueve', 'cincuenta',
+            'cincuenta y uno', 'cincuenta y dos', 'cincuenta y tres', 'cincuenta y cuatro', 'cincuenta y cinco', 'cincuenta y seis', 'cincuenta y siete', 'cincuenta y ocho', 'cincuenta y nueve'
         ];
-        return numerosEnPalabras[numero] || 'el día';
+        return numerosEnPalabras[numero];
     }
 
     // Función para actualizar el texto en Summernote
@@ -289,10 +337,22 @@ $mesEnTexto = [
         const alcaldeSeleccionado = $('#alcalde option:selected').text() || 'Nombre del Alcalde';
         const sindicoSeleccionado = $('#sindico option:selected').text() || 'Nombre del Síndico';
 
+        let hora_Seleccionada = $('#horaApertura').val();
+        let minutos_Seleccionada = $('#minutosApertura').val();
+
+
+        minutos_Seleccionada = typeof minutos_Seleccionada === 'undefined' || minutos_Seleccionada === '' || minutos_Seleccionada === null ?
+            "<?php echo $minutosEnTexto ?>" :
+            numeroAPalabras(minutos_Seleccionada);
+
+        hora_Seleccionada = typeof hora_Seleccionada === 'undefined' || hora_Seleccionada === '' || hora_Seleccionada === null ?
+            "<?php echo $horaEnTexto;  ?>" :
+            numeroAPalabras(hora_Seleccionada);
+
         // Generar el texto dinámico
         const textoInicial = `
             <p style="text-align: justify;"><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-            a las <?php echo $horaEnTexto ?> horas y <?php echo $minutosEnTexto ?> minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
+            a las ${hora_Seleccionada} horas y ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
             juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
             debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
             La Unión Sur, del departamento de La Unión, durante el periodo de ${mesSeleccionadoVariable} a diciembre del año <?php echo $anioEnTexto ?>.</p>
@@ -300,14 +360,14 @@ $mesEnTexto = [
 
         <p style="display: none;" class="invisible-line"></p>
         <p style="display: none;" class="invisible-line"></p>
-         <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>______________________________________</strong></p>
-        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>${alcaldeSeleccionado}</strong></p>
-        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>Alcalde Municipal</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>______________________________________</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;" id="alcaldeSeleccionado"><strong>${alcaldeSeleccionado}</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;" id="alcalde"><strong>Alcalde Municipal</strong></p>
         <p style="display: none;" class="invisible-line"></p>
         <p style="display: none;" class="invisible-line"></p>
         <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>______________________________________</strong></p>
-        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>${sindicoSeleccionado}</strong></p>
-        <p style="text-align: center; line-height: 1.5; margin: 0;"><strong>Síndico Municipal</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;" id="sindicoSeleccionado"><strong>${sindicoSeleccionado}</strong></p>
+        <p style="text-align: center; line-height: 1.5; margin: 0;" id="sindico"><strong>Síndico Municipal</strong></p>
         `;
 
         // Insertar el texto generado en Summernote
@@ -339,7 +399,7 @@ $mesEnTexto = [
 
         // Eventos para actualizar dinámicamente
         $('#fecha').on('change', actualizarMesYTexto);
-        $('#alcalde, #sindico').on('change', actualizarTexto);
+        $('#alcalde, #sindico, #horaApertura, #minutosApertura').on('change', actualizarTexto); // Agregar el evento aquí
 
         // Actualizar el contenido de Summernote al cargar la página
         actualizarMesYTexto();
@@ -359,24 +419,24 @@ $mesEnTexto = [
 </script>
 
 <script>
-    flatpickr("#fecha2", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        defaultDate: "2024-12-01",
-        enable: [
-            // Solo permitir fechas de diciembre
-            function(date) {
-                return date.getMonth() === 11;
-            }
-        ],
-        onReady: function(selectedDates, dateStr, instance) {
-
-            instance.jumpToDate(new Date(instance.currentYear, 11, 1));
-            instance.calendarContainer.querySelectorAll(".flatpickr-monthDropdown-month, .flatpickr-prev-month, .flatpickr-next-month").forEach(el => {
-                el.style.display = "none";
-            });
+   flatpickr("#fecha2", {
+    dateFormat: "Y-m-d",
+    allowInput: true,
+    defaultDate: new Date(new Date().getFullYear(), 11, 31),
+    enable: [
+        // Solo permitir fechas de diciembre
+        function(date) {
+            return date.getMonth() === 11;
         }
-    });
+    ],
+    onReady: function(selectedDates, dateStr, instance) {
+        instance.jumpToDate(new Date(instance.currentYear, 11, 31));
+        instance.calendarContainer.querySelectorAll(".flatpickr-monthDropdown-month, .flatpickr-prev-month, .flatpickr-next-month").forEach(el => {
+            el.style.display = "none";
+        });
+    }
+});
+
 </script>
 
 
@@ -416,7 +476,7 @@ $mesEnTexto = [
     function validar_Step1() {
         const fechaIngreso = document.getElementById('fecha').value.trim();
         const fechaFin = document.getElementById('fecha2').value.trim();
-        const descripcionLibro = document.getElementById('descripcion_Acuerdos').value.trim();
+        const descripcionLibro = document.getElementById('descripcion_Libro').value.trim();
         const nextStepButton = document.querySelector('#step-1 .next-step');
 
         // Verificar si los campos están llenos
@@ -435,7 +495,7 @@ $mesEnTexto = [
         // Asociar la validación al cambio de los campos
         document.getElementById('fecha').addEventListener('input', validar_Step1);
         document.getElementById('fecha2').addEventListener('input', validar_Step1);
-        document.getElementById('descripcion_Acuerdos').addEventListener('input', validar_Step1);
+        document.getElementById('descripcion_Libro').addEventListener('input', validar_Step1);
     });
 </script>
 <!-- Estilos personalizados -->

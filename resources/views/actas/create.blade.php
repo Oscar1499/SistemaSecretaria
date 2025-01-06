@@ -24,8 +24,9 @@ function numToText($number)
     <!-- Campos ocultos para almacenar los contenidos dinámicos -->
     <input type="hidden" id="presentes" name="presentes" required />
     <input type="hidden" id="ausentes" name="ausentes" required />
-    <input type="hidden" id="tipo_sesion" name="tipo_sesion" value="{{  $tipoSesion }}" required />
     <input type="hidden" id="estado" name="estado" value="Abierto" />
+    <input type="hidden" id="tipo_sesion" name="tipo_sesion" required />
+
     <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
 
 
@@ -411,9 +412,11 @@ function numToText($number)
             const diaSeleccionado = fecha?.dia || 'el día';
             const mesSeleccionadoVariable = fecha?.mes || 'el mes';
 
+            let tipo_Sesion = (diaSeleccionado >= 1 && diaSeleccionado <= 5) || (diaSeleccionado >= 10 && diaSeleccionado <= 15) ? 'Ordinaria' : 'Extraordinaria';
+            document.getElementById('tipo_sesion').value = tipo_Sesion;
+
             const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             const presentesTexto = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
-            const tipoSesion = document.getElementById('tipo_sesion').value;
 
             // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
@@ -424,7 +427,7 @@ function numToText($number)
         <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.
         En avenencia de artículo 31 numeral 10, artículo 38, artículo 48, numeral 1 del Código
-        Municipal, en sesión ${tipoSesion} <strong><span id="tipoSesion"></span></strong>, convocada y presidida por
+        Municipal, en sesión ${tipo_Sesion}, convocada y presidida por
         <strong>${alcaldesaInfo} Municipal de La Unión Sur</strong>, con el infrascrito Secretario Municipal,
         <strong>${secretarioInfo}</strong>;
         presentes los miembros del Concejo Municipal Plural de La Unión: <a id="presentPersonal">${presentesTexto}</a>
@@ -653,7 +656,6 @@ function numToText($number)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     /* Forzar que Select2 ocupe el 100% del ancho */
     .select2-container {

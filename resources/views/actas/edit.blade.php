@@ -174,7 +174,7 @@
                                 class="form-control"
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
-                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">{{$acta->motivo_ausencia}}</textarea>
+                                placeholder="Escriba el motivo de ausencia para los que no se marcaron"></textarea>
                             <button type="button" class="btn btn-secondary previous-step mt-3">
                                 <i class="bi bi-arrow-left"></i> Atrás
                             </button>
