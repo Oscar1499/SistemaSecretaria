@@ -141,112 +141,28 @@ function numToText($number)
                             </script>
                             <!-- Miembros del Consejo -->
                             <div id="contenedorPresentes" class="row mt-2">
-                                <script>
-                                    async function obtenerPresentes(idActas) {
-                                        if (!idActas) return;
 
-                                        try {
-                                            const response = await fetch("{{ route('obtener.presentes') }}", {
-                                                method: "POST",
-                                                headers: {
-                                                    "Content-Type": "application/json",
-                                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                                },
-                                                body: JSON.stringify({
-                                                    id_Actas: idActas
-                                                })
-                                            });
-
-                                            const data = await response.json();
-
-                                            if (data && Array.isArray(data)) {
-
-                                                const contenedor = document.getElementById('contenedorPresentes');
-                                                contenedor.innerHTML = ''; // Limpiar el contenedor antes de insertar
-
-                                                // Reiniciar contadores de votos y texto de los botones de votación
-                                                // antes de agregar las tarjetas de los presentes
-                                                votosFavor = 0;
-                                                votosContra = 0;
-                                                document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
-                                                document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
-
-                                                // Iterar sobre los datos (nombres de los presentes)
-                                                data.forEach(presente => {
-                                                    agregarTarjeta(contenedor, presente);
-                                                });
-                                            } else {
-                                                alert("No se encontraron presentes.");
-                                            }
-                                        } catch (error) {
-                                            console.error("Error al obtener los presentes:", error);
-                                        }
-                                    }
-
-                                    function resaltarCargos(texto) {
-                                        const palabrasClave = [
-                                            'Alcalde', 'Alcaldesa', 'Cuarto regidor propietario',
-                                            'Cuarta regidora propietaria', 'Tercer regidor', 'Tercera regidora',
-                                            'Segundo regidor', 'Segunda regidora', 'Secretario', 'Secretaria',
-                                            'Síndico', 'Síndica', 'Primer regidor', 'Primera regidora',
-                                            'Cuarto regidor', 'Cuarta regidora'
-                                        ];
-                                        const regEx = new RegExp(`\\b(${palabrasClave.join("|")})\\b`, "gi");
-                                        const match = texto.match(regEx);
-                                        return match ? match[0] : 'Ninguno';
-                                    }
-
-                                    function agregarTarjeta(contenedor, presente) {
-                                        const contenido = `
-            <div class="col-md-3 ">
-                <div class="card shadow-lg border-0 rounded-3 p-2 h100">
-                    <div class="card-body text-center">
-                        <div class="mb-2">
-                            <i class="fas fa-user-circle fa-5x text-primary"></i>
-                        </div>
-                        <h6 class="card-title mb-1 text-dark font-weight-bold">
-                            ${presente.split(' ').slice(0, 3).join(' ')}
-                        </h6>
-                        <span class="d-inline-block text-truncate text-center" style="max-width: 197px;">
-                            Cargo: ${resaltarCargos(presente)}
-                        </span>
-                        <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
-                            <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                                class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
-                                onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
-                                <i class="fas fa-thumbs-up"></i> A favor
-                            </button>
-                            <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                                class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
-                                onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
-                                <i class="fas fa-thumbs-down"></i> En contra
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-
-                                        contenedor.insertAdjacentHTML('beforeend', contenido);
-                                    }
-                                </script>
                             </div>
-
                             <!-- Resultados de la votación -->
-                            <div class="vote-counts text-center d-flex justify-content-between">
-                                <div class="left">
-                                    <div class="card border-success mb-1">
-                                        <div class="card-body d-flex flex-column justify-content-left align-items-center p-3">
-                                            <h6 class="card-title text-success">Miembros del Consejo a Favor</h6>
-                                            <p id="vote-favor" class="card-text text-success mb-0">Nadie ha votado a favor</p>
-                                        </div>
+                            <div class="vote-counts text-center d-flex justify-content-around mt-2">
+                                <div class="card border-success mb-1 mx-2">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                                        <h6 class="card-title text-success">Miembros a Favor</h6>
+                                        <p id="vote-favor" class="card-text text-success mb-0">Nadie ha votado a favor</p>
                                     </div>
                                 </div>
-                                <div class="right">
-                                    <div class="card border-danger mb-1">
-                                        <div class="card-body d-flex flex-column justify-content-left align-items-center p-3">
-                                            <h6 class="card-title text-danger">Miembros del Consejo en contra</h6>
-                                            <p id="vote-contra" class="card-text text-danger mb-0">Nadie ha votado en contra</p>
-                                        </div>
+
+                                <div class="card border-secondary mb-1 mx-2">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                                        <h6 class="card-title text-secondary">Tipo de sesión</h6>
+                                        <p id="tipo-sesion" class="card-text text-secondary mb-0"></p>
+                                    </div>
+                                </div>
+
+                                <div class="card border-danger mb-1 mx-2">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
+                                        <h6 class="card-title text-danger">Miembros en Contra</h6>
+                                        <p id="vote-contra" class="card-text text-danger mb-0">Nadie ha votado en contra</p>
                                     </div>
                                 </div>
                             </div>
@@ -268,16 +184,108 @@ function numToText($number)
 </html>
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
+    var numPresentes = 0;
+
+    var motivo_Acuerdo = "Este acuerdo Fue tomado por";
+    async function obtenerPresentes(idActas) {
+        if (!idActas) return;
+
+        try {
+            const response = await fetch("{{ route('obtener.presentes') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    id_Actas: idActas
+                })
+            });
+
+            const data = await response.json();
+
+            if (data && Array.isArray(data)) {
+
+                const contenedor = document.getElementById('contenedorPresentes');
+                contenedor.innerHTML = ''; // Limpiar el contenedor antes de insertar
+
+                // Reiniciar contadores de votos y texto de los botones de votación
+                // antes de agregar las tarjetas de los presentes
+                votosFavor = 0;
+                votosContra = 0;
+                numPresentes = data.length;
+                document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
+                document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
+                document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + 'Indefinido';
+
+
+                // Iterar sobre los datos (nombres de los presentes)
+                data.forEach(presente => {
+                    agregarTarjeta(contenedor, presente);
+                });
+            } else {
+                alert("No se encontraron presentes.");
+            }
+        } catch (error) {
+            console.error("Error al obtener los presentes:", error);
+        }
+    }
+
+    function resaltarCargos(texto) {
+        const palabrasClave = [
+            'Alcalde', 'Alcaldesa', 'Cuarto regidor propietario',
+            'Cuarta regidora propietaria', 'Tercer regidor', 'Tercera regidora',
+            'Segundo regidor', 'Segunda regidora', 'Secretario', 'Secretaria',
+            'Síndico', 'Síndica', 'Primer regidor', 'Primera regidora',
+            'Cuarto regidor', 'Cuarta regidora'
+        ];
+        const regEx = new RegExp(`\\b(${palabrasClave.join("|")})\\b`, "gi");
+        const match = texto.match(regEx);
+        return match ? match[0] : 'Ninguno';
+    }
+
+    function agregarTarjeta(contenedor, presente) {
+        const contenido = `
+            <div class="col-md-6 d-flex mt-2">
+            <div class="card shadow-lg border-0 rounded-3 p-2 h-100 w-100">
+                <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                </div>
+                <h6 class="card-title mb-1 text-dark font-weight-bold">
+                    ${presente.split(' ').slice(0, 3).join(' ')}
+                </h6>
+                <span class="d-inline-block text-truncate text-center" style="max-width: 197px;">
+                    Cargo: ${resaltarCargos(presente)}
+                </span>
+                <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
+                    <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                    class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
+                    onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
+                    <i class="fas fa-thumbs-up"></i> A favor
+                    </button>
+                    <button type="button" style="font-size: 1rem; border-radius: 20px;"
+                    class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
+                    onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
+                    <i class="fas fa-thumbs-down"></i> En contra
+                    </button>
+                </div>
+                </div>
+            </div>
+            <textarea class="form-control w-100 ml-3" rows="5" placeholder="Escriba su justificación del voto aquí ..."></textarea>
+            </div>`;
+
+        contenedor.insertAdjacentHTML('beforeend', contenido);
+    }
     // Variables de conteo
     let votosFavor = 0;
     let votosContra = 0;
+    var voto_mayoria_calificada = "";
 
     // Función principal de votación
     function toggleVote(button, type, cargo) {
@@ -295,10 +303,16 @@ function numToText($number)
                 reverseButtons: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    voto = 1; // Voto simple
+                    if (type === 'success') {
+                        voto; // Voto simple a favor
+                    } else if (type === 'danger') {
+                        voto; // Voto simple en contra
+                    }
                     procesarVoto(button, type, voto);
                 } else if (result.isDenied) {
-                    voto = 2; // Voto doble
+                    voto = 2; // Voto doble en contra
+                    voto_mayoria_calificada = "Voto_Doble";
+
                     procesarVoto(button, type, voto);
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
@@ -331,6 +345,7 @@ function numToText($number)
                     if (btn.classList.contains('btn-success')) {
                         btn.innerHTML = '<i class="fas fa-check"></i> A favor';
                         procesarVoto(btn, 'success', 1);
+
                     } else {
                         btn.innerHTML = '<i class="fas fa-thumbs-down"></i> En contra';
                     }
@@ -401,6 +416,17 @@ function numToText($number)
             votosContra === 1 ?
             '1 punto en contra' :
             'Nadie ha votado en contra';
+
+        var motivo_Acuerdo = "Este acuerdo Fue tomado por";
+
+        document.getElementById('tipo-sesion').textContent =
+            numPresentes === votosFavor ? `${motivo_Acuerdo} Unánimidad` :
+            Math.round(numPresentes / votosFavor) === Math.round(numPresentes / votosContra) ?
+            `${motivo_Acuerdo} Mayoria simple` : `${motivo_Acuerdo} Indefinido`;
+
+        if (voto_mayoria_calificada === "Voto_Doble" && (votosFavor + votosContra) === (numPresentes + 1)) {
+            document.getElementById('tipo-sesion').textContent = `${motivo_Acuerdo} Mayoria Calificada`;
+        }
     }
 </script>
 <script>
@@ -417,17 +443,7 @@ function numToText($number)
     function actualizarTexto() {
         // Generar el texto dinámico
         const textoInicial = `
-            <p><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
-            a las  horas y  minutos del día de del año , EL PRIMER CONSEJO MUNICIPAL PLURAL,
-            juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
-            debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
-            La Unión Sur, del departamento de La Unión, durante el periodo de  a diciembre del año
-
-            <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>Municipal</strong></p>
-
-            <p style="text-align: center;"><strong>______________________</strong></p>
-            <p style="text-align: center;"><strong>Municipal</strong></p>
+Escriba aquí...
         `;
 
         // Insertar el texto generado en Summernote
