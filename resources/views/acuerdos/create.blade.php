@@ -277,7 +277,7 @@ function numToText($number)
                 </div>
                 </div>
             </div>
-            <textarea class="form-control w-100 ml-3" rows="5" placeholder="Escriba su justificación del voto aquí ..."></textarea>
+            <textarea class="form-control w-100 ml-2" rows="5" required placeholder="Escriba su justificación del voto aquí ..."></textarea>
             </div>`;
 
         contenedor.insertAdjacentHTML('beforeend', contenido);

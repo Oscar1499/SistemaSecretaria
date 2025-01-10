@@ -18,19 +18,17 @@ $presentesTexto = !empty($coincidenciasPresentes[1]) ? $coincidenciasPresentes[1
 
 // Expresión regular para extraer los ausentes
 preg_match('/<span id="FaltaPersonal">(.*?)<\/span>/', $texto, $coincidenciasAusentes);
-$ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] : 'No se encontró texto válido para los ausentes.';;
+$ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] : 'No se encontró texto válido para los ausentes.';
 
 ?>
-<form action="{{ route('actas.store') }}" method="POST" id="actaForm">
+<form action="{{ route('actas.update',$acta->id_Actas) }}" method="POST" id="actaForm">
     @csrf
+    @method('PUT')
 
     <!-- Campos ocultos para almacenar los contenidos dinámicos -->
     <input type="hidden" id="presentes" name="presentes" required />
     <input type="hidden" id="ausentes" name="ausentes" required />
-    <input type="hidden" id="estado" name="estado" value="Abierto" />
     <input type="hidden" id="tipo_sesion" name="tipo_sesion" required />
-
-    <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
 
     <input type="hidden" id="alcaldesaInfo" value="{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}">
     <input type="hidden" id="secretarioInfo" value="{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido .' '. $secretario->cargo : 'No definido' }}">
@@ -97,7 +95,7 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                         </div>
                         <div class="form-group">
                             <label for="descripcion"><i class="bi bi-info-circle"></i> Descripción de la sesión</label>
-                            <textarea oninput="validartextarea();" class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required></textarea>
+                            <textarea class="form-control" name="descripcion" id="descripcion" placeholder="Escriba una descripción de la sesión (asistentes, temas, tratados, acuerdos, etc.)" rows="3" required>{{$acta->descripcion}}</textarea>
                         </div>
                         <button type="button" class="btn btn-primary next-step" id="nextStepBtn1">Siguiente <i class="bi bi-arrow-right"></i></button>
                     </div>
@@ -105,7 +103,7 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                         <div class="form-group">
                             <label for="fecha"><i class="bi bi-calendar-event me-2"></i> Fecha</label>
-                            <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
+                            <input oninput="actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ $acta->fecha }}" required>
 
                         </div>
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
@@ -123,24 +121,6 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                                                 Seleccionar Todos
                                             </button>
                                         </h5>
-                                        <script>
-                                            function confirmCollapse() {
-                                                Swal.fire({
-                                                    title: '¿Desea modificar los funcionarios ausentes o presentes?',
-                                                    text: 'Al seleccionar Sí, podrá editar la lista de funcionarios y cambiar su estado entre ausente y presente.',
-                                                    icon: 'question',
-                                                    showCancelButton: true,
-                                                    confirmButtonText: 'Sí, modificar',
-                                                    cancelButtonText: 'No, cancelar',
-                                                    confirmButtonColor: '#d33',
-                                                    cancelButtonColor: '#3085d6',
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        $('#collapsePersonal').collapse('toggle');
-                                                    }
-                                                });
-                                            }
-                                        </script>
                                     </div>
                                     <div id="collapsePersonal" class="collapse" aria-labelledby="headingOne" data-parent="#accordionPersonal">
                                         <div class="card-body">
@@ -186,7 +166,7 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                                 class="form-control"
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
-                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
+                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">{{$acta->motivo_ausencia}}</textarea>
                             <button type="button" class="btn btn-secondary previous-step mt-3">
                                 <i class="bi bi-arrow-left"></i> Atrás
                             </button>
@@ -206,6 +186,23 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
 <script>
     function submitForm() {
         document.getElementById('actaForm').submit();
+    }
+
+    function confirmCollapse() {
+        Swal.fire({
+            title: '¿Desea modificar los funcionarios ausentes o presentes?',
+            text: 'Al seleccionar Sí, podrá editar la lista de funcionarios y cambiar su estado entre ausente y presente.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, modificar',
+            cancelButtonText: 'No, cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#collapsePersonal').collapse('toggle');
+            }
+        });
     }
 </script>
 @stop
@@ -390,8 +387,10 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
             let tipo_Sesion = (diaSeleccionado >= 1 && diaSeleccionado <= 5) || (diaSeleccionado >= 10 && diaSeleccionado <= 15) ? 'Ordinaria' : 'Extraordinaria';
             document.getElementById('tipo_sesion').value = tipo_Sesion;
 
-            const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : '<?php echo $ausentesTexto ?> ';
-            const presentesTexto = presentes.length > 0 ? presentes.join(', ') : '<?php echo $presentesTexto ?> ';
+            const selectAll = document.getElementById('selectAll');
+            const selectAllPresentes = document.getElementById('selectAllPresentes');
+            const ausentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno' : ausentes.join(', ');
+            const presentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? presentes.length > 0 ? presentes.join(', ') : 'Ninguno' : presentes.join(', ');
 
             // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
