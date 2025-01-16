@@ -15,6 +15,18 @@ function numToText($number)
     $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
     return $formatter->format($number);
 }
+$formatter = new NumberFormatter('es_SV', NumberFormatter::SPELLOUT);
+
+$anio = date('Y');
+$hora = date('H');
+$minutos = date('i');
+$dia = date('d');
+$NumeroTexto = numToText($numero_Acuerdo);
+// Convertir el año a texto a texto en español
+$horaEnTexto = $formatter->format($hora);
+$minutosEnTexto = $formatter->format($minutos);
+$anioEnTexto = $formatter->format($anio);
+
 ?>
 <!-- SweetAlert2 (para alertas) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -53,7 +65,7 @@ function numToText($number)
                 aria-valuenow="33"
                 aria-valuemin="0"
                 aria-valuemax="100">
-                Paso 1 de 3
+                Paso 1 de 4
             </div>
         </div>
         <!-- Stepper -->
@@ -81,7 +93,16 @@ function numToText($number)
                 <div class="step" data-target="#step-3">
                     <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
                         <span class="bs-stepper-circle">3</span>
-                        <span class="bs-stepper-label">Seleccionar Personal</span>
+                        <span class="bs-stepper-label">Seleccion de Personal</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 4-->
+                <div class="step" data-target="#step-4">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-4" aria-controls="step-4">
+                        <span class="bs-stepper-circle">4</span>
+                        <span class="bs-stepper-label">Previsualización</span>
                     </button>
                 </div>
             </div>
@@ -93,12 +114,27 @@ function numToText($number)
 
                     <!-- Paso 1: Configuración del libro-->
                     <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
-                        <div class="form-group">
+                    <div class="form-group">
+
+                                <label for="fecha2">
+                                    <i class="bi bi-calendar-x me-2"></i>
+                                    Fecha de apertura
+                                </label>
+
+                                <div class="input-group">
+                                    <input oninput="actualizarTexto();" type="date" class="form-control" id="fecha_apertura" name="fecha_apertura" value="{{ old('fecha2', now()->toDateString()) }}" required  />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
+                                </div>
+                            </div>
+                    <div class="form-group">
                             <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
-                            <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value)">
+                            <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
+                            
                                 <option value="" disabled selected>Seleccione</option>
                                 @foreach($actas as $acta)
-                                <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}">
+                                <option value="{{ $acta->id_Actas }}"data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ explode(' ', $acta->correlativo)[2] }}">
                                     {{ $acta->id_Actas }} - {{ $acta->correlativo }}
                                 </option>
                                 @endforeach
@@ -114,7 +150,7 @@ function numToText($number)
                         <div class="form-group">
                             <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                             <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                value="ACUERDO NÚMERO {{ strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                                value="ACUERDO NÚMERO {{ mb_strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" id="notas" name="apertura_Libro"></textarea>
@@ -133,7 +169,6 @@ function numToText($number)
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                         <div class="container mt-2">
                             <!-- Botón de Unanimidad -->
-
                             <button type="button" class="btn btn-info py-2 px-4 shadow-sm" onclick="voto_Unimidad();">
                                 <i class="fas fa-users"></i> Voto por Unanimidad
                             </button>
@@ -170,9 +205,166 @@ function numToText($number)
                             <!-- Botones de navegación -->
                             <div class="mt-3">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Libro</button>
+                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Paso 4: Previsualización del Acuerdo -->
+                    <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
+
+                        <div class="form-group">
+                            <label for="correlativo"><i class="bi bi-eye-fill me-2"></i>Previsualización del contenido del Acuerdo</label>
+                        <!-- Selectores de hora y minutos -->
+                        <div class="d-flex flex-wrap align-items-center mt-2">
+                                <!-- Hora de Apertura -->
+                                <div class="d-flex flex-column me-3">
+                                    <label for="horaApertura" class="form-label mb-1">
+                                        <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
+                                    </label>
+                                    <select id="horaApertura" name="horaApertura" class="form-select" required>
+                                        <option value="" disabled selected>Hora de apertura</option>
+                                        <option value="">Cancelar la apertura manual</option>
+                                        <!-- Opciones de 0 a 23 -->
+                                        <script>
+                                            for (let i = 0; i < 24; i++) {
+                                                document.write(`<option value="${i}">${i.toString().padStart(1, '0')} Horas</option>`);
+                                            }
+                                        </script>
+                                    </select>
+                                </div>
+
+                                <!-- Minutos de Apertura -->
+                                <div class="d-flex flex-column">
+                                    <label for="minutosApertura" class="form-label mb-1">
+                                        <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
+                                    </label>
+                                    <select id="minutosApertura" name="minutosApertura" class="form-select" required>
+                                        <option value="" disabled selected>Minutos de apertura</option>
+                                        <option value="">Cancelar la apertura manual</option>
+                                        <!-- Opciones de 0 a 59 -->
+                                        <script>
+                                            for (let i = 0; i < 60; i++) {
+                                                document.write(`<option value="${i}">${i.toString().padStart(2, '0')} Minutos</option>`);
+                                            }
+                                        </script>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="contenido" name="visualizacion"></textarea>
+                           <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+    // Ensure jQuery and Summernote are loaded
+    if (typeof jQuery === 'undefined' || typeof $.summernote === 'undefined') {
+        console.error('jQuery or Summernote not loaded');
+        return;
+    }
+
+    // Función para extraer el día y el mes del input de fecha
+    function obtenerFecha() {
+        const fecha = document.getElementById("fecha_apertura").value;
+        if (!fecha) return null;
+
+        const [year, month, day] = fecha.split('-');
+        const fechaObj = new Date(year, month - 1, day);
+
+        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        const nombreDelMes = meses[fechaObj.getMonth()];
+        const dia = fechaObj.getDate();
+
+        return {
+            dia,
+            mes: nombreDelMes
+        };
+    }
+
+    function numeroAPalabras(numero) {
+        const numerosEnPalabras = [
+            'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
+            'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
+            'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta', 'treinta y uno',
+            'treinta y dos', 'treinta y tres', 'treinta y cuatro', 'treinta y cinco', 'treinta y seis', 'treinta y siete', 'treinta y ocho', 'treinta y nueve', 'cuarenta', 'cuarenta y uno',
+            'cuarenta y dos', 'cuarenta y tres', 'cuarenta y cuatro', 'cuarenta y cinco', 'cuarenta y seis', 'cuarenta y siete', 'cuarenta y ocho', 'cuarenta y nueve', 'cincuenta',
+            'cincuenta y uno', 'cincuenta y dos', 'cincuenta y tres', 'cincuenta y cuatro', 'cincuenta y cinco', 'cincuenta y seis', 'cincuenta y siete', 'cincuenta y ocho', 'cincuenta y nueve'
+        ];
+        return numerosEnPalabras[numero] || numero;
+    }
+
+    // Función para actualizar el texto en Summernote
+    function actualizarTexto() {
+        const fecha = obtenerFecha();
+        const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
+        const mesSeleccionadoVariable = fecha?.mes || 'el mes';
+
+        let horaSeleccionada = $('#horaApertura').val();
+        let minutosSeleccionados = $('#minutosApertura').val();
+        let NumeroActa = $("#id_Actas").val();
+        let correlativoActa = $("#id_Actas option:selected").data('valor2');
+
+        minutosSeleccionados = minutosSeleccionados
+            ? numeroAPalabras(minutosSeleccionados)
+            : "{{ $minutosEnTexto ?? 'cero' }}";
+
+        horaSeleccionada = horaSeleccionada
+            ? numeroAPalabras(horaSeleccionada)
+            : "{{ $horaEnTexto ?? 'cero' }}";
+
+        // Generar el texto dinámico
+        const textoInicial = `<p style="text-align: justify; font-family: Arial, sans-serif; line-height: 1.5;">La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA.
+                                    Que en el Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
+                                    <?php echo $anioEnTexto ?>, se encuentra el acta número ${correlativoActa} de Sesión Ordinaria, celebrada lugar a las ${horaSeleccionada} horas
+                                    con ${minutosSeleccionados} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número
+    <?php echo mb_strtoupper($NumeroTexto) ?> , que literalmente dice:</p>`;
+
+        const contenidoNotas = $('#notas').summernote('code');
+
+        // Actualizar el editor #contenido
+        $('#contenido').summernote('code', textoInicial.replace(/<\/p>$/, '') + ' //////////////////////////////////////////////////////////////////////////// ' + contenidoNotas.replace(/^<p>/, ''));
+
+    }
+
+    // Inicializar Summernote
+    $('#contenido, #notas').summernote({
+        height: 400,
+        fontNames: ['Arial'],
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+
+    // Agrega un texto inicial a #notas
+    $('#notas').summernote('code', `<p>Escriba aquí el contenido del Acuerdo...</p>`);
+
+    // Evento para detectar cambios en el editor #notas y actualizar #contenido
+    $('#notas').on('summernote.change', function(we, contents) {
+        actualizarTexto(); // Actualiza el texto en #contenido
+    });
+
+    $('#fecha_apertura, #id_Actas, #horaApertura, #minutosApertura').on('change', actualizarTexto);
+
+    // Actualizar el contenido al cargar la página
+    actualizarTexto();
+});
+                           </script>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-floppy"></i> Guardar Acuerdo
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -182,6 +374,7 @@ function numToText($number)
 </body>
 
 </html>
+
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
@@ -207,6 +400,9 @@ function numToText($number)
                 })
             });
 
+
+            
+
             const data = await response.json();
 
             if (data && Array.isArray(data)) {
@@ -221,7 +417,7 @@ function numToText($number)
                 numPresentes = data.length;
                 document.getElementById('vote-favor').textContent = 'Nadie ha votado a favor';
                 document.getElementById('vote-contra').textContent = 'Nadie ha votado en contra';
-                document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + 'Indefinido';
+                document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Indefinido";
 
 
                 // Iterar sobre los datos (nombres de los presentes)
@@ -251,73 +447,84 @@ function numToText($number)
 
     function agregarTarjeta(contenedor, presente) {
         const contenido = `
-            <div class="col-md-6 d-flex mt-2">
-            <div class="card shadow-lg border-0 rounded-3 p-2 h-100 w-100">
-                <div class="card-body text-center">
-                <div class="mb-2">
-                    <i class="fas fa-user-circle fa-5x text-primary"></i>
-                </div>
-                <h6 class="card-title mb-1 text-dark font-weight-bold">
-                    ${presente.split(' ').slice(0, 3).join(' ')}
+        <div class="col-md-4 d-flex mt-2">
+          <div class="card shadow-lg border-0 rounded-3 p-2 h-100 w-100">
+            <div class="card-body text-center">
+              <div class="icon-container mb-2">
+                <i class="fas fa-user-circle fa-5x text-primary"></i>
+              </div>
+                <h6 class="card-title text-dark font-weight-bold mb-2">
+                  ${presente.split(' ').slice(0, 3).join(' ')}
                 </h6>
-                <span class="d-inline-block text-truncate text-center" style="max-width: 197px;">
-                    Cargo: ${resaltarCargos(presente)}
-                </span>
-                <div class="btn-group w-100 d-flex justify-content-center" role="group" aria-label="Voto Miembro">
-                    <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                    class="btn btn-success py-1 shadow-sm mx-1 flex-fill"
-                    onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
-                    <i class="fas fa-thumbs-up"></i> A favor
-                    </button>
-                    <button type="button" style="font-size: 1rem; border-radius: 20px;"
-                    class="btn btn-danger py-1 shadow-sm mx-1 flex-fill"
-                    onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
-                    <i class="fas fa-thumbs-down"></i> En contra
-                    </button>
+                <div class="cargo-text form-group">
+                  Cargo: ${resaltarCargos(presente)}
                 </div>
-                </div>
+              <div class="btn-group w-100" role="group" aria-label="Voto Miembro">
+                <button
+                  type="button"
+                  class="btn btn-success voto-btn mx-1"
+                  onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
+                  <i class="fas fa-thumbs-up"></i> A favor
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger voto-btn mx-1"
+                  onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
+                  <i class="fas fa-thumbs-down"></i> En contra
+                </button>
+              </div>
             </div>
-            <textarea class="form-control w-100 ml-2" rows="5" required placeholder="Escriba su justificación del voto aquí ..."></textarea>
-            </div>`;
-
+            <textarea
+              class="form-control w-100 mt-3"
+              rows="5"
+              placeholder="Escriba su justificación del voto aqu ..."
+              required></textarea>
+          </div>
+        </div>
+        `;
         contenedor.insertAdjacentHTML('beforeend', contenido);
     }
-    // Variables de conteo
     let votosFavor = 0;
     let votosContra = 0;
     var voto_mayoria_calificada = "";
 
     // Función principal de votación
     function toggleVote(button, type, cargo) {
+
+        // Verificar si el botón ya está seleccionado
+        const isAlreadySelected = button.classList.contains('selected');
+
         let voto = 1; // Valor por defecto del voto
         if (cargo === 'Alcaldesa' || cargo === 'Alcalde') {
-            Swal.fire({
-                title: '¿Cómo desea votar?',
-                text: "Seleccione una opción:",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-check"></i> Voto Simple',
-                cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
-                showDenyButton: true,
-                denyButtonText: '<i class="fas fa-check-double"></i> Voto Doble',
-                reverseButtons: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (type === 'success') {
-                        voto; // Voto simple a favor
-                    } else if (type === 'danger') {
-                        voto; // Voto simple en contra
+            // Si los votos están empatados o el botón ya está seleccionado
+            if (votosFavor === votosContra && isAlreadySelected) {
+                Swal.fire({
+                    title: '¿Cómo desea votar?',
+                    text: isAlreadySelected ? "Elija el tipo de voto:" : "Seleccione una opción:",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-check"></i> Voto Simple',
+                    cancelButtonText: '<i class="fas fa-times"></i> Cancelar',
+                    showDenyButton: true,
+                    denyButtonText: '<i class="fas fa-check-double"></i> Voto Doble',
+                    reverseButtons: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Voto Simple
+                        voto = 1;
+                        voto_mayoria_calificada = "Voto_Simple";
+                        procesarVoto(button, type, voto);
+                    } else if (result.isDenied) {
+                        // Voto Doble
+                        voto = 2;
+                        voto_mayoria_calificada = "Voto_Doble";
+                        procesarVoto(button, type, voto);
                     }
-                    procesarVoto(button, type, voto);
-                } else if (result.isDenied) {
-                    voto = 2; // Voto doble en contra
-                    voto_mayoria_calificada = "Voto_Doble";
-
-                    procesarVoto(button, type, voto);
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
-                }
-            });
+                });
+            } else {
+                // Si no son iguales, procesar directamente con voto simple
+                procesarVoto(button, type, voto);
+            }
         } else {
             // Si no es Alcalde/Alcaldesa, procesar directamente con voto simple
             procesarVoto(button, type, voto);
@@ -361,8 +568,6 @@ function numToText($number)
                     }
                 });
 
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                Swal.fire('Acción cancelada', 'No se realizó ningún voto', 'info');
             }
         });
     }
@@ -370,6 +575,10 @@ function numToText($number)
     function procesarVoto(button, type, voto) {
 
         const buttons = button.parentNode.querySelectorAll('.btn-group[role="group"] button');
+
+        // Obtener el cargo del elemento padre
+        const cargoText = button.closest('.card-body').querySelector('.cargo-text').textContent;
+        const cargo = cargoText.split(': ')[1].trim();
 
         // Restar el voto del botón previamente seleccionado (si existe)
         buttons.forEach(btn => {
@@ -390,7 +599,10 @@ function numToText($number)
 
         // Marcar el botón actual como seleccionado
         button.classList.add('selected');
-        button.disabled = true;
+        // Solo bloquear el botón si NO es alcalde o alcaldesa
+        if (cargo !== 'Alcalde' && cargo !== 'Alcaldesa') {
+            button.disabled = true;
+        }
         button.dataset.voto = voto; // Guardar el valor del voto en el botón
         // Manejar icono individualmente
         button.innerHTML = type === 'success' ? '<i class="fas fa-check"></i> A favor' : '<i class="fas fa-check"></i> En contra';
@@ -417,15 +629,16 @@ function numToText($number)
             '1 punto en contra' :
             'Nadie ha votado en contra';
 
-        var motivo_Acuerdo = "Este acuerdo Fue tomado por";
+        var motivo_Acuerdo = "Este acuerdo fue tomado por";
 
-        document.getElementById('tipo-sesion').textContent =
-            numPresentes === votosFavor ? `${motivo_Acuerdo} Unánimidad` :
-            Math.round(numPresentes / votosFavor) === Math.round(numPresentes / votosContra) ?
-            `${motivo_Acuerdo} Mayoria simple` : `${motivo_Acuerdo} Indefinido`;
-
-        if (voto_mayoria_calificada === "Voto_Doble" && (votosFavor + votosContra) === (numPresentes + 1)) {
-            document.getElementById('tipo-sesion').textContent = `${motivo_Acuerdo} Mayoria Calificada`;
+        if (votosFavor === numPresentes || votosContra === numPresentes) {
+            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Unanimidad";
+        } else if (votosFavor === votosContra) {
+            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Mayoría Calificada";
+        } else if (votosFavor > (numPresentes / 2) || votosContra > (numPresentes / 2)) {
+            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Mayoría Simple";
+        } else {
+            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Voto Indefinido";
         }
     }
 </script>
@@ -437,48 +650,25 @@ function numToText($number)
             allowClear: true
         });
     });
-</script>
-<script>
-    // Función para actualizar el texto en Summernote
-    function actualizarTexto() {
-        // Generar el texto dinámico
-        const textoInicial = `
-Escriba aquí...
-        `;
 
-        // Insertar el texto generado en Summernote
-        $('#notas').summernote('code', textoInicial);
-    }
-
-    // Función principal: obtiene el mes y actualiza Summernote
-    function actualizarMesYTexto() {
-        actualizarTexto();
-    }
-
-    $(document).ready(function() {
-        // Inicializar Summernote
-        $('#notas').summernote({
-            height: 300,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture']],
-                ['view', ['fullscreen', 'codeview', 'help']]
-            ]
+    flatpickr("#fecha_apertura", {
+    dateFormat: "Y-m-d",
+    allowInput: true,
+    defaultDate: new Date(new Date().getFullYear(), 11, 31),
+    enable: [
+        // Solo permitir fechas de diciembre
+        function(date) {
+            return date.getMonth() === 11;
+        }
+    ],
+    onReady: function(selectedDates, dateStr, instance) {
+        instance.jumpToDate(new Date(instance.currentYear, 11, 31));
+        instance.calendarContainer.querySelectorAll(".flatpickr-monthDropdown-month, .flatpickr-prev-month, .flatpickr-next-month").forEach(el => {
+            el.style.display = "none";
         });
-
-
-        // Actualizar el contenido de Summernote al cargar la página
-        actualizarMesYTexto();
-    });
+    }
+});
 </script>
-
 @endsection
 
 <style>
@@ -521,7 +711,6 @@ Escriba aquí...
         width: 100%;
     }
 </style>
-
 <script>
     // Seleccionamos los botones de "Siguiente" y "Anterior"
     const nextButtons = document.querySelectorAll('.next-step');
@@ -578,8 +767,8 @@ Escriba aquí...
         const progressBar = document.getElementById('progress-bar');
         const activeStepIndex = Array.from(steps).findIndex(step => step.classList.contains('active'));
 
-        // Aseguramos que siempre haya 3 pasos
-        const totalSteps = 3;
+        // Aseguramos que siempre haya 4 pasos
+        const totalSteps = 4;
         const progressPercent = (activeStepIndex / totalSteps) * 100;
 
         progressBar.style.width = `${progressPercent}%`;

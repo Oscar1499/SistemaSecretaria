@@ -331,6 +331,11 @@ return [
             'url' => 'acuerdos',
             'icon' => 'fas fa-fw fa-file-signature',
         ],
+        [
+            'text' => 'Certificar Acuerdo',
+            'url' => 'certificacion',
+            'icon' => 'fas fa-fw fa-star',
+        ],
 
         ['header' => 'Gestión de Personal'],
         [

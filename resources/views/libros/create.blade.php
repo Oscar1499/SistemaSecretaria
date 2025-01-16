@@ -346,7 +346,7 @@ $mesEnTexto = [
             numeroAPalabras(minutos_Seleccionada);
 
         hora_Seleccionada = typeof hora_Seleccionada === 'undefined' || hora_Seleccionada === '' || hora_Seleccionada === null ?
-            "<?php echo $horaEnTexto;  ?>" :
+            "<?php echo $horaEnTexto; ?>" :
             numeroAPalabras(hora_Seleccionada);
 
         // Generar el texto dinámico
