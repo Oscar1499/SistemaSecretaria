@@ -54,7 +54,7 @@ $anioEnTexto = $formatter->format($anio);
 
 </body>
 <div class="card container-fluid pt-0">
-    <div class="card-body">
+    <div class="card-body px-0">
         <!-- Barra de Progreso -->
         <div class="progress mb-4">
             <div
@@ -131,7 +131,7 @@ $anioEnTexto = $formatter->format($anio);
                     <div class="form-group">
                             <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
                             <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
-                            
+
                                 <option value="" disabled selected>Seleccione</option>
                                 @foreach($actas as $acta)
                                 <option value="{{ $acta->id_Actas }}"data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ explode(' ', $acta->correlativo)[2] }}">
@@ -254,7 +254,31 @@ $anioEnTexto = $formatter->format($anio);
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" id="contenido" name="visualizacion"></textarea>
-                           <script>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-floppy"></i> Guardar Acuerdo
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+</html>
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
                             document.addEventListener('DOMContentLoaded', function() {
     // Ensure jQuery and Summernote are loaded
     if (typeof jQuery === 'undefined' || typeof $.summernote === 'undefined') {
@@ -311,17 +335,19 @@ $anioEnTexto = $formatter->format($anio);
             ? numeroAPalabras(horaSeleccionada)
             : "{{ $horaEnTexto ?? 'cero' }}";
 
-        // Generar el texto dinámico
-        const textoInicial = `<p style="text-align: justify; font-family: Arial, sans-serif; line-height: 1.5;">La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA.
-                                    Que en el Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
-                                    <?php echo $anioEnTexto ?>, se encuentra el acta número ${correlativoActa} de Sesión Ordinaria, celebrada lugar a las ${horaSeleccionada} horas
-                                    con ${minutosSeleccionados} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número
-    <?php echo mb_strtoupper($NumeroTexto) ?> , que literalmente dice:</p>`;
 
-        const contenidoNotas = $('#notas').summernote('code');
+            const contenidoNotas = $('#notas').summernote('code');
+
+        // Generar el texto dinámico
+        const textoInicial = `
+        <p style="text-align: justify; font-family: Arial;">La Suscrita secretaria Municipal,
+         previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el Libro de Actas y Acuerdos Municipales que el 
+         Concejo Municipal Plural de La Unión Sur, lleva en el año <?php echo $anioEnTexto ?>, se encuentra el acta número 
+        ${correlativoActa}, que en el diario del Concejo Municipal Plural de Sesión Ordinaria, celebrada lugar a las ${horaSeleccionada} horas con ${minutosSeleccionados} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable}
+         del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número <?php echo mb_strtoupper($NumeroTexto)?>, que literalmente dice: //////////////////////////////////////////////////////////////////////////// </p> <p>${contenidoNotas}</p>`;
 
         // Actualizar el editor #contenido
-        $('#contenido').summernote('code', textoInicial.replace(/<\/p>$/, '') + ' //////////////////////////////////////////////////////////////////////////// ' + contenidoNotas.replace(/^<p>/, ''));
+        $('#contenido').summernote('code', textoInicial );
 
     }
 
@@ -357,30 +383,6 @@ $anioEnTexto = $formatter->format($anio);
     actualizarTexto();
 });
                            </script>
-                        </div>
-                        <div class="mt-3">
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-floppy"></i> Guardar Acuerdo
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</body>
-
-</html>
-
-@section('js')
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
     var numPresentes = 0;
 
@@ -399,9 +401,6 @@ $anioEnTexto = $formatter->format($anio);
                     id_Actas: idActas
                 })
             });
-
-
-            
 
             const data = await response.json();
 
