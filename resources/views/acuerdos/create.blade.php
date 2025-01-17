@@ -56,7 +56,7 @@ $anioEnTexto = $formatter->format($anio);
 <div class="card container-fluid pt-0">
     <div class="card-body px-0">
         <!-- Barra de Progreso -->
-        <div class="progress mb-4">
+        <div class="progress mb-0">
             <div
                 class="progress-bar progress-bar-striped progress-bar-animated"
                 role="progressbar"
@@ -167,7 +167,7 @@ $anioEnTexto = $formatter->format($anio);
 
                     {{-- Paso 3: Apertura del libro --}}
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
-                        <div class="container mt-2">
+                        <div class="container mt-1">
                             <!-- Botón de Unanimidad -->
                             <button type="button" class="btn btn-info py-2 px-4 shadow-sm" onclick="voto_Unimidad();">
                                 <i class="fas fa-users"></i> Voto por Unanimidad
@@ -175,11 +175,11 @@ $anioEnTexto = $formatter->format($anio);
                             <script>
                             </script>
                             <!-- Miembros del Consejo -->
-                            <div id="contenedorPresentes" class="row mt-2">
+                            <div id="contenedorPresentes" class="row mt-1">
 
                             </div>
                             <!-- Resultados de la votación -->
-                            <div class="vote-counts text-center d-flex justify-content-around mt-2">
+                            <div class="vote-counts text-center d-flex justify-content-around mt-1">
                                 <div class="card border-success mb-1 mx-2">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
                                         <h6 class="card-title text-success">Miembros a Favor</h6>
@@ -217,40 +217,47 @@ $anioEnTexto = $formatter->format($anio);
                             <label for="correlativo"><i class="bi bi-eye-fill me-2"></i>Previsualización del contenido del Acuerdo</label>
                         <!-- Selectores de hora y minutos -->
                         <div class="d-flex flex-wrap align-items-center mt-2">
-                                <!-- Hora de Apertura -->
-                                <div class="d-flex flex-column me-3">
-                                    <label for="horaApertura" class="form-label mb-1">
-                                        <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
-                                    </label>
-                                    <select id="horaApertura" name="horaApertura" class="form-select" required>
-                                        <option value="" disabled selected>Hora de apertura</option>
-                                        <option value="">Cancelar la apertura manual</option>
-                                        <!-- Opciones de 0 a 23 -->
-                                        <script>
-                                            for (let i = 0; i < 24; i++) {
-                                                document.write(`<option value="${i}">${i.toString().padStart(1, '0')} Horas</option>`);
-                                            }
-                                        </script>
-                                    </select>
-                                </div>
-
-                                <!-- Minutos de Apertura -->
-                                <div class="d-flex flex-column">
-                                    <label for="minutosApertura" class="form-label mb-1">
-                                        <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
-                                    </label>
-                                    <select id="minutosApertura" name="minutosApertura" class="form-select" required>
-                                        <option value="" disabled selected>Minutos de apertura</option>
-                                        <option value="">Cancelar la apertura manual</option>
-                                        <!-- Opciones de 0 a 59 -->
-                                        <script>
-                                            for (let i = 0; i < 60; i++) {
-                                                document.write(`<option value="${i}">${i.toString().padStart(2, '0')} Minutos</option>`);
-                                            }
-                                        </script>
-                                    </select>
-                                </div>
+                            <!-- Hora de Apertura -->
+                            <div class="d-flex flex-column me-3">
+                                <label for="horaApertura" class="form-label mb-1">
+                                    <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
+                                </label>
+                                <select id="horaApertura" name="horaApertura" class="form-select" required>
+                                    <option value="" disabled selected>Hora de apertura</option>
+                                    <option value="">Cancelar la apertura manual</option>
+                                    <!-- Opciones de 0 a 23 -->
+                                    <script>
+                                        for (let i = 0; i < 24; i++) {
+                                            document.write(`<option value="${i}">${i.toString().padStart(1, '0')} Horas</option>`);
+                                        }
+                                    </script>
+                                </select>
                             </div>
+
+                            <!-- Minutos de Apertura -->
+                            <div class="d-flex flex-column me-3">
+                                <label for="minutosApertura" class="form-label mb-1">
+                                    <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
+                                </label>
+                                <select id="minutosApertura" name="minutosApertura" class="form-select" required>
+                                    <option value="" disabled selected>Minutos de apertura</option>
+                                    <option value="">Cancelar la apertura manual</option>
+                                    <!-- Opciones de 0 a 59 -->
+                                    <script>
+                                        for (let i = 0; i < 60; i++) {
+                                            document.write(`<option value="${i}">${i.toString().padStart(2, '0')} Minutos</option>`);
+                                        }
+                                    </script>
+                                </select>
+                            </div>
+
+                            <!-- Botón para cancelar la apertura manual -->
+                            <div class="d-flex flex-column mt-2">
+                                <button type="button" id="cancelar-apertura" class="btn btn-secondary" style="width: 100%; height: 100%;">
+                                    Volver
+                                </button>
+                            </div>
+                        </div>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" id="contenido" name="visualizacion"></textarea>
@@ -268,6 +275,28 @@ $anioEnTexto = $formatter->format($anio);
     </div>
 </div>
 </div>
+<style>
+    .card-title {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.cargo-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+</style>
 </body>
 
 </html>
@@ -446,41 +475,58 @@ $anioEnTexto = $formatter->format($anio);
 
     function agregarTarjeta(contenedor, presente) {
         const contenido = `
-        <div class="col-md-4 d-flex mt-2">
-          <div class="card shadow-lg border-0 rounded-3 p-2 h-100 w-100">
-            <div class="card-body text-center">
-              <div class="icon-container mb-2">
-                <i class="fas fa-user-circle fa-5x text-primary"></i>
-              </div>
-                <h6 class="card-title text-dark font-weight-bold mb-2">
-                  ${presente.split(' ').slice(0, 3).join(' ')}
-                </h6>
-                <div class="cargo-text form-group">
-                  Cargo: ${resaltarCargos(presente)}
-                </div>
-              <div class="btn-group w-100" role="group" aria-label="Voto Miembro">
-                <button
-                  type="button"
-                  class="btn btn-success voto-btn mx-1"
-                  onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
-                  <i class="fas fa-thumbs-up"></i> A favor
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger voto-btn mx-1"
-                  onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
-                  <i class="fas fa-thumbs-down"></i> En contra
-                </button>
-              </div>
-            </div>
-            <textarea
-              class="form-control w-100 mt-3"
-              rows="5"
-              placeholder="Escriba su justificación del voto aqu ..."
-              required></textarea>
-          </div>
+<div class="col-md-3 justify-content-center">
+  <div class="card shadow-lg border-0 rounded-3 p-1 d-flex flex-column justify-content-between">
+    <div class="card-body text-center d-flex flex-column align-items-center">
+      
+      <!-- Ícono -->
+      <div class="icon-container mb-1">
+        <i class="fas fa-user-circle fa-5x text-primary"></i>
+      </div>
+      
+      <!-- Nombre y cargo alineados -->
+      <div class="info-container text-center">
+        <!-- Nombre -->
+        <strong 
+          class="card-title text-dark font-weight-bold d-block" 
+          style="font-size: 1.2rem; line-height: 1.5; min-height: 25px;">
+          ${presente.split(' ').slice(0, 2).join(' ')}
+        </strong>
+
+        <!-- Cargo -->
+        <div 
+           class="cargo-text text-muted mt-1" 
+          style="font-size: .9rem; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          Cargo: ${resaltarCargos(presente)}
         </div>
-        `;
+      </div>
+      
+      <!-- Botones de votación -->
+      <div class="btn-group w-100 mt-1 mb-2" role="group" aria-label="Voto Miembro">
+        <button
+          type="button"
+          class="btn btn-sm btn-success voto-btn mx-1"
+          onclick="toggleVote(this, 'success', '${resaltarCargos(presente)}')">
+          <i class="fas fa-thumbs-up"></i> A favor
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-danger voto-btn"
+          onclick="toggleVote(this, 'danger', '${resaltarCargos(presente)}')">
+          <i class="fas fa-thumbs-down"></i> En contra
+        </button>
+      </div>
+    </div>
+    
+    <!-- Justificación -->
+    <textarea
+      class="form-control w-100 mt-1"
+      rows="4"
+      placeholder="Escriba su justificación del voto aquí..."
+      required></textarea>
+  </div>
+</div>
+`;
         contenedor.insertAdjacentHTML('beforeend', contenido);
     }
     let votosFavor = 0;
