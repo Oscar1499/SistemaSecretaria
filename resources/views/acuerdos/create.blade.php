@@ -149,11 +149,16 @@ $anioEnTexto = $formatter->format($anio);
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                         <div class="form-group">
                             <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
-                            <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                value="ACUERDO NÚMERO {{ mb_strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly>
+                            <div class="input-group" style="width: 900px;">
+                                <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
+                                    value="ACUERDO NÚMERO {{ mb_strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly style="margin-right: 10px;">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" style="vertical-align: top;" onclick="adelantar2Steps();">Previsualizar acuerdos<i class="bi bi-arrow-right"></i></button>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="notas" name="apertura_Libro"></textarea>
+                            <textarea class="form-control"spellcheck="true" id="notas" name="apertura_Libro"></textarea>
                         </div>
                         @section('css')
                         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
@@ -251,12 +256,13 @@ $anioEnTexto = $formatter->format($anio);
                                 </select>
                             </div>
 
-                            <!-- Botón para cancelar la apertura manual -->
-                            <div class="d-flex flex-column mt-2">
-                                <button type="button" id="cancelar-apertura" class="btn btn-secondary" style="width: 100%; height: 100%;">
-                                    Volver
+                            <!-- Boton para volver al paso 2 para seguir en la creacion del acuerdo -->
+                            <div class="d-flex justify-content-end mt-2">
+                                <button type="button" id="visualizar-apertura" class="btn btn-outline-primary btn-sm text-primary" style="height: calc(1.5em + .75rem + 2px); padding: 0.375rem 0.75rem; font-size: 1rem; line-height: 1.5;  width: 100%; vertical-align: top; " onclick="retroceder2Steps();">
+                                    <i class="bi bi-arrow-left-circle-fill me-2"></i> Seguir Escribiendo
                                 </button>
                             </div>
+
                         </div>
                         </div>
                         <div class="form-group">
@@ -295,7 +301,9 @@ $anioEnTexto = $formatter->format($anio);
   justify-content: center;
   width: 100%;
 }
-
+#visualizar-apertura {
+    margin-top: 1.4rem;
+}
 </style>
 </body>
 
@@ -370,10 +378,10 @@ $anioEnTexto = $formatter->format($anio);
         // Generar el texto dinámico
         const textoInicial = `
         <p style="text-align: justify; font-family: Arial;">La Suscrita secretaria Municipal,
-         previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el Libro de Actas y Acuerdos Municipales que el 
-         Concejo Municipal Plural de La Unión Sur, lleva en el año <?php echo $anioEnTexto ?>, se encuentra el acta número 
+         previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el Libro de Actas y Acuerdos Municipales que el
+         Concejo Municipal Plural de La Unión Sur, lleva en el año <?php echo $anioEnTexto ?>, se encuentra el acta número
         ${correlativoActa}, que en el diario del Concejo Municipal Plural de Sesión Ordinaria, celebrada lugar a las ${horaSeleccionada} horas con ${minutosSeleccionados} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable}
-         del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número <?php echo mb_strtoupper($NumeroTexto)?>, que literalmente dice: //////////////////////////////////////////////////////////////////////////// </p> <p>${contenidoNotas}</p>`;
+         del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número <?php echo mb_strtoupper($NumeroTexto) ?>, que literalmente dice: //////////////////////////////////////////////////////////////////////////// </p> <p>${contenidoNotas}</p>`;
 
         // Actualizar el editor #contenido
         $('#contenido').summernote('code', textoInicial );
@@ -411,7 +419,7 @@ $anioEnTexto = $formatter->format($anio);
     // Actualizar el contenido al cargar la página
     actualizarTexto();
 });
-                           </script>
+</script>
 <script>
     var numPresentes = 0;
 
@@ -478,29 +486,29 @@ $anioEnTexto = $formatter->format($anio);
 <div class="col-md-3 justify-content-center">
   <div class="card shadow-lg border-0 rounded-3 p-1 d-flex flex-column justify-content-between">
     <div class="card-body text-center d-flex flex-column align-items-center">
-      
+
       <!-- Ícono -->
       <div class="icon-container mb-1">
         <i class="fas fa-user-circle fa-5x text-primary"></i>
       </div>
-      
+
       <!-- Nombre y cargo alineados -->
       <div class="info-container text-center">
         <!-- Nombre -->
-        <strong 
-          class="card-title text-dark font-weight-bold d-block" 
+        <strong
+          class="card-title text-dark font-weight-bold d-block"
           style="font-size: 1.2rem; line-height: 1.5; min-height: 25px;">
           ${presente.split(' ').slice(0, 2).join(' ')}
         </strong>
 
         <!-- Cargo -->
-        <div 
-           class="cargo-text text-muted mt-1" 
+        <div
+           class="cargo-text text-muted mt-1"
           style="font-size: .9rem; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
           Cargo: ${resaltarCargos(presente)}
         </div>
       </div>
-      
+
       <!-- Botones de votación -->
       <div class="btn-group w-100 mt-1 mb-2" role="group" aria-label="Voto Miembro">
         <button
@@ -517,7 +525,7 @@ $anioEnTexto = $formatter->format($anio);
         </button>
       </div>
     </div>
-    
+
     <!-- Justificación -->
     <textarea
       class="form-control w-100 mt-1"
@@ -714,6 +722,35 @@ $anioEnTexto = $formatter->format($anio);
     }
 });
 </script>
+<script>
+    // Función para adelantar dos pasos en el stepper
+    function adelantar2Steps(){
+        let currentStep = document.querySelector(".content.active");
+        let nextStep = currentStep.nextElementSibling;
+        let nextStep2 = nextStep.nextElementSibling;
+        if (nextStep2) {
+            nextStep2.classList.add('active');
+            nextStep.classList.remove('active');
+            currentStep.classList.remove('active');
+
+            updateProgressBar();
+        }
+    }
+
+    // Función para retroceder dos pasos en el stepper
+    function retroceder2Steps(){
+        let currentStep = document.querySelector(".content.active");
+        let previousStep = currentStep.previousElementSibling;
+        let previousStep2 = previousStep.previousElementSibling;
+        if (previousStep2) {
+            previousStep2.classList.add('active');
+            previousStep.classList.remove('active');
+            currentStep.classList.remove('active');
+
+            updateProgressBar();
+        }
+    }
+</script>
 @endsection
 
 <style>
@@ -754,6 +791,18 @@ $anioEnTexto = $formatter->format($anio);
         border: 1px solid #ced4da;
         border-radius: 0.25rem;
         width: 100%;
+    }
+    #visualizar-apertura {
+        height: calc(1.5em + .75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        width: 100%;
+        margin-top: 1.4rem;
     }
 </style>
 <script>
