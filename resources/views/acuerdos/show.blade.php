@@ -131,12 +131,6 @@
                 }
             }
         });
-
-        // Exportar a PDF
-        document.getElementById('export-pdf').addEventListener('click', function() {
-            const element = document.querySelector('.card');
-            html2pdf().from(element).save('Detalles_Acuerdo.pdf');
-        });
     });
 </script>
 @stop

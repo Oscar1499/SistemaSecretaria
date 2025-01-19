@@ -153,10 +153,6 @@ function numToText($number)
                                                     <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
                                                     Todos Ausentes
                                                 </label><br>
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" id="selectAllPresentes" onchange="toggleSelectAll()">
-                                                    Todos Presentes
-                                                </label><br>
                                                 @foreach ($personal as $persona)
                                                 <label class="form-check-label">
                                                     <input type="checkbox" class="form-check-input" name="personal[]" value="{{ $persona->id }}" onchange="updatePersonalAttendance(); Personal_xd();"><span id="icono-{{ $persona->id }}"></span>
@@ -318,32 +314,32 @@ function numToText($number)
 
         // Función para manejar "Seleccionar Todos Ausentes"
         window.toggleSelectAll = function() {
-            const isSelectAllAusentesChecked = document.getElementById('selectAll').checked;
+            const isSelectAllChecked = document.getElementById('selectAll').checked;
             const checkboxes = document.querySelectorAll('input[name="personal[]"]');
 
             checkboxes.forEach(checkbox => {
-                checkbox.checked = isSelectAllAusentesChecked;
+                checkbox.checked = isSelectAllChecked;
             });
 
-            if (isSelectAllAusentesChecked) {
-                document.getElementById('selectAllPresentes').checked = false;
+            // Resetear los arreglos de ausentes y presentes
+            ausentes = [];
+            presentes = [];
+
+            // Si está seleccionado "Todos Ausentes", llenar el arreglo de ausentes
+            if (isSelectAllChecked) {
+                ausentes = @json($personal->map(function($persona) {
+                    return $persona->nombre . ' ' . $persona->apellido . ' ' . $persona->cargo;
+                }));
+                presentes = []; // Asegurar que presentes esté vacío
+            } else {
+                // Si no está seleccionado, considerar a todos como presentes
+                presentes = @json($personal->map(function($persona) {
+                    return $persona->nombre . ' ' . $persona->apellido . ' ' . $persona->cargo;
+                }));
+                ausentes = []; // Asegurar que ausentes esté vacío
             }
 
-            updatePersonalAttendance();
-        };
-
-        // Función para manejar "Seleccionar Todos Presentes"
-        window.toggleSelectAllPresentes = function() {
-            const isSelectAllPresentesChecked = document.getElementById('selectAllPresentes').checked;
-            const checkboxes = document.querySelectorAll('input[name="personal[]"]');
-
-            if (isSelectAllPresentesChecked) {
-                document.getElementById('selectAll').checked = false;
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-            }
-
+            // Actualizar el contenido
             updatePersonalAttendance();
         };
 
@@ -396,12 +392,21 @@ function numToText($number)
             let tipo_Sesion = (diaSeleccionado >= 1 && diaSeleccionado <= 5) || (diaSeleccionado >= 10 && diaSeleccionado <= 15) ? 'Ordinaria' : 'Extraordinaria';
             document.getElementById('tipo_sesion').value = tipo_Sesion;
 
+            // Si no hay personal seleccionado, considerar a todos como presentes
+            if (presentes.length === 0 && ausentes.length === 0) {
+                presentes = @json($personal->map(function($persona) {
+                    return $persona->nombre . ' ' . $persona->apellido . ' ' . $persona->cargo;
+                }));
+                ausentes = [];
+            }
+
             const ausentesTexto = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             const presentesTexto = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
 
             // Actualizar campos ocultos antes de enviar el formulario
-            document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
-            document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
+            document.getElementById('ausentes').value = ausentesTexto;
+            document.getElementById('presentes').value = presentesTexto;
+
             const fechaTexto = `
         <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
@@ -453,70 +458,9 @@ function numToText($number)
             position: "auto",
         });
 
-        // Función para ajustar y actualizar la fecha y tipo de sesión
-        function ajustarFecha(fechaSeleccionada) {
-            const dia = fechaSeleccionada.getDate();
-            const mes = fechaSeleccionada.toLocaleString('es-ES', {
-                month: 'long'
-            });
-            const ano = fechaSeleccionada.getFullYear();
-
-            document.getElementById('diaTexto').innerText = dia;
-            document.getElementById('mesTexto').innerText = mes;
-            document.getElementById('anoTexto').innerText = ano;
-        }
-
-        // Ajustar la fecha y tipo de sesión al cargar la página
-        const fechaInput = document.getElementById("fecha");
-        const fechaHoy = new Date(fechaInput.value + 'T00:00:00'); // Asegura que la fecha sea correcta
-        ajustarFecha(fechaHoy);
-        actualizarTipoSesion(fechaHoy);
-
-        // Actualizar la fecha y tipo de sesión al cambiar la fecha
-        fechaInput.addEventListener("change", function() {
-            const fechaSeleccionada = new Date(fechaInput.value + 'T00:00:00');
-            ajustarFecha(fechaSeleccionada);
-            actualizarTipoSesion(fechaSeleccionada);
-        });
-
-        // Función para actualizar los campos ocultos antes de enviar el formulario
-        function actualizarCamposOcultos() {
-            // Obtener el contenido de 'contenido_elaboracion' como HTML
-            const contenidoElaboracion = document.getElementById('fechaTexto').outerHTML +
-                document.getElementById('tipoSesion').outerHTML +
-                document.getElementById('presentPersonal').outerHTML +
-                document.getElementById('FaltaPersonal').outerHTML;
-
-            // Obtener los nombres de presentes y ausentes
-            const presentes = document.getElementById('presentPersonal').innerText || 'Ninguno';
-            const ausentes = document.getElementById('FaltaPersonal').innerText || 'Ninguno';
-            const tipoSesion = document.getElementById('tipoSesion').innerText || 'No definido';
-
-            // Asignar los valores a los campos ocultos
-            document.getElementById('contenido_elaboracion').value = contenidoElaboracion;
-            document.getElementById('presentes').value = presentes;
-            document.getElementById('ausentes').value = ausentes;
-            document.getElementById('tipo_sesion').value = tipoSesion;
-        }
-
-        // Actualizar campos ocultos al cambiar cualquier dato relevante
-        document.querySelectorAll('.next-step, .previous-step, input, select, textarea').forEach(element => {
-            element.addEventListener('change', actualizarCamposOcultos);
-        });
-
-        // Actualizar campos ocultos antes de enviar el formulario
-        document.getElementById('form-acta').addEventListener('submit', function(e) {
-            actualizarCamposOcultos();
-            // Eliminar la línea que previene la sumisión del formulario
-            // e.preventDefault();
-            // console.log("Datos del formulario:", new FormData(this));
-        });
-
-
         // Función para manejar cambios individuales en los checkboxes
         window.handleCheckboxChange = function() {
             document.getElementById('selectAll').checked = false;
-            document.getElementById('selectAllPresentes').checked = false;
             updatePersonalAttendance();
         };
 
@@ -530,17 +474,11 @@ function numToText($number)
             } else {
                 FaltaPersonal.innerText = 'Ninguno';
             }
-
-            actualizarCamposOcultos();
         }
 
         document.querySelectorAll('input[name="personal[]"]').forEach(checkbox => {
-            checkbox.addEventListener('change', validateMotivoAusencia);
+            checkbox.addEventListener('change', handleCheckboxChange);
         });
-
-        document.getElementById('selectAll').addEventListener('change', validateMotivoAusencia);
-        document.getElementById('selectAllPresentes').addEventListener('change', validateMotivoAusencia);
-        validateMotivoAusencia();
     });
 </script>
 
@@ -548,7 +486,6 @@ function numToText($number)
 <script>
     const checkboxes = document.querySelectorAll('input[name="personal[]"]');
     const selectAll = document.getElementById('selectAll');
-    const selectAllPresentes = document.getElementById('selectAllPresentes');
 
     function updateIcons() {
         checkboxes.forEach(checkbox => {
@@ -574,56 +511,7 @@ function numToText($number)
         });
         updateIcons();
     });
-
-    selectAllPresentes.addEventListener('change', function() {
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = !selectAllPresentes.checked;
-        });
-        updateIcons();
-    });
 </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Validación y navegación entre pasos
-        document.querySelectorAll(".next-step").forEach(button => {
-            button.addEventListener("click", function() {
-                const activeTab = document.querySelector(".tab-pane.active");
-                const inputs = activeTab.querySelectorAll("input, select, textarea");
-                let valid = true;
-
-                inputs.forEach(input => {
-                    if (input.hasAttribute("required") && !input.value) {
-                        valid = false;
-                        input.classList.add("is-invalid");
-                    } else {
-                        input.classList.remove("is-invalid");
-                    }
-                });
-
-                if (valid) {
-                    // Navegar al siguiente paso
-                    const nextTab = document.querySelector(`.nav-link[href="#${activeTab.id}"]`).parentElement.nextElementSibling;
-                    if (nextTab) {
-                        nextTab.querySelector(".nav-link").click();
-                    }
-                } else {
-                    alert("Por favor, completa todos los campos requeridos antes de avanzar.");
-                }
-            });
-        });
-
-        document.querySelectorAll(".previous-step").forEach(button => {
-            button.addEventListener("click", function() {
-                const activeTab = document.querySelector(".tab-pane.active");
-                const prevTab = document.querySelector(`.nav-link[href="#${activeTab.id}"]`).parentElement.previousElementSibling;
-                if (prevTab) {
-                    prevTab.querySelector(".nav-link").click();
-                }
-            });
-        });
-    });
-</script>
-
 @stop
 
 @section('css')

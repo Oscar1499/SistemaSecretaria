@@ -389,12 +389,13 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
 
             const selectAll = document.getElementById('selectAll');
             const selectAllPresentes = document.getElementById('selectAllPresentes');
-            const ausentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno' : ausentes.join(', ');
-            const presentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? presentes.length > 0 ? presentes.join(', ') : 'Ninguno' : presentes.join(', ');
+            const ausentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? ausentes.length > 0 ? ausentes.join(', ') : '<?php echo $ausentesTexto;?>' : ausentes.join(', ');
+            const presentesTexto = (!selectAll.checked || !selectAllPresentes.checked) ? presentes.length > 0 ? presentes.join(', ') : '<?php echo $presentesTexto;?>' : presentes.join(', ');
 
             // Actualizar campos ocultos antes de enviar el formulario
             document.getElementById('ausentes').value = ausentes.length > 0 ? ausentes.join(', ') : 'Ninguno';
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
+
             const fechaTexto = `
         <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
