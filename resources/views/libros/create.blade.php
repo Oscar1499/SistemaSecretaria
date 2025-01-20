@@ -231,7 +231,7 @@ $mesEnTexto = [
                                     <label for="horaApertura" class="form-label mb-1">
                                         <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
                                     </label>
-                                    <select id="horaApertura" name="horaApertura" class="form-select" required>
+                                    <select id="horaApertura" name="horaApertura" class="form-select">
                                         <option value="" disabled selected>Hora de apertura</option>
                                         <option value="">Cancelar la apertura manual</option>
                                         <!-- Opciones de 0 a 23 -->
@@ -248,7 +248,7 @@ $mesEnTexto = [
                                     <label for="minutosApertura" class="form-label mb-1">
                                         <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
                                     </label>
-                                    <select id="minutosApertura" name="minutosApertura" class="form-select" required>
+                                    <select id="minutosApertura" name="minutosApertura" class="form-select">
                                         <option value="" disabled selected>Minutos de apertura</option>
                                         <option value="">Cancelar la apertura manual</option>
                                         <!-- Opciones de 0 a 59 -->

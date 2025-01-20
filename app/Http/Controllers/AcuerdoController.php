@@ -16,7 +16,6 @@ class AcuerdoController extends Controller
         return view('acuerdos.index', compact('acuerdos'));
     }
 
-
     public function obtenerPresentes(Request $request) {
         $id_actas = $request->input('id_Actas');
         $acta = Acta::where('id_Actas', $id_actas)->first();
