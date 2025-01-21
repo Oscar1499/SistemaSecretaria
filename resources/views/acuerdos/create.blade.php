@@ -102,10 +102,12 @@ $anioEnTexto = $formatter->format($anio);
                 <div class="step" data-target="#step-4">
                     <button type="button" class="step-trigger" role="tab" id="stepper-step-4" aria-controls="step-4">
                         <span class="bs-stepper-circle">4</span>
-                        <span class="bs-stepper-label">Previsualización</span>
+                        <span class="bs-stepper-label">Previsualización y acuerdos</span>
                     </button>
                 </div>
             </div>
+            <input type="hidden" id="tipo_sesion_input" name="tipo_sesion_input">
+
 
             <div class="bs-stepper-content">
                 <!-- Formulario con pasos -->
@@ -115,26 +117,11 @@ $anioEnTexto = $formatter->format($anio);
                     <!-- Paso 1: Configuración del libro-->
                     <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
                     <div class="form-group">
-
-                                <label for="fecha2">
-                                    <i class="bi bi-calendar-x me-2"></i>
-                                    Fecha de apertura
-                                </label>
-
-                                <div class="input-group">
-                                    <input oninput="actualizarTexto();" type="date" class="form-control" id="fecha_apertura" name="fecha_apertura" value="{{ old('fecha2', now()->toDateString()) }}" required  />
-                                    <span class="input-group-text">
-                                        <i class="bi bi-calendar-plus"></i>
-                                    </span>
-                                </div>
-                            </div>
-                    <div class="form-group">
                             <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
                             <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
-
                                 <option value="" disabled selected>Seleccione</option>
                                 @foreach($actas as $acta)
-                                <option value="{{ $acta->id_Actas }}"data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ explode(' ', $acta->correlativo)[2] }}">
+                                <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ Str::words($acta->correlativo, 3, '') }}">
                                     {{ $acta->id_Actas }} - {{ $acta->correlativo }}
                                 </option>
                                 @endforeach
@@ -148,7 +135,7 @@ $anioEnTexto = $formatter->format($anio);
                     <!-- Paso 2: Representación del consejo -->
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                         <div class="form-group">
-                            <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
+                            <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acuerdo</label>
                             <div class="input-group" style="width: 900px;">
                                 <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
                                     value="ACUERDO NÚMERO {{ mb_strtoupper(numToText($numero_Acuerdo)) }}. El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly style="margin-right: 10px;">
@@ -196,6 +183,7 @@ $anioEnTexto = $formatter->format($anio);
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
                                         <h6 class="card-title text-secondary">Tipo de sesión</h6>
                                         <p id="tipo-sesion" class="card-text text-secondary mb-0"></p>
+                                        <input type="hidden" id="tipo_sesion_input" name="tipo_sesion" value="Indefinido">
                                     </div>
                                 </div>
 
@@ -217,56 +205,13 @@ $anioEnTexto = $formatter->format($anio);
 
                     <!-- Paso 4: Previsualización del Acuerdo -->
                     <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
-
-                        <div class="form-group">
-                            <label for="correlativo"><i class="bi bi-eye-fill me-2"></i>Previsualización del contenido del Acuerdo</label>
-                        <!-- Selectores de hora y minutos -->
-                        <div class="d-flex flex-wrap align-items-center mt-2">
-                            <!-- Hora de Apertura -->
-                            <div class="d-flex flex-column me-3">
-                                <label for="horaApertura" class="form-label mb-1">
-                                    <i class="bi bi-clock-fill me-1"></i> Hora de Apertura
-                                </label>
-                                <select id="horaApertura" name="horaApertura" class="form-select" required>
-                                    <option value="" disabled selected>Hora de apertura</option>
-                                    <option value="">Cancelar la apertura manual</option>
-                                    <!-- Opciones de 0 a 23 -->
-                                    <script>
-                                        for (let i = 0; i < 24; i++) {
-                                            document.write(`<option value="${i}">${i.toString().padStart(1, '0')} Horas</option>`);
-                                        }
-                                    </script>
-                                </select>
-                            </div>
-
-                            <!-- Minutos de Apertura -->
-                            <div class="d-flex flex-column me-3">
-                                <label for="minutosApertura" class="form-label mb-1">
-                                    <i class="bi bi-clock-fill me-1"></i> Minutos de Apertura
-                                </label>
-                                <select id="minutosApertura" name="minutosApertura" class="form-select" required>
-                                    <option value="" disabled selected>Minutos de apertura</option>
-                                    <option value="">Cancelar la apertura manual</option>
-                                    <!-- Opciones de 0 a 59 -->
-                                    <script>
-                                        for (let i = 0; i < 60; i++) {
-                                            document.write(`<option value="${i}">${i.toString().padStart(2, '0')} Minutos</option>`);
-                                        }
-                                    </script>
-                                </select>
-                            </div>
-
-                            <!-- Boton para volver al paso 2 para seguir en la creacion del acuerdo -->
-                            <div class="d-flex justify-content-end mt-2">
-                                <button type="button" id="visualizar-apertura" class="btn btn-outline-primary btn-sm text-primary" style="height: calc(1.5em + .75rem + 2px); padding: 0.375rem 0.75rem; font-size: 1rem; line-height: 1.5;  width: 100%; vertical-align: top; " onclick="retroceder2Steps();">
-                                    <i class="bi bi-arrow-left-circle-fill me-2"></i> Seguir Escribiendo
-                                </button>
-                            </div>
-
+                    <div class="form-group mb-3 d-flex justify-content-between align-items-center">
+                            <label for="correlativo" class="mb-0"><i class="bi bi-eye-fill me-2"></i>Previsualización del contenido del Acuerdo</label>
+                            <button type="button" class="btn btn-outline-primary btn-sm" style="vertical-align: top; width: 200px; height: calc(1.5em + .75rem + 2px); padding: 0.375rem 0.75rem; font-size: 1rem; line-height: 1.5;" onclick="retroceder2Steps();">
+                        <i class="bi bi-arrow-left me-2"></i>Seguir Escribiendo</button>
                         </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="contenido" name="visualizacion"></textarea>
+                        <div class="form-group mb-3">
+                            <textarea class="form-control" id="contenido" name="visualizacion" rows="6"></textarea>
                         </div>
                         <div class="mt-3">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
@@ -316,109 +261,60 @@ $anioEnTexto = $formatter->format($anio);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-    // Ensure jQuery and Summernote are loaded
-    if (typeof jQuery === 'undefined' || typeof $.summernote === 'undefined') {
-        console.error('jQuery or Summernote not loaded');
-        return;
-    }
-
-    // Función para extraer el día y el mes del input de fecha
-    function obtenerFecha() {
-        const fecha = document.getElementById("fecha_apertura").value;
-        if (!fecha) return null;
-
-        const [year, month, day] = fecha.split('-');
-        const fechaObj = new Date(year, month - 1, day);
-
-        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        const nombreDelMes = meses[fechaObj.getMonth()];
-        const dia = fechaObj.getDate();
-
-        return {
-            dia,
-            mes: nombreDelMes
-        };
-    }
-
-    function numeroAPalabras(numero) {
-        const numerosEnPalabras = [
-            'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
-            'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
-            'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta', 'treinta y uno',
-            'treinta y dos', 'treinta y tres', 'treinta y cuatro', 'treinta y cinco', 'treinta y seis', 'treinta y siete', 'treinta y ocho', 'treinta y nueve', 'cuarenta', 'cuarenta y uno',
-            'cuarenta y dos', 'cuarenta y tres', 'cuarenta y cuatro', 'cuarenta y cinco', 'cuarenta y seis', 'cuarenta y siete', 'cuarenta y ocho', 'cuarenta y nueve', 'cincuenta',
-            'cincuenta y uno', 'cincuenta y dos', 'cincuenta y tres', 'cincuenta y cuatro', 'cincuenta y cinco', 'cincuenta y seis', 'cincuenta y siete', 'cincuenta y ocho', 'cincuenta y nueve'
-        ];
-        return numerosEnPalabras[numero] || numero;
-    }
-
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
-        const fecha = obtenerFecha();
-        const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
-        const mesSeleccionadoVariable = fecha?.mes || 'el mes';
-
-        let horaSeleccionada = $('#horaApertura').val();
-        let minutosSeleccionados = $('#minutosApertura').val();
-        let NumeroActa = $("#id_Actas").val();
-        let correlativoActa = $("#id_Actas option:selected").data('valor2');
-
-        minutosSeleccionados = minutosSeleccionados
-            ? numeroAPalabras(minutosSeleccionados)
-            : "{{ $minutosEnTexto ?? 'cero' }}";
-
-        horaSeleccionada = horaSeleccionada
-            ? numeroAPalabras(horaSeleccionada)
-            : "{{ $horaEnTexto ?? 'cero' }}";
-
-
-            const contenidoNotas = $('#notas').summernote('code');
-
-        // Generar el texto dinámico
-        const textoInicial = `
-        <p style="text-align: justify; font-family: Arial;">La Suscrita secretaria Municipal,
-         previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el Libro de Actas y Acuerdos Municipales que el
-         Concejo Municipal Plural de La Unión Sur, lleva en el año <?php echo $anioEnTexto ?>, se encuentra el acta número
-        ${correlativoActa}, que en el diario del Concejo Municipal Plural de Sesión Ordinaria, celebrada lugar a las ${horaSeleccionada} horas con ${minutosSeleccionados} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable}
-         del año <?php echo $anioEnTexto ?>, se encuentra el acuerdo Municipal número <?php echo mb_strtoupper($NumeroTexto) ?>, que literalmente dice: //////////////////////////////////////////////////////////////////////////// </p> <p>${contenidoNotas}</p>`;
-
-        // Actualizar el editor #contenido
-        $('#contenido').summernote('code', textoInicial );
-
+        const contenidoNotas = $('#notas').summernote('code');
+        const tipoSesion = $('#tipo-sesion').text().toUpperCase() || 'INDEFINIDO';
+        
+        const Textoinicial = `<p style="text-align: justify; line-height: 1.5;"><strong>ACUERDO NÚMERO <?php echo mb_strtoupper(numToText($numero_Acuerdo)) ?>.-</strong>EL CONSEJO MUNICIPAL, en uso de sus
+         facultades legales que les confiere la Constitución de la República de El Salvador en el artículo 204 lnc. 3 CN y 
+         Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO: ////${contenidoNotas}.-<strong>POR 
+         TANTO ESTE CONCEJO MUNICIPAL DE ALCALDESA Y CONCEJO MUNICIPAL POR VOTACIÓN ${tipoSesion} ACUERDAN:</strong> 
+         escriba aquí los acuerdos...</p>`;
+        
+        $('#contenido').summernote('code', Textoinicial);
     }
 
     // Inicializar Summernote
-    $('#contenido, #notas').summernote({
+    $('#contenido').summernote({
         height: 400,
-        fontNames: ['Arial'],
+        lang: 'es-ES',
         toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['fontname']],
-            ['fontsize', ['fontsize']],
+            ['fontname', ['Arial', 'Courier New', 'Times New Roman']], // Arial por defecto
+            ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
             ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']],
+            ['para', ['ul', 'ol', 'paragraph', 'height']],
             ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+       
+    });
+    // Establecer un placeholder en el editor #notas
+    $('#notas').summernote({
+        placeholder: 'Escriba aquí el contenido del cuerpo del Acuerdo...',
+        height: 400,
+        lang: 'es-ES',
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['Arial', 'Courier New', 'Times New Roman']],
+            ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph', 'height']],
+            ['table', ['table']],
             ['view', ['fullscreen', 'codeview', 'help']]
         ]
     });
-
-    // Agrega un texto inicial a #notas
-    $('#notas').summernote('code', `<p>Escriba aquí el contenido del Acuerdo...</p>`);
 
     // Evento para detectar cambios en el editor #notas y actualizar #contenido
     $('#notas').on('summernote.change', function(we, contents) {
         actualizarTexto(); // Actualiza el texto en #contenido
     });
-
-    $('#fecha_apertura, #id_Actas, #horaApertura, #minutosApertura').on('change', actualizarTexto);
-
+    
     // Actualizar el contenido al cargar la página
     actualizarTexto();
-});
 </script>
 <script>
     var numPresentes = 0;
@@ -684,43 +580,38 @@ $anioEnTexto = $formatter->format($anio);
 
         var motivo_Acuerdo = "Este acuerdo fue tomado por";
 
+        let tipoSesion = '';
         if (votosFavor === numPresentes || votosContra === numPresentes) {
-            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Unanimidad";
+            tipoSesion = "Unanimidad";
         } else if (votosFavor === votosContra) {
-            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Mayoría Calificada";
+            tipoSesion = "Mayoría Calificada";
         } else if (votosFavor > (numPresentes / 2) || votosContra > (numPresentes / 2)) {
-            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Mayoría Simple";
+            tipoSesion = "Mayoría Simple";
         } else {
-            document.getElementById('tipo-sesion').textContent = motivo_Acuerdo + " Voto Indefinido";
+            tipoSesion = "Indefinido";
         }
+        document.getElementById('tipo-sesion').textContent = tipoSesion;
+        document.getElementById('tipo_sesion_input').value = tipoSesion;
+        actualizarTexto();
     }
 </script>
 <script>
     // Inicialización de Select2
     $(document).ready(function() {
         $('#id_Actas').select2({
-            placeholder: 'Seleccione un acta',
-            allowClear: true
+            minimumResultsForSearch: 1  // Mantiene la búsqueda activa
+        }).on('change', function() {
+            // Forzar cierre inmediato
+            setTimeout(() => {
+                $(this).select2('close');
+            }, 0);
+            
+            // Llamar a las funciones existentes
+            obtenerPresentes(this.value);
+            let idActa_Variable = obtenerID(this.value);
         });
     });
-
-    flatpickr("#fecha_apertura", {
-    dateFormat: "Y-m-d",
-    allowInput: true,
-    defaultDate: new Date(new Date().getFullYear(), 11, 31),
-    enable: [
-        // Solo permitir fechas de diciembre
-        function(date) {
-            return date.getMonth() === 11;
-        }
-    ],
-    onReady: function(selectedDates, dateStr, instance) {
-        instance.jumpToDate(new Date(instance.currentYear, 11, 31));
-        instance.calendarContainer.querySelectorAll(".flatpickr-monthDropdown-month, .flatpickr-prev-month, .flatpickr-next-month").forEach(el => {
-            el.style.display = "none";
-        });
-    }
-});
+    
 </script>
 <script>
     // Función para adelantar dos pasos en el stepper
@@ -791,18 +682,6 @@ $anioEnTexto = $formatter->format($anio);
         border: 1px solid #ced4da;
         border-radius: 0.25rem;
         width: 100%;
-    }
-    #visualizar-apertura {
-        height: calc(1.5em + .75rem + 2px);
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-        width: 100%;
-        margin-top: 1.4rem;
     }
 </style>
 <script>
