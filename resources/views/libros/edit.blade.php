@@ -29,42 +29,25 @@ $anioEnTexto = $formatter->format($anio);
 
 // Convertir el mes a texto en español
 $mesEnTexto = [
-    1 => 'enero',
-    2 => 'febrero',
-    3 => 'marzo',
-    4 => 'abril',
-    5 => 'mayo',
-    6 => 'junio',
-    7 => 'julio',
-    8 => 'agosto',
-    9 => 'septiembre',
-    10 => 'octubre',
-    11 => 'noviembre',
-    12 => 'diciembre',
+    1 => 'enero', 2 => 'febrero', 3 => 'marzo',
+    4 => 'abril', 5 => 'mayo', 6 => 'junio',
+    7 => 'julio', 8 => 'agosto', 9 => 'septiembre',
+    10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre',
 ][$mes];
 
-$texto = $libro->apertura_Libro; // El texto completo
-preg_match('/y (.*?) minutos/', $texto, $coincidencias);
-$minutosFiltrados = !empty($coincidencias[1]) ? $coincidencias[1] : 'No se encontró texto válido.';
+$texto = $libro->apertura_Libro;
 
-preg_match('/las (.*?) horas/', $texto, $coincidencias);
-$HoraFiltrado = !empty($coincidencias[1]) ? $coincidencias[1] : 'No se encontró texto válido.';
+function extraerTexto($patron, $texto, $default) {
+    preg_match($patron, $texto, $coincidencias);
+    return !empty($coincidencias[1]) ? $coincidencias[1] : $default;
+}
 
-$patron_Alcalde = '/<p[^>]*id="alcaldeSeleccionado"[^>]*>.*?<strong>(.*?)<\/strong>/s';
-preg_match($patron_Alcalde, $texto, $coincidencias);
-$alcaldeSeleccionado = !empty($coincidencias[1]) ? $coincidencias[1] : 'Nombre del Alcalde';
-
-$patron_Sindico = '/<p[^>]*id="sindicoSeleccionado"[^>]*>.*?<strong>(.*?)<\/strong>/s';
-preg_match($patron_Sindico, $texto, $coincidencias);
-$sindicoSeleccionado = !empty($coincidencias[1]) ? $coincidencias[1] : 'Nombre del Síndico';
-
-$patron_Sindico2 = '/<p[^>]*id="sindico"[^>]*>.*?<strong>(.*?)<\/strong>/s';
-preg_match($patron_Sindico2, $texto, $coincidencias);
-$sindico1 = !empty($coincidencias[1]) ? $coincidencias[1] : 'Síndico Municipal';
-
-$patron_Alcalde2 = '/<p[^>]*id="alcalde"[^>]*>.*?<strong>(.*?)<\/strong>/s';
-preg_match($patron_Alcalde2, $texto, $coincidencias);
-$alcalde1 = !empty($coincidencias[1]) ? $coincidencias[1] : 'Alcalde Municipal';
+$minutosFiltrados = extraerTexto('/y (.*?) minutos/', $texto, 'No se encontró texto válido.');
+$HoraFiltrado = extraerTexto('/las (.*?) horas/', $texto, 'No se encontró texto válido.');
+$alcaldeSeleccionado = extraerTexto('/<p[^>]*id="alcaldeSeleccionado"[^>]*>.*?<strong>(.*?)<\/strong>/s', $texto, 'Nombre del Alcalde');
+$sindicoSeleccionado = extraerTexto('/<p[^>]*id="sindicoSeleccionado"[^>]*>.*?<strong>(.*?)<\/strong>/s', $texto, 'Nombre del Síndico');
+$sindico1 = extraerTexto('/<p[^>]*id="sindico"[^>]*>.*?<strong>(.*?)<\/strong>/s', $texto, 'Síndico Municipal');
+$alcalde1 = extraerTexto('/<p[^>]*id="alcalde"[^>]*>.*?<strong>(.*?)<\/strong>/s', $texto, 'Alcalde Municipal');
 ?>
 
 <!-- SweetAlert2 (para alertas) -->
@@ -440,9 +423,7 @@ $alcalde1 = !empty($coincidencias[1]) ? $coincidencias[1] : 'Alcalde Municipal';
         position: "auto",
         defaultDate: null,
     });
-</script>
 
-<script>
     flatpickr("#fecha2", {
         dateFormat: "Y-m-d",
         allowInput: true,
