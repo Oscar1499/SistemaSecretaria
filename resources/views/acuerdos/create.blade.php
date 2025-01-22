@@ -229,9 +229,10 @@ $anioEnTexto = $formatter->format($anio);
                         <div class="form-group mb-3">
                             <textarea class="form-control" id="contenido" name="descripcion_Acuerdos" rows="6" required></textarea>
                         </div>
+                        <input type="hidden" name="motivo_Votacion" id="motivo_Votacion" required/>
                         <div class="mt-3">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                            <button type="button" class="btn btn-primary" onclick="submitForm()" id="btnGuardar">
+                            <button type="submit" class="btn btn-primary" onclick="submitForm()" id="btnGuardar">
                                 <i class="bi bi-floppy"></i> Guardar Acuerdo
                             </button>
                         </div>
@@ -336,6 +337,19 @@ $anioEnTexto = $formatter->format($anio);
     
     // Actualizar el contenido al cargar la página
     actualizarTexto();
+</script>
+<script>
+    function capturarJustificaciones() {
+        const justificaciones = [];
+        document.querySelectorAll('.motivo-justificacion').forEach(input => {
+            const id = input.getAttribute('data-id');
+            const texto = input.value.trim();
+            if (texto) justificaciones.push(`${id}: ${texto}`);
+        });
+        document.getElementById('motivo_Votacion').value = justificaciones.join('|');
+    }
+
+    document.getElementById('acuerdoForm').onsubmit = capturarJustificaciones;
 </script>
 <script>
     var numPresentes = 0;
@@ -444,13 +458,16 @@ $anioEnTexto = $formatter->format($anio);
     </div>
 
     <!-- Justificación -->
-    <textarea
-      class="form-control w-100 mt-1"
-      rows="4"
-      id="motivo_Votacion"
-      name="motivo_Votacion"
-      placeholder="Escriba su justificación del voto aquí..."
-      required></textarea>
+  <textarea
+  class="form-control w-100 mt-1 motivo-justificacion"
+  rows="4"
+  id="motivo_Votacion_${presente}"
+  name="motivo_Votacion1"
+  placeholder="Escriba su justificación del voto aquí..."
+  data-id="${presente}"
+  required>
+</textarea>
+
   </div>
 </div>
 `;
@@ -653,32 +670,25 @@ $anioEnTexto = $formatter->format($anio);
     });
 </script>
 <script>
-    // Función para adelantar dos pasos en el stepper
-    function adelantar2Steps(){
-        let currentStep = document.querySelector(".content.active");
-        let nextStep = currentStep.nextElementSibling;
-        let nextStep2 = nextStep.nextElementSibling;
-        if (nextStep2) {
-            nextStep2.classList.add('active');
-            nextStep.classList.remove('active');
-            currentStep.classList.remove('active');
+    function cambiarPasos(direccion) {
+        const currentStep = document.querySelector(".content.active");
+        const stepChange = direccion === 'adelante' 
+            ? [currentStep, currentStep.nextElementSibling, currentStep.nextElementSibling.nextElementSibling]
+            : [currentStep, currentStep.previousElementSibling, currentStep.previousElementSibling.previousElementSibling];
 
+        if (stepChange[2]) {
+            stepChange[2].classList.add('active');
+            stepChange[1].classList.remove('active');
+            stepChange[0].classList.remove('active');
             updateProgressBar();
         }
     }
 
-    // Función para retroceder dos pasos en el stepper
-    function retroceder2Steps(){
-        let currentStep = document.querySelector(".content.active");
-        let previousStep = currentStep.previousElementSibling;
-        let previousStep2 = previousStep.previousElementSibling;
-        if (previousStep2) {
-            previousStep2.classList.add('active');
-            previousStep.classList.remove('active');
-            currentStep.classList.remove('active');
-
-            updateProgressBar();
-        }
+    function adelantar2Steps() {
+        cambiarPasos('adelante');
+    }
+    function retroceder2Steps() {
+        cambiarPasos('atras');
     }
 </script>
 @endsection
