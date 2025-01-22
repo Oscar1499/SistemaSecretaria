@@ -23,6 +23,7 @@ class Acuerdo extends Model
         'id_Actas',
         'id_Personal',
         'fecha_Acuerdos',
+        'motivo_Votacion',
         'descripcion_Acuerdos',
     ];
 

@@ -71,10 +71,10 @@
             <div class="card-body bg-light">
                 <div class="row">
                     <div class="col-12">
-                        <p class="mb-1"><i class="fas fa-sticky-note" aria-hidden="true"></i> <strong>Notas Adicionales:</strong></p>
+                        <p class="mb-1"><i class="fas fa-sticky-note" aria-hidden="true"></i> <strong>Motivo de Votación:</strong></p>
                         <div class="bg-light rounded shadow-sm p-3" style="max-height: 200px; overflow-y: auto;">
                             <span id="notas_adicionales" class="text-muted" aria-label="Notas adicionales del acuerdo">
-                                {!! $acuerdo->notas_adicionales ? htmlspecialchars_decode(e($acuerdo->notas_adicionales)) : 'Sin notas adicionales registradas' !!}
+{{$acuerdo->motivo_Votacion }}
                             </span>
                         </div>
                     </div>

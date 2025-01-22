@@ -70,7 +70,6 @@
                     <th><i class="bi1 bi-file-earmark-fill"></i> ID Acta</th>
                     <th><i class="bi1 bi-people-fill"></i> ID Personal</th>
                     <th><i class="bi1 bi-calendar-fill"></i> Fecha de Acuerdo</th>
-                    <th><i class="bi1 bi-file-earmark-text-fill"></i> Descripción</th>
                     <th><i class="bi1 bi-save-fill"></i> Acciones</th>
                         </tr>
                     </thead>
@@ -81,8 +80,6 @@
                     <td>{{ $acuerdo->id_Actas }}</td>
                     <td>{{ $acuerdo->id_Personal }}</td>
                     <td>{{ $acuerdo->fecha_Acuerdos }}</td>
-                    <td>{{ $acuerdo->descripcion_Acuerdos }}</td>
-                           
                             <td class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-1">
                                 <a href="{{ route('acuerdos.show', $acuerdo->id_Acuerdo) }}"             
                                    class="btn btn-info btn-sm" 

@@ -111,11 +111,27 @@ $anioEnTexto = $formatter->format($anio);
 
             <div class="bs-stepper-content">
                 <!-- Formulario con pasos -->
-                <form action="" method="POST">
-                    @csrf
+                <form action="{{ route('acuerdos.store') }}" method="POST" id="acuerdoForm">
+                @csrf
 
+
+                <!-- Input Oculto y valor estatico temporalmente -->
+                <input type="hidden" value="1" name="id_Personal"  id="id_Personal" value="1" required/> 
                     <!-- Paso 1: Configuración del libro-->
                     <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
+                    <div class="form-group">
+                                <label for="fecha_Acuerdos">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    Fecha de acuerdos
+                                </label>
+
+                                <div class="input-group">
+                                    <input type="date" class="form-control" id="fecha_Acuerdos" name="fecha_Acuerdos" value="" required />
+                                    <span class="input-group-text">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </span>
+                                </div>
+                            </div>
                     <div class="form-group">
                             <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
                             <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
@@ -132,7 +148,7 @@ $anioEnTexto = $formatter->format($anio);
                         </div>
                     </div>
 
-                    <!-- Paso 2: Representación del consejo -->
+                    <!-- Paso 2: Redactar Memorando -->
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
                         <div class="form-group">
                             <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acuerdo</label>
@@ -145,7 +161,7 @@ $anioEnTexto = $formatter->format($anio);
                             </div>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control"spellcheck="true" id="notas" name="apertura_Libro"></textarea>
+                            <textarea class="form-control"spellcheck="true" name="notas" id="notas" required></textarea>
                         </div>
                         @section('css')
                         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
@@ -211,17 +227,22 @@ $anioEnTexto = $formatter->format($anio);
                         <i class="bi bi-arrow-left me-2"></i>Seguir Escribiendo</button>
                         </div>
                         <div class="form-group mb-3">
-                            <textarea class="form-control" id="contenido" name="visualizacion" rows="6"></textarea>
+                            <textarea class="form-control" id="contenido" name="descripcion_Acuerdos" rows="6" required></textarea>
                         </div>
                         <div class="mt-3">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="submitForm()" id="btnGuardar">
                                 <i class="bi bi-floppy"></i> Guardar Acuerdo
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
+            <script>
+    function submitForm() {
+        document.getElementById('acuerdoForm').submit();
+    }
+</script>
         </div>
     </div>
 </div>
@@ -426,6 +447,8 @@ $anioEnTexto = $formatter->format($anio);
     <textarea
       class="form-control w-100 mt-1"
       rows="4"
+      id="motivo_Votacion"
+      name="motivo_Votacion"
       placeholder="Escriba su justificación del voto aquí..."
       required></textarea>
   </div>
@@ -611,7 +634,23 @@ $anioEnTexto = $formatter->format($anio);
             let idActa_Variable = obtenerID(this.value);
         });
     });
-    
+
+    flatpickr("#fecha_Acuerdos", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        defaultDate: new Date(new Date().getFullYear(), 0, 1),
+        locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+            },
+            months: {
+                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+            }
+        }
+    });
 </script>
 <script>
     // Función para adelantar dos pasos en el stepper

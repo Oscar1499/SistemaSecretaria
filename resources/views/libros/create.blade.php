@@ -408,9 +408,7 @@ $mesEnTexto = [
         position: "auto",
         defaultDate: new Date(new Date().getFullYear(), 0, 1),
     });
-</script>
 
-<script>
    flatpickr("#fecha2", {
     dateFormat: "Y-m-d",
     allowInput: true,
