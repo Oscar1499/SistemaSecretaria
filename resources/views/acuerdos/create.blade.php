@@ -38,7 +38,7 @@ $anioEnTexto = $formatter->format($anio);
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- Bootstrap (framework de diseño) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Moment.js (para manejo de fechas y horas) -->
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
@@ -133,7 +133,7 @@ $anioEnTexto = $formatter->format($anio);
                                 </div>
                             </div>
                     <div class="form-group">
-                            <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i> Acta</label>
+                            <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i>Seleccionar Acta</label>
                             <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
                                 <option value="" disabled selected>Seleccione</option>
                                 @foreach($actas as $acta)
@@ -340,16 +340,70 @@ $anioEnTexto = $formatter->format($anio);
 </script>
 <script>
     function capturarJustificaciones() {
-        const justificaciones = [];
-        document.querySelectorAll('.motivo-justificacion').forEach(input => {
-            const id = input.getAttribute('data-id');
-            const texto = input.value.trim();
-            if (texto) justificaciones.push(`${id}: ${texto}`);
+        const resultados = new Map(); // Usar un Map para manejar entradas únicas por ID
+        
+        // Seleccionar todas las tarjetas
+        document.querySelectorAll('.card').forEach(card => {
+            // Encontrar el textarea de justificación
+            const textarea = card.querySelector('.motivo-justificacion');
+            if (!textarea) return;
+
+            // Encontrar los botones de voto
+            const botonesVoto = card.querySelectorAll('.voto-btn');
+            
+            const id = textarea.getAttribute('data-id');
+            const texto = textarea.value.trim();
+            
+            // Determinar el voto
+            let voto = 'Sin voto';
+            let ultimoVoto = null;
+            
+            botonesVoto.forEach(boton => {
+                if (boton.classList.contains('selected')) {
+                    ultimoVoto = boton;
+                }
+            });
+
+            // Usar el último voto seleccionado
+            if (ultimoVoto) {
+                voto = ultimoVoto.classList.contains('btn-success') ? 'A favor' : 'En contra';
+            }
+
+            // Si hay justificación o voto, agregar al resultado
+            if (texto || voto !== 'Sin voto') {
+                // Añadir el voto al inicio de la justificación si no está presente
+                const justificacionConVoto = voto !== 'Sin voto' && !texto.toLowerCase().startsWith(voto.toLowerCase()) 
+                    ? `${voto}: ${texto}` 
+                    : texto;
+                
+                // Crear una entrada única, sobrescribiendo entradas anteriores para el mismo ID
+                const entradaUnica = `${id}: Voto=${voto}, Justificación=${justificacionConVoto}`;
+                
+                // Guardar solo la última entrada para cada ID
+                resultados.set(id, entradaUnica);
+            }
         });
-        document.getElementById('motivo_Votacion').value = justificaciones.join('|');
+
+        // Convertir el Map a un array de resultados
+        const resultadosFinales = Array.from(resultados.values());
+
+        // Establecer el campo de entrada oculto con los resultados concatenados
+        const motivoVotacionInput = document.getElementById('motivo_Votacion');
+        if (motivoVotacionInput) {
+            motivoVotacionInput.value = resultadosFinales.join('|');
+            console.log('Resultados capturados:', motivoVotacionInput.value);
+        }
     }
 
-    document.getElementById('acuerdoForm').onsubmit = capturarJustificaciones;
+    // Asociar la captura de justificaciones al envío del formulario
+    document.addEventListener('DOMContentLoaded', function() {
+        const acuerdoForm = document.getElementById('acuerdoForm');
+        if (acuerdoForm) {
+            acuerdoForm.addEventListener('submit', function(event) {
+                capturarJustificaciones();
+            });
+        }
+    });
 </script>
 <script>
     var numPresentes = 0;
