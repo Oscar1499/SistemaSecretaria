@@ -106,7 +106,7 @@ class AcuerdoController extends Controller
     {
         // Busca el acuerdo por ID
         $acuerdo = Acuerdo::findOrFail($id);
-        $actas = Acta::where('estado', 'Abierto')->get();
+        $actas = Acta::where('estado', 'Cerrado')->get();
         $personal = Personal::all();
 
         // Retorna la vista 'acuerdos.edit' con el acuerdo para editar

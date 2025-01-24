@@ -3,7 +3,13 @@
 @section('title', 'Detalles del Acuerdo')
 
 @section('content_header')
+<div class="d-flex justify-content-between align-items-center">
 <h1><i class="bi bi-book-fill me-2"></i>Detalles del Acuerdo</h1>
+    <a href="{{ route('acuerdos.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Regresar
+    </a>
+</div>
+
 @stop
 
 @section('css')

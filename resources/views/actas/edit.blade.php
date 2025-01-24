@@ -3,7 +3,12 @@
 @section('title', 'Editar Acta')
 
 @section('content_header')
+<div class="d-flex justify-content-between align-items-center">
 <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Editar Acta</h1>
+    <a href="{{ route('actas.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Regresar
+    </a>
+</div>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

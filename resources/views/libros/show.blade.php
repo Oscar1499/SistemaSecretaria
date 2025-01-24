@@ -3,7 +3,12 @@
 @section('title', 'Detalles del Libro')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i>Detalles del Libro</h1>
+    <div class="d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-book-fill me-2"></i>Detalles del Libro</h1>
+    <a href="{{ route('libros.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Regresar
+    </a>
+</div>
 @stop
 
 @section('css')
@@ -55,9 +60,6 @@
 
         <!-- Botones -->
         <div class="mt-3">
-            <a href="{{ route('libros.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm">
-                <i class="fas fa-arrow-left"></i> Atrás
-            </a>
             <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
                 <i class="fas fa-file-pdf"></i> Descargar PDF
             </button>
@@ -116,8 +118,8 @@
     <div style="position: relative;">
         <img src="https://media.gettyimages.com/id/1500448395/es/foto/cat-taking-a-selfie.jpg?s=1024x1024&w=gi&k=20&c=A4HkIB60XY8y6xlZzYQayyYusF8Sjn1udnF0kUxEgvk=" alt="Imagen" style="
             position: absolute;
-            margin-top: 100%; 
-            right: -190px; 
+            margin-top: 100%;
+            right: -190px;
             transform: translateY(-50%);
             opacity: 0.7; /* Transparente para que sea un fondo */
             z-index: -1; /* Debajo del texto */

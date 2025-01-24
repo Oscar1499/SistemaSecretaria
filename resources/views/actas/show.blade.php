@@ -3,8 +3,12 @@
 @section('title', 'Detalles del Acta')
 
 @section('content_header')
+<div class="d-flex justify-content-between align-items-center">
 <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Detalles del Acta</h1>
-
+    <a href="{{ route('actas.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Regresar
+    </a>
+</div>
 @stop
 
 @section('css')
@@ -150,9 +154,6 @@
 
         <!-- Botones -->
         <div class="d-flex justify-content-left">
-            <a href="{{ route('actas.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm me-2" aria-label="Volver a la lista de actas">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Atrás
-            </a>
             <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm" aria-label="Descargar acta en formato PDF">
                 <i class="fas fa-file-pdf" aria-hidden="true"></i> Descargar PDF
             </button>

@@ -3,7 +3,12 @@
 @section('title', 'Agregar Libro')
 
 @section('content_header')
-<h1><i class="bi bi-book-fill me-2"></i>Apertura de Libro</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <h1><i class="bi bi-book-fill me-2"></i>Apertura de Libro</h1>
+    <a href="{{ route('libros.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Regresar
+    </a>
+</div>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 @stop
 
