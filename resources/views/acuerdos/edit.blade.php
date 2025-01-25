@@ -18,13 +18,14 @@
 <?php
 $texto = $acuerdo->descripcion_Acuerdos;
 
-$inicio = strpos($texto, '<p id="notas">');
-$fin = strpos($texto, '</p>', $inicio);
+// Expresión regular para capturar el texto entre "CONSIDERANDO:" y "POR TANTO"
+preg_match('/CONSIDERANDO:\s*(.*?)\s*\.?<strong>POR\s*TANTO/is', $texto, $matches);
 
 $contenidoNotas = '';
-if ($inicio !== false && $fin !== false) {
-    $contenidoNotas = substr($texto, $inicio + strlen('<p id="notas">'), $fin - $inicio - strlen('<p id="notas">'));
-} 
+if (!empty($matches[1])) {
+    $contenidoNotas = trim(strip_tags($matches[1])); // Eliminar espacios y HTML tags
+  
+}
 ?>
 <!-- SweetAlert2 (para alertas) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -145,7 +146,7 @@ if ($inicio !== false && $fin !== false) {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" spellcheck="true" name="notas" id="notas" required>{{$acuerdo->descripcion_Acuerdos}}</textarea>
+                                <textarea class="form-control" spellcheck="true" name="notas" id="notas" required><?php echo $contenidoNotas ?></textarea>
                             </div>
                             @section('css')
                             <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">

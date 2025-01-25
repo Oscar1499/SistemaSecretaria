@@ -13,6 +13,10 @@ Route::get('/', function () {
 });
 
 Route::get('/certificacion', [CertificacionController::class, 'index'])->name('certificacion.index');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('certificacion', CertificacionController::class);
+});
+
 Route::get('/libros', [LibroController::class, 'index'])->name('libros.index');
 Route::get('/actas/create', [ActaController::class, 'create'])->name('actas.create');
 Route::post('/actas', [ActaController::class, 'store'])->name('actas.store');

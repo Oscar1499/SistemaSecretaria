@@ -50,7 +50,7 @@
         <h1 class="mb-0">
             <i class="bi bi-file-earmark-text-fill me-2"></i>Lista de Certificaciones
         </h1>
-        <a href="" class="btn btn-primary btn-add-certificacion">
+        <a href="{{ route('certificacion.create') }}" class="btn btn-primary btn-add-certificacion">
             <i class="fas fa-plus"></i> Añadir Nueva Certificación
         </a>
     </div>

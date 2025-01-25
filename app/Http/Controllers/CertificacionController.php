@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Acuerdo;
 
 class CertificacionController extends Controller
 {
@@ -16,8 +17,10 @@ class CertificacionController extends Controller
     public function create()
     {
         // Code to show form for creating a new certification
+        $acuerdos = Acuerdo::all();
 
-        return view('certificacion.create');
+
+        return view('certificacion.create', compact('acuerdos'));
     }
 
     // Store a newly created resource in storage.

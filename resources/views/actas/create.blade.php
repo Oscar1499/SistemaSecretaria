@@ -41,7 +41,7 @@ function numToText($number)
     <div class="card container-fluid p-0">
         <div class="card-body">
             <!-- Barra de Progreso -->
-            <div class="progress mb-4">
+            <div class="progress mb-0">
                 <div
                     class="progress-bar progress-bar-striped progress-bar-animated"
                     role="progressbar"
