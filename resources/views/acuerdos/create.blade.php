@@ -149,7 +149,7 @@ $NumeroTexto = numToText($numero_Acuerdo);
                             <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
                             @endsection
 
-                            <div class="mt-3">
+                            <div class="mt-3 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
@@ -187,7 +187,7 @@ $NumeroTexto = numToText($numero_Acuerdo);
                                     </div>
                                 </div>
                                 <!-- Botones de navegación -->
-                                <div class="mt-3">
+                                <div class="mt-3 d-flex justify-content-between">
                                     <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                     <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                                 </div>
@@ -206,7 +206,7 @@ $NumeroTexto = numToText($numero_Acuerdo);
                                 <textarea class="form-control" id="contenido" name="descripcion_Acuerdos" rows="6" required></textarea>
                             </div>
                             <input type="hidden" name="motivo_Votacion" id="motivo_Votacion" required />
-                            <div class="mt-3">
+                            <div class="mt-3 d-flex justify-content-between">  
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="submit" class="btn btn-primary" onclick="submitForm()" id="btnGuardar">
                                     <i class="bi bi-floppy"></i> Guardar Acuerdo
@@ -248,8 +248,8 @@ $NumeroTexto = numToText($numero_Acuerdo);
         lang: 'es-ES',
         toolbar: [
             ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['Arial', 'Courier New', 'Times New Roman']],
+            ['font', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
+            ['fontname', ['Arial', 'Arial Black', 'Courier New', 'Times New Roman']],
             ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph', 'height']],

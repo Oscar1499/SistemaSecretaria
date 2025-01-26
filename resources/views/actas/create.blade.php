@@ -111,33 +111,12 @@ function numToText($number)
                             <input oninput="validarFecha(); actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha', now()->toDateString()) }}" required>
 
                         </div>
+                        <div class="mt-3 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                         <button type="button" class="btn btn-primary next-step" id="nextStepBtn" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
                     </div>
-                    <script>
-                        function validarFecha() {
-                            const fechaInput = document.getElementById("fecha");
-
-                            const nextStepButton = document.getElementById("nextStepBtn");
-
-                            if (fechaInput.value.trim() !== "") {
-                                nextStepButton.disabled = false;
-                            } else {
-                                nextStepButton.disabled = true;
-                            }
-                        }
-
-                        function validartextarea() {
-                            const textarea = document.getElementById("descripcion");
-                            const nextStepButton = document.getElementById("nextStepBtn1");
-
-                            if (textarea.value.trim() !== "") {
-                                nextStepButton.disabled = false;
-                            } else {
-                                nextStepButton.disabled = true;
-                            }
-                        }
-                    </script>
+                  
                     <!-- Paso 3: Seleccionar Personal -->
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                         <div class="form-group">
@@ -172,8 +151,10 @@ function numToText($number)
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-3 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                         <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                    </div>
                     </div>
                     <!-- Paso 4: Acta -->
                     <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
@@ -193,12 +174,15 @@ function numToText($number)
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
                                 placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
-                            <button type="button" class="btn btn-secondary previous-step mt-3">
+                            
+                            <div class="mt-1 d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary previous-step mt-3">
                                 <i class="bi bi-arrow-left"></i> Atrás
                             </button>
                             <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">
                                 <i class="bi bi-floppy"></i> Guardar
                             </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -461,6 +445,17 @@ function numToText($number)
             dateFormat: "Y-m-d",
             allowInput: true,
             position: "auto",
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                    longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+                },
+                months: {
+                    shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+                }
+            }
         });
 
         // Función para manejar cambios individuales en los checkboxes
@@ -485,6 +480,29 @@ function numToText($number)
             checkbox.addEventListener('change', handleCheckboxChange);
         });
     });
+
+    function validarFecha() {
+                            const fechaInput = document.getElementById("fecha");
+
+                            const nextStepButton = document.getElementById("nextStepBtn");
+
+                            if (fechaInput.value.trim() !== "") {
+                                nextStepButton.disabled = false;
+                            } else {
+                                nextStepButton.disabled = true;
+                            }
+                        }
+
+                        function validartextarea() {
+                            const textarea = document.getElementById("descripcion");
+                            const nextStepButton = document.getElementById("nextStepBtn1");
+
+                            if (textarea.value.trim() !== "") {
+                                nextStepButton.disabled = false;
+                            } else {
+                                nextStepButton.disabled = true;
+                            }
+                        }
 </script>
 
 <!-- Funcion para mostrar los iconos de Funcionarios presentes y ausentes -->

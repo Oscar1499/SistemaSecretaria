@@ -111,8 +111,10 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                             <input oninput="actualizarTextoFecha();" type="date" class="form-control" id="fecha" name="fecha" value="{{ $acta->fecha }}" required>
 
                         </div>
+                        <div class="mt-3 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                         <button type="button" class="btn btn-primary next-step" id="nextStepBtn">Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
                     </div>
                     <!-- Paso 3: Seleccionar Personal -->
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
@@ -151,8 +153,10 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-3 d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Atrás</button>
                         <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
                     </div>
                     <!-- Paso 4: Acta -->
                     <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
@@ -172,19 +176,20 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
                                 placeholder="Escriba el motivo de ausencia para los que no se marcaron">{{$acta->motivo_ausencia}}</textarea>
-                            <button type="button" class="btn btn-secondary previous-step mt-3">
-                                <i class="bi bi-arrow-left"></i> Atrás
-                            </button>
-                            <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">
-                                <i class="bi bi-floppy"></i> Actualizar acta
-                            </button>
+                            <div class="mt-3 d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary previous-step">
+                                    <i class="bi bi-arrow-left"></i> Atrás
+                                </button>
+                                <button type="submit" class="btn btn-primary" onclick="submitForm()">
+                                    <i class="bi bi-floppy"></i> Actualizar acta
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </form>
 
 <!-- Función para enviar el formulario -->
@@ -450,8 +455,18 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
             dateFormat: "Y-m-d",
             allowInput: true,
             position: "auto",
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                    longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+                },
+                months: {
+                    shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+                }
+            }
         });
-        
  // Función para manejar cambios individuales en los checkboxes
  window.handleCheckboxChange = function() {
             document.getElementById('selectAll').checked = false;

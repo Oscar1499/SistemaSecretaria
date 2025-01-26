@@ -17,6 +17,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('certificacion', CertificacionController::class);
 });
 
+Route::post('/obtener-acuerdos', [CertificacionController::class, 'obtenerAcuerdos'])->name('obtener.acuerdos');
+
 Route::get('/libros', [LibroController::class, 'index'])->name('libros.index');
 Route::get('/actas/create', [ActaController::class, 'create'])->name('actas.create');
 Route::post('/actas', [ActaController::class, 'store'])->name('actas.store');

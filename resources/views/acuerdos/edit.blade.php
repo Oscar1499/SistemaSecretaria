@@ -152,7 +152,7 @@ if (!empty($matches[1])) {
                             <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
                             @endsection
 
-                            <div class="mt-3">
+                            <div class="mt-3 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>
@@ -190,7 +190,7 @@ if (!empty($matches[1])) {
                                     </div>
                                 </div>
                                 <!-- Botones de navegación -->
-                                <div class="mt-3">
+                                <div class="mt-3 d-flex justify-content-between">
                                     <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                     <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                                 </div>
@@ -209,7 +209,7 @@ if (!empty($matches[1])) {
                                 <textarea class="form-control" id="contenido" name="descripcion_Acuerdos" rows="6" required></textarea>
                             </div>
                             <input type="hidden" name="motivo_Votacion" id="motivo_Votacion" required />
-                            <div class="mt-3">
+                            <div class="mt-3 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                                 <button type="submit" class="btn btn-primary" onclick="submitForm()" id="btnGuardar">
                                     <i class="bi bi-floppy"></i> Guardar Acuerdo

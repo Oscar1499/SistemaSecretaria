@@ -89,7 +89,7 @@ $mesEnTexto = [
 
                         <div class="form-group">
                                 <label for="id_Acuerdos"><i class="bi bi-file-earmark-fill"></i> Seleccionar Acuerdo</label>
-                                <select id="id_Acuerdos" name="id_Acuerdos" onchange="obtenerPresentes(this.value);" class="form-control select2" required >
+                                <select id="id_Acuerdos" name="id_Acuerdos"  class="form-control select2" required >
                                     <option value="" disabled selected>Seleccione un Acuerdo A Certificar</option>
                                     @foreach($acuerdos as $acuerdo)
                                     <option value="{{ $acuerdo->id_Acuerdo }}" data-descripcion="{{ $acuerdo->correlativo }}" data-valor2="{{ Str::words($acuerdo->correlativo, 3, '') }}">
@@ -105,7 +105,8 @@ $mesEnTexto = [
 
                     <!-- Paso 2: Representación del consejo -->
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                        <div class="mt-3">
+
+                    <div class="mt-3">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                             <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
@@ -201,8 +202,34 @@ $mesEnTexto = [
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    let data;
+async function obtenerAcuerdo(idAcuerdo) {
+    if (!idAcuerdo) return;
 
+    try {
+        const response = await fetch("{{ route('obtener.acuerdos') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                id_Acuerdo: idAcuerdo
+            })
+        });
 
+        if (!response.ok) {
+            throw new Error('Error en la solicitud');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al obtener el acuerdo:", error);
+    }
+}
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#fecha_Certificacion", {
@@ -284,60 +311,74 @@ $mesEnTexto = [
         return numerosEnPalabras[numero];
     }
 
-    function actualizarTexto() {
+    async function actualizarTexto() {
+    // Obtener la fecha y otros datos
+    const fecha = obtenerFecha();
+    const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
+    const mesSeleccionadoVariable = fecha?.mes || 'el mes';
 
-        const fecha = obtenerFecha();
-        const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
-        const mesSeleccionadoVariable = fecha?.mes || 'el mes';
+    let hora_Seleccionada = $('#horaApertura').val();
+    let minutos_Seleccionada = $('#minutosApertura').val();
+    let id_Acuerdo = $('#id_Acuerdos').val();
 
-        let hora_Seleccionada = $('#horaApertura').val();
-        let minutos_Seleccionada = $('#minutosApertura').val();
+    minutos_Seleccionada = typeof minutos_Seleccionada === 'undefined' || minutos_Seleccionada === '' || minutos_Seleccionada === null ?
+        "<?php echo $minutosEnTexto ?>" :
+        numeroAPalabras(minutos_Seleccionada);
 
-        minutos_Seleccionada = typeof minutos_Seleccionada === 'undefined' || minutos_Seleccionada === '' || minutos_Seleccionada === null ?
-            "<?php echo $minutosEnTexto ?>" :
-            numeroAPalabras(minutos_Seleccionada);
+    hora_Seleccionada = typeof hora_Seleccionada === 'undefined' || hora_Seleccionada === '' || hora_Seleccionada === null ?
+        "<?php echo $horaEnTexto; ?>" :
+        numeroAPalabras(hora_Seleccionada);
 
-        hora_Seleccionada = typeof hora_Seleccionada === 'undefined' || hora_Seleccionada === '' || hora_Seleccionada === null ?
-            "<?php echo $horaEnTexto; ?>" :
-            numeroAPalabras(hora_Seleccionada);
+    // Obtener el acuerdo
+    const acuerdo = await obtenerAcuerdo(id_Acuerdo); // Cambia el 1 por el ID del acuerdo que necesitas
+    const descripcionAcuerdo = acuerdo?.descripcion_Acuerdos || 'No se pudo obtener la descripción del acuerdo';
 
-        let TextoInicial = `<p style="text-align: justify; line-height: 1.2; font-family: Arial, sans-serif;">
-        La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
-        Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
-        <?php echo $anioEnTexto ?>, se encuentra el acta número VEINTICINCO de Sesión Ordinaria, celebrada lugar a 
-        las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
-        el acuerdo Municipal número UNO, que literalmente dice: 
-        ////////////////////////////////////////////////////////////////////////////</p>`;
-        // Agregar texto inicial
-        $('#Certificacion').summernote('code', TextoInicial);
-    }
+    // Construir el texto inicial
+    let TextoInicial = `<p style="text-align: justify; line-height: 1.2; font-family: Arial, sans-serif;">
+    La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
+    Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
+    <?php echo $anioEnTexto ?>, se encuentra el acta número VEINTICINCO de Sesión Ordinaria, celebrada lugar a 
+    las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
+    el acuerdo Municipal número UNO, que literalmente dice:
+    ////////////////////////////////////////////////////////////////////////////</p>
+    <p>${descripcionAcuerdo}</p>`; // Aquí se agrega la descripción del acuerdo
+
+    // Agregar texto inicial al editor Summernote
+    $('#Certificacion').summernote('code', TextoInicial);
+}
 
     // Función principal: obtiene el mes y actualiza Summernote
     function actualizarMesYTexto() {
         actualizarTexto();
     }
 
-          // Inicialización de Summernote
-    $(document).ready(function() {
-        $('#Certificacion').summernote({
-            tabsize: 2,
-            height: 300,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link']],
-                ['view', ['fullscreen', 'codeview']]
-            ]
-        });
-        // Eventos para actualizar dinámicamente
-        $('#fecha_Certificacion, #horaApertura, #minutosApertura').on('change', actualizarMesYTexto);
-
-        // Actualizar el contenido de Summernote al cargar la página
-        actualizarMesYTexto();
+   // Inicialización de Summernote
+$(document).ready(function() {
+    $('#Certificacion').summernote({
+        tabsize: 2,
+        height: 300,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['fontname', ['fontname']], // Opción para cambiar el tipo de letra
+            ['fontsize', ['fontsize']], // Opción para cambiar el tamaño de la fuente
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        // Opciones adicionales para personalizar las fuentes y tamaños disponibles
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+        fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '32', '36', '48', '72']
     });
+
+    // Eventos para actualizar dinámicamente
+    $('#fecha_Certificacion, #id_Acuerdos, #horaApertura, #minutosApertura').on('change', actualizarMesYTexto);
+
+    // Actualizar el contenido de Summernote al cargar la página
+    actualizarMesYTexto();
+});
         
 
         const stepper = new Stepper(document.querySelector('.bs-stepper'));

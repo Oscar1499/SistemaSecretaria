@@ -207,7 +207,7 @@ $mesEnTexto = [
                                 </select>
                             </div>
                         </div>
-                        <div class="mt-3">
+                        <div class="mt-3 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                             <button type="button" class="btn btn-primary next-step" disabled>Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
@@ -269,7 +269,7 @@ $mesEnTexto = [
                         @endsection
 
                         <!-- Botones de navegación -->
-                        <div class="mt-3">
+                        <div class="mt-3 d-flex justify-content-between">
                             <?php $diaSeleccionado = old('diaSeleccionado') ?? ''; ?>
                             <input type="hidden" id="diaSeleccionado" name="diaSeleccionado" value="{{ $diaSeleccionado }}">
                             <button type="button" class="btn btn-secondary previous-step">
@@ -408,12 +408,22 @@ $mesEnTexto = [
 <script>
     // Inicializar Flatpickr para el campo de fecha
     flatpickr("#fecha", {
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y",
         allowInput: true,
         position: "auto",
         defaultDate: new Date(new Date().getFullYear(), 0, 1),
+        locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+                shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+            },
+            months: {
+                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+            }
+        }
     });
-
    flatpickr("#fecha2", {
     dateFormat: "Y-m-d",
     allowInput: true,
@@ -429,6 +439,17 @@ $mesEnTexto = [
         instance.calendarContainer.querySelectorAll(".flatpickr-monthDropdown-month, .flatpickr-prev-month, .flatpickr-next-month").forEach(el => {
             el.style.display = "none";
         });
+    },
+    locale: {
+        firstDayOfWeek: 1,
+        weekdays: {
+            shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        },
+        months: {
+            shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        }
     }
 });
 

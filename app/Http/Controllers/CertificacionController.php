@@ -20,6 +20,8 @@ class CertificacionController extends Controller
         $acuerdos = Acuerdo::all();
 
 
+
+
         return view('certificacion.create', compact('acuerdos'));
     }
 
@@ -27,6 +29,15 @@ class CertificacionController extends Controller
     public function store(Request $request)
     {
         // Code to store a new certification
+    }
+    public function obtenerAcuerdos(Request $request)
+    {
+        try {
+            $acuerdo = Acuerdo::findOrFail($request->id_Acuerdo);
+            return response()->json(['descripcion_Acuerdos' => $acuerdo->descripcion_Acuerdos]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Acuerdo no encontrado'], 404);
+        }
     }
 
     // Display the specified resource.
