@@ -18,6 +18,7 @@ $hora = date('H');
 $minutos = date('i');
 $dia = date('d');
 $mes = date('n'); // Obtener el número del mes
+
 // Convertir el año a texto a texto en español
 $horaEnTexto = $formatter->format($hora);
 $minutosEnTexto = $formatter->format($minutos);
@@ -106,7 +107,7 @@ $mesEnTexto = [
                     <!-- Paso 2: Representación del consejo -->
                     <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
 
-                    <div class="mt-3">
+                    <div class="mt-3 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                             <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
@@ -157,7 +158,7 @@ $mesEnTexto = [
                             </div>
                         </div>
                     <textarea class="form-control mt-2" id="Certificacion" name="Certificacion" required></textarea>
-                        <div class="mt-3">
+                        <div class="mt-3 d-flex justify-content-between">
                             <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                             <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Certificación</button>
                         </div>
@@ -380,7 +381,6 @@ $(document).ready(function() {
     actualizarMesYTexto();
 });
         
-
         const stepper = new Stepper(document.querySelector('.bs-stepper'));
         const progressBar = document.getElementById('progress-bar');
 
@@ -410,7 +410,6 @@ $(document).ready(function() {
 
         // Ensure the first step is active by default
         document.querySelector('.step')?.classList.add('active');
-        
         updateProgressBar();
     });
 </script>
