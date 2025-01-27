@@ -173,7 +173,7 @@ function numToText($number)
                                 class="form-control"
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
-                                placeholder="Escriba el motivo de ausencia para los que no se marcaron">Ninguno</textarea>
+                                placeholder="Detalle los motivos de ausencia de los miembros no presentes en la sesión"></textarea>
                             
                             <div class="mt-1 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary previous-step mt-3">
@@ -397,7 +397,7 @@ function numToText($number)
             document.getElementById('presentes').value = presentesTexto;
 
             const fechaTexto = `
-        <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
+        <p style="text-align: justify; line-height: 1.5;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
         <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.

@@ -408,7 +408,7 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
             document.getElementById('presentes').value = presentes.length > 0 ? presentes.join(', ') : 'Ninguno';
 
             const fechaTexto = `
-        <p style="text-align: justify;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
+        <p style="text-align: justify; line-height: 1.5;">En las instalaciones del Centro Municipal para la Prevención de la Violencia, del distrito de la Unión,
         Municipio de La Unión Sur, departamento de La Unión, a las <span id="horaTexto">${new Date().getHours()}</span> horas del día
         <span id="diaTexto">${diaSeleccionado}</span> de <span id="mesTexto">${mesSeleccionadoVariable}</span> del
         <span id="anoTexto">${new Date().getFullYear()}</span>.

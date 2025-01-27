@@ -4,7 +4,7 @@
 
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="bi bi-book-fill me-2"></i>Apertura de Libro</h1>
+    <h1><i class="bi bi-file-earmark-text-fill me-2"></i>Crear Libro</h1>
     <a href="{{ route('libros.index') }}" class="btn btn-secondary">
         <i class="bi bi-arrow-left-circle me-1"></i> Regresar
     </a>
@@ -37,7 +37,7 @@ $mesEnTexto = [
     1 => 'enero', 2 => 'febrero', 3 => 'marzo',
     4 => 'abril', 5 => 'mayo', 6 => 'junio',
     7 => 'julio', 8 => 'agosto', 9 => 'septiembre',
-    10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre',
+10 => 'octubre', 11 => 'noviembre',12 => 'diciembre',
 ][$mes];
 
 ?>
@@ -348,7 +348,7 @@ $mesEnTexto = [
 
         // Generar el texto dinámico
         const textoInicial = `
-            <p style="text-align: justify;"><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
+            <p style="text-align: justify; line-height: 1.5; margin: 0;"><strong>ALCALDÍA MUNICIPAL DE LA UNIÓN SUR, DEPARTAMENTO DE LA UNIÓN,</strong>
             a las ${hora_Seleccionada} horas y ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, EL PRIMER CONSEJO MUNICIPAL PLURAL,
             juramentado constitucionalmente para el periodo 2024-2027, AUTORIZA Y HABILITA el presente Libro de Actas de Sesiones,
             debidamente foliado y sellado para que en él se asienten las actas de sesiones que celebre el primer Concejo Municipal Plural de
@@ -408,22 +408,25 @@ $mesEnTexto = [
 <script>
     // Inicializar Flatpickr para el campo de fecha
     flatpickr("#fecha", {
-        dateFormat: "d-m-Y",
-        allowInput: true,
-        position: "auto",
-        defaultDate: new Date(new Date().getFullYear(), 0, 1),
-        locale: {
-            firstDayOfWeek: 1,
-            weekdays: {
-                shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-                longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-            },
-            months: {
-                shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-            }
+    dateFormat: "Y-m-d",
+    allowInput: true,
+    position: "auto",
+    defaultDate: new Date(new Date().getFullYear(), 0, 1),
+    locale: {
+        firstDayOfWeek: 1,
+        weekdays: {
+            shorthand: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        },
+        months: {
+            shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         }
-    });
+    }
+});
+</script>
+
+<script>
    flatpickr("#fecha2", {
     dateFormat: "Y-m-d",
     allowInput: true,
