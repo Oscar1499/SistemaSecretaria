@@ -19,9 +19,6 @@ class CertificacionController extends Controller
         // Code to show form for creating a new certification
         $acuerdos = Acuerdo::all();
 
-
-
-
         return view('certificacion.create', compact('acuerdos'));
     }
 

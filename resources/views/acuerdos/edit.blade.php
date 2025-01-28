@@ -15,20 +15,9 @@
 @stop
 
 @section('content')
-<?php
-$texto = $acuerdo->descripcion_Acuerdos;
-
-// Expresión regular para capturar el texto entre "CONSIDERANDO:" y "POR TANTO"
-preg_match('/CONSIDERANDO:\s*(.*?)\s*\.?<strong>POR\s*TANTO/is', $texto, $matches);
-
-$contenidoNotas = '';
-if (!empty($matches[1])) {
-    $contenidoNotas = trim(strip_tags($matches[1])); // Eliminar espacios y HTML tags
-  
-}
-?>
 <!-- SweetAlert2 (para alertas) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 
 <!-- BS Stepper (para el paso a paso del formulario) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
@@ -55,7 +44,7 @@ if (!empty($matches[1])) {
             <!-- Barra de Progreso -->
             <div class="progress mb-0">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 33%;" id="progress-bar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                    Paso 1 de 4
+                    Paso 1 de 3
                 </div>
             </div>
             <!-- Stepper -->
@@ -72,26 +61,17 @@ if (!empty($matches[1])) {
 
                     <!-- Paso 2 -->
                     <div class="step" data-target="#step-2">
-                        <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                            <span class="bs-stepper-circle">2</span>
-                            <span class="bs-stepper-label">Redactar Memorando</span>
-                        </button>
-                    </div>
-                    <div class="line"></div>
-
-                    <!-- Paso 3 -->
-                    <div class="step" data-target="#step-3">
                         <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-circle">2</span>
                             <span class="bs-stepper-label">Selección de Personal</span>
                         </button>
                     </div>
                     <div class="line"></div>
 
-                    <!-- Paso 4 -->
+                    <!-- Paso 3 -->
                     <div class="step" data-target="#step-4">
                         <button type="button" class="step-trigger" role="tab" id="stepper-step-4" aria-controls="step-4">
-                            <span class="bs-stepper-circle">4</span>
+                            <span class="bs-stepper-circle">3</span>
                             <span class="bs-stepper-label">Previsualización y acuerdos</span>
                         </button>
                     </div>
@@ -112,7 +92,7 @@ if (!empty($matches[1])) {
                                     Fecha de acuerdos
                                 </label>
                                 <div class="input-group">
-                                    <input type="date" class="form-control" id="fecha_Acuerdos" name="fecha_Acuerdos" value="" required />
+                                    <input type="date" class="form-control" id="fecha_Acuerdos" name="fecha_Acuerdos" value="{{$acuerdo->fecha_Acuerdos}}" required />
                                     <span class="input-group-text">
                                         <i class="bi bi-calendar-plus"></i>
                                     </span>
@@ -120,7 +100,7 @@ if (!empty($matches[1])) {
                             </div>
                             <div class="form-group">
                                 <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i>Seleccionar Acta</label>
-                                <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
+                                <select id="id_Actas" value="{{$acuerdo->id_Actas}}" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
                                     <option value="" disabled selected>Seleccione</option>
                                     @foreach($actas as $acta)
                                     <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ Str::words($acta->correlativo, 3, '') }}">
@@ -134,29 +114,6 @@ if (!empty($matches[1])) {
                             </div>
                         </div>
 
-                        <!-- Paso 2: Redactar Memorando -->
-                        <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-                            <div class="form-group">
-                                <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acuerdo</label>
-                                <div class="input-group" style="width: 950px;">
-                                    <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo" value="ACUERDO NÚMERO . El Consejo Municipal de la Unión sur CONSIDERANDO: .-" readonly style="margin-right: 10px;">
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-outline-primary btn-sm"style="vertical-align: top; width: 200px; height: calc(1.5em + .75rem + 2px); padding: 0.375rem 0.75rem; font-size: 1rem; line-height: 1.5;" onclick="adelantar2Steps();">Previsualizar<i class="bi bi-arrow-right"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control" spellcheck="true" name="notas" id="notas" required><?php echo $contenidoNotas ?></textarea>
-                            </div>
-                            @section('css')
-                            <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-                            @endsection
-
-                            <div class="mt-3 d-flex justify-content-between">
-                                <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                                <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
 
                         <!-- Paso 3: Selección de Personal -->
                         <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
@@ -201,9 +158,6 @@ if (!empty($matches[1])) {
                         <div id="step-4" class="content" role="tabpanel" aria-labelledby="stepper-step-4">
                             <div class="form-group mb-3 d-flex justify-content-between align-items-center">
                                 <label for="correlativo" class="mb-0"><i class="bi bi-eye-fill me-2"></i>Previsualización del contenido del Acuerdo</label>
-                                <button type="button" class="btn btn-outline-primary btn-sm" style="vertical-align: top; width: 200px; height: calc(1.5em + .75rem + 2px); padding: 0.375rem 0.75rem; font-size: 1rem; line-height: 1.5;" onclick="retroceder2Steps();">
-                                    <i class="bi bi-arrow-left me-2"></i>Seguir Escribiendo
-                                </button>
                             </div>
                             <div class="form-group mb-3">
                                 <textarea class="form-control" id="contenido" name="descripcion_Acuerdos" rows="6" required></textarea>
@@ -232,12 +186,11 @@ if (!empty($matches[1])) {
 <script>
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
-        const contenidoNotas = $('#notas').summernote('code');
         const tipoSesion = $('#tipo-sesion').text().toUpperCase() || 'INDEFINIDO';
 
         const Textoinicial = `<p style="text-align: justify; line-height: 1.5;"><strong>ACUERDO NÚMERO .-</strong>EL CONSEJO MUNICIPAL, en uso de sus
          facultades legales que les confiere la Constitución de la República de El Salvador en el artículo 204 lnc. 3 CN y
-         Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO: ////<p id="notas">${contenidoNotas}<p>.-<strong>POR
+         Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO:<?php echo $contenidoNotas  ?> <strong>.-POR
          TANTO ESTE CONCEJO MUNICIPAL DE ALCALDESA Y CONCEJO MUNICIPAL POR VOTACIÓN ${tipoSesion} ACUERDAN:</strong>
          escriba aquí los acuerdos...</p>`;
 
@@ -246,23 +199,6 @@ if (!empty($matches[1])) {
 
     // Inicializar Summernote
     $('#contenido').summernote({
-        height: 400,
-        lang: 'es-ES',
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['Arial', 'Courier New', 'Times New Roman']],
-            ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph', 'height']],
-            ['table', ['table']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ]
-    });
-
-    // Establecer un placeholder en el editor #notas
-    $('#notas').summernote({
-        placeholder: 'Escriba aquí el contenido del cuerpo del Acuerdo...',
         height: 400,
         lang: 'es-ES',
         toolbar: [
@@ -411,6 +347,9 @@ if (!empty($matches[1])) {
     }
 
     function agregarTarjeta(contenedor, presente) {
+        // Obtener el comentario existente si existe
+        const comentarioExistente = <?php echo json_encode($comentarios); ?>[presente] || '';
+        
         const contenido = `
 <div class="col-md-3 justify-content-center">
   <div class="card shadow-lg border-0 rounded-3 p-1 d-flex flex-column justify-content-between">
@@ -463,8 +402,8 @@ if (!empty($matches[1])) {
   name="motivo_Votacion1"
   placeholder="Escriba su justificación del voto aquí..."
   data-id="${presente}"
-  required>
-</textarea>
+  required
+  >${comentarioExistente}</textarea>
 
   </div>
 </div>
@@ -663,28 +602,6 @@ if (!empty($matches[1])) {
         }
     });
 </script>
-<script>
-    function cambiarPasos(direccion) {
-        const currentStep = document.querySelector(".content.active");
-        const stepChange = direccion === 'adelante'
-            ? [currentStep, currentStep.nextElementSibling, currentStep.nextElementSibling.nextElementSibling]
-            : [currentStep, currentStep.previousElementSibling, currentStep.previousElementSibling.previousElementSibling];
-
-        if (stepChange[2]) {
-            stepChange[2].classList.add('active');
-            stepChange[1].classList.remove('active');
-            stepChange[0].classList.remove('active');
-            updateProgressBar();
-        }
-    }
-
-    function adelantar2Steps() {
-        cambiarPasos('adelante');
-    }
-    function retroceder2Steps() {
-        cambiarPasos('atras');
-    }
-</script>
 
 <style>
     .step .bs-stepper-circle {
@@ -781,8 +698,8 @@ if (!empty($matches[1])) {
         const progressBar = document.getElementById('progress-bar');
         const activeStepIndex = Array.from(steps).findIndex(step => step.classList.contains('active'));
 
-        // Aseguramos que siempre haya 4 pasos
-        const totalSteps = 4;
+        // Aseguramos que siempre haya 3 pasos
+        const totalSteps = 3;
         const progressPercent = (activeStepIndex / totalSteps) * 100;
 
         progressBar.style.width = `${progressPercent}%`;

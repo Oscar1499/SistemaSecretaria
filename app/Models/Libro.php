@@ -15,6 +15,7 @@ class Libro extends Model
         'fechafinal_Libro',
         'descripcion_Libro',
         'apertura_Libro',
+        'estado',
     ];
 
     public function actas()

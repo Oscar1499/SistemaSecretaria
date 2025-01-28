@@ -32,6 +32,7 @@ class LibroController extends Controller
                 'fechafinal_Libro' => 'required|date',
                 'descripcion_Libro' => 'required|string',
                 'apertura_Libro' => 'required|string',
+                'estado' => 'required|string',
             ]);
 
             // Filtrando solo los campos necesarios para el modelo Libro
@@ -40,7 +41,10 @@ class LibroController extends Controller
                 'fechafinal_Libro',
                 'descripcion_Libro',
                 'apertura_Libro',
+                'estado',
             ]);
+
+          
 
             Libro::create($data);
 

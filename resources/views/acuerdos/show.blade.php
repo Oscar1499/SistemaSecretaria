@@ -73,125 +73,15 @@
         </div>
 
         <!-- Sección: Detalles Adicionales -->
-        <p class="mb-2"><i class="fas fa-vote-yea" aria-hidden="true"></i> <strong>Detalles de Votación</strong></p>
-        <div class="card shadow-sm mb-3">
-            <div class="card-body bg-light">
-                <div class="row">
-            
-                        <div class="bg-white rounded shadow-sm cold-12" style="max-height: 400px; overflow-y: auto;">
-                            @php
-                                $motivosVotacion = explode('|', $acuerdo->motivo_Votacion);
-                                $motivosProcesados = [];
-                                
-                                foreach ($motivosVotacion as $motivo) {
-                                    // Procesar cada entrada de votación
-                                    $partes = explode(':', $motivo, 2);
-                                    
-                                    if (count($partes) >= 2) {
-                                        $nombreCompleto = trim($partes[0]);
-                                        $detallesVoto = trim($partes[1]);
-                                        
-                                        // Extraer información de voto y justificación
-                                        $votoMatch = preg_match('/Voto=([^,]+)/', $detallesVoto, $matchVoto);
-                                        $justificacionMatch = preg_match('/Justificación=(.+)/', $detallesVoto, $matchJustificacion);
-                                        
-                                        $voto = $votoMatch ? trim($matchVoto[1]) : 'Sin voto';
-                                        $justificacion = $justificacionMatch ? trim($matchJustificacion[1]) : 'Sin justificación';
-                                        
-                                        // Eliminar el prefijo "En contra: " o "A favor: " si existe
-                                        $justificacion = preg_replace('/^(En contra:|A favor:)\s*/', '', $justificacion);
-                                        
-                                        $motivosProcesados[] = [
-                                            'nombre' => $nombreCompleto,
-                                            'voto' => $voto,
-                                            'justificacion' => $justificacion
-                                        ];
-                                    }
-                                }
-                            @endphp
-                            
-                            @if(!empty($motivosProcesados))
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover">
-                                        <thead class="thead-light text-center">
-                                            <tr>
-                                                <th>Nombre y Cargo</th>
-                                                <th>Voto</th>
-                                                <th>Justificación</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($motivosProcesados as $motivo)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <i class="fas fa-user-tie me-2 text-primary"></i>
-                                                            <strong>{{ $motivo['nombre'] }}</strong>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge {{ $motivo['voto'] == 'A favor' ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $motivo['voto'] }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="comment-container" style="max-height: 150px; overflow-y: auto; background-color: #f8f9fa; border-radius: 5px; padding: 8px;">
-                                                            <small class="text-muted d-block">
-                                                                <i class="fas fa-comment-dots me-1"></i>
-                                                                {{ $motivo['justificacion'] }}
-                                                            </small>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="mt-3 text-center">
-                                    <div class="alert alert-info d-inline-block" role="alert">
-                                        @php
-                                            $totalVotantes = count($motivosProcesados);
-                                            $votosAFavor = collect($motivosProcesados)->filter(function($motivo) {
-                                                return $motivo['voto'] == 'A favor';
-                                            })->count();
-                                            $votosEnContra = collect($motivosProcesados)->filter(function($motivo) {
-                                                return $motivo['voto'] == 'En contra';
-                                            })->count();
-                                        @endphp
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <div class="me-3">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                Total de votantes: {{ $totalVotantes }}
-                                            </div>
-                                            <div class="me-3">
-                                                <span class="badge bg-success me-1">
-                                                    <i class="fas fa-check me-1"></i>
-                                                    A Favor: {{ $votosAFavor }}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span class="badge bg-danger">
-                                                    <i class="fas fa-times me-1"></i>
-                                                    En Contra: {{ $votosEnContra }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="alert alert-warning text-center">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    No se encontraron detalles de votación.
-                                </div>
-                            @endif
-                        </div>
-                   
+        <div class="col-md-6">
+                <p class="mb-1"><strong><i class="fas fa-info-circle" aria-hidden="true"></i> Estado:</strong></p>
+                <div class="bg-light rounded p-2">
+                    <span id="estado" class="text-muted" aria-label="Estado actual del acuerdo">
+                        {{ $acuerdo->motivo_Votacion ?: 'Estado no definido' }}
+                    </span>
                 </div>
             </div>
-        </div>
-
-
+        
         <!-- Botones -->
         <div class="d-flex justify-content-left">
             <a href="{{ route('acuerdos.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm me-2" aria-label="Volver a la lista de acuerdos">

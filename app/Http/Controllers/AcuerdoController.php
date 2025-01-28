@@ -106,9 +106,31 @@ class AcuerdoController extends Controller
     {
         $actas = Acta::where('estado', 'Cerrado')->get();
         $personal = Personal::all();
+        
+        // Procesar el texto del acuerdo
+        $texto = $acuerdo->descripcion_Acuerdos;
+        $contenidoNotas = '';
+        if (preg_match('/CONSIDERANDO:(.*?)POR\s+TANTO/is', $texto, $matches)) {
+            $contenidoNotas = trim(strip_tags($matches[1]));
+        }
 
-        // Retorna la vista 'acuerdos.edit' con el acuerdo para editar
-        return view('acuerdos.edit', compact('acuerdo', 'actas', 'personal'));
+        // Procesar los comentarios existentes
+        $comentarios = [];
+        if (!empty($acuerdo->motivo_Votacion)) {
+            $votaciones = explode('|', $acuerdo->motivo_Votacion);
+            foreach ($votaciones as $votacion) {
+                if (preg_match('/^(.*?):\s*Voto=(.*?),\s*Justificación=(.*)$/', $votacion, $matches)) {
+                    $nombre = trim($matches[1]);
+                    $justificacion = trim($matches[3]);
+                    // Remover prefijos "A favor:" o "En contra:" si existen
+                    $justificacion = preg_replace('/^(A favor:|En contra:)\s*/', '', $justificacion);
+                    $comentarios[$nombre] = $justificacion;
+                }
+            }
+        }
+
+        // Retorna la vista con todas las variables procesadas
+        return view('acuerdos.edit', compact('acuerdo', 'actas', 'personal', 'contenidoNotas', 'comentarios'));
     }
 
     // Método para almacenar un nuevo acuerdo

@@ -58,6 +58,13 @@
             </div>
         </div>
 
+        <div class="col-md-6">
+                <p><strong>Estado del libro :</strong></p>
+                <div class="bg-light rounded p-2">
+                    <span id="estado">{{ $libro->estado }}</span>
+                </div>
+            </div>
+
         <!-- Botones -->
         <div class="mt-3">
             <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">

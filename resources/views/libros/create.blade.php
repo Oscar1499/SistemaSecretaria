@@ -117,6 +117,7 @@ $mesEnTexto = [
                 <!-- Formulario con pasos -->
                 <form action="{{ route('libros.store') }}" method="POST">
                     @csrf
+<input type="hidden" name="estado" id="estado" value="Abierto">
 
                     <!-- Paso 1: Configuración del libro-->
                     <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
