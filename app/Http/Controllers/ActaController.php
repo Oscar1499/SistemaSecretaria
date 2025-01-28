@@ -23,9 +23,8 @@ class ActaController extends Controller
         $numero_Actas = Acta::count() + 1;
         $secretario = Personal::where('cargo', 'Secretario')->first();
         $personal = Personal::all();
-
-        // Aqui elimine las variables de libros y libroActual para que no se muestren en la vista
-        return view('actas.create', compact( 'alcaldesa', 'secretario', 'personal', 'numero_Actas'));
+        $libros  = Libro::where('estado', 'Abierto')->get();
+        return view('actas.create', compact( 'alcaldesa', 'secretario', 'personal', 'numero_Actas', 'libros'));
     }
     public function store(Request $request)
     {
@@ -34,7 +33,7 @@ class ActaController extends Controller
             $request->validate([
                 'fecha' => 'required|date',
                 // 'id_Personal' => 'nullable|string',
-                'estado' => 'nullable|string',
+                'estado' => 'required|string',
                 'contenido_elaboracion' => 'required|string',
                 'presentes' => 'required|string',
                 'ausentes' => 'required|string',
@@ -46,7 +45,7 @@ class ActaController extends Controller
 
             // Crear una nueva instancia de Acta
             $acta = new Acta();
-            $acta->id_libros = 7;
+            $acta->id_libros = $request->id_libros;
             $acta->estado = $request->estado;
             // $acta->id_Personal = $request->id_Personal;
             $acta->fecha = $request->fecha;
@@ -60,6 +59,11 @@ class ActaController extends Controller
 
             // Guardar en la base de datos
             $acta->save();
+
+            // Busca el Acta y actualiza su estado
+            $libro = Libro::findOrFail($request->id_libros);
+            $libro->estado = 'Cerrado';
+            $libro->save();
 
             // Redireccionar con mensaje de éxito
             return redirect()->route('actas.index')->with('success_create', 'Acta creada exitosamente.');
@@ -77,11 +81,12 @@ class ActaController extends Controller
 
     public function edit(Acta $acta)
     {
+        $libros_cerrados  = Libro::where('estado', 'Cerrado')->get();
         $personal = Personal::all();
         $alcaldesa = Personal::where('cargo', 'Alcaldesa')->first();
         $secretario = Personal::where('cargo', 'Secretario')->first();
         $libros = Libro::all();
-        return view('actas.edit', compact('acta', 'libros', 'alcaldesa', 'secretario', 'personal'));
+        return view('actas.edit', compact('acta', 'libros', 'alcaldesa', 'secretario', 'personal', 'libros_cerrados'));
     }
 
     public function update(Request $request, Acta $acta)

@@ -25,6 +25,7 @@ class Acuerdo extends Model
         'fecha_Acuerdos',
         'motivo_Votacion',
         'descripcion_Acuerdos',
+        'resultado_votacion',
     ];
 
     public function acta()

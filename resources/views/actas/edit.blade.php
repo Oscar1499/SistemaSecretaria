@@ -95,7 +95,7 @@ $ausentesTexto = !empty($coincidenciasAusentes[1]) ? $coincidenciasAusentes[1] :
                             <label for="id_libros"><i class="bi bi-book"></i> Libro</label>
                             <select class="form-control" id="id_libros" name="id_libros" required>
                                 <option value="" selected>Seleccione un libro</option>
-                                @foreach ($libros1 as $libro)
+                                @foreach ($libros_cerrados as $libro)
                                     <option value="{{ $libro->id_Libros}}">{{ $libro->id_Libros}} - {{ $libro->descripcion_Libro }}</option>
                                 @endforeach
                             </select>

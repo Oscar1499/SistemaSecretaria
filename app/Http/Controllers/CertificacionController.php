@@ -47,8 +47,9 @@ class CertificacionController extends Controller
     // Show the form for editing the specified resource.
     public function edit($id)
     {
+        $certificacion = Certificacion::findOrFail($id);
         // Code to show form for editing a specific certification
-        return view('certificacion.edit');
+        return view('certificacion.edit', compact('certificacion'));
     }
 
     // Update the specified resource in storage.

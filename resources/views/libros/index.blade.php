@@ -238,6 +238,8 @@
         });
     </script>
     @endif
+    
+    <!-- Alertas de error -->
 
     @if(session('error_create'))
     <script>

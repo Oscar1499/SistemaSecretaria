@@ -80,6 +80,7 @@ class AcuerdoController extends Controller
                 'fecha_Acuerdos' => 'required|date', // Fecha del acuerdo
                 'motivo_Votacion' => 'required|string', // Motivo de la votación
                 'descripcion_Acuerdos' => 'nullable|string', // Descripción del acuerdo, opcional
+                'resultado_votacion' => 'required|string', // Resultado de la votación, requerido y debe ser una cadena
             ]);
 
             // Filtrando solo los campos necesarios
@@ -89,6 +90,7 @@ class AcuerdoController extends Controller
                 'fecha_Acuerdos',
                 'motivo_Votacion',
                 'descripcion_Acuerdos',
+                'resultado_votacion',
             ]);
 
             // Actualiza el acuerdo con los datos filtrados
@@ -144,6 +146,7 @@ class AcuerdoController extends Controller
                 'motivo_Votacion' => 'required|string', // Motivo de la votación, requerido y debe ser una cadena
                 'fecha_Acuerdos' => 'required|date', // Fecha del acuerdo, requerida y debe ser de tipo fecha
                 'descripcion_Acuerdos' => 'required|string', // Descripción del acuerdo, opcional y debe ser una cadena
+                'resultado_votacion' => 'required|string', // Resultado de la votación, requerido y debe ser una cadena
             ]);
 
             // Filtra solo los campos necesarios para crear un nuevo acuerdo
@@ -153,6 +156,7 @@ class AcuerdoController extends Controller
                 'fecha_Acuerdos',
                 'motivo_Votacion',
                 'descripcion_Acuerdos',
+                'resultado_votacion',
             ]);
 
             // Crea un nuevo acuerdo con los datos proporcionados

@@ -53,10 +53,10 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <p class="mb-1"><strong><i class="fas fa-info-circle" aria-hidden="true"></i> Estado:</strong></p>
+                <p class="mb-1"><strong><i class="fas fa-poll" aria-hidden="true"></i> Resultado de la Votación:</strong></p>
                 <div class="bg-light rounded p-2">
-                    <span id="estado" class="text-muted" aria-label="Estado actual del acuerdo">
-                        {{ $acuerdo->estado ?: 'Estado no definido' }}
+                    <span id="resultado_votacion" class="text-muted" aria-label="Estado actual del acuerdo">
+                        {{ $acuerdo->resultado_votacion}}
                     </span>
                 </div>
             </div>
@@ -84,9 +84,6 @@
         
         <!-- Botones -->
         <div class="d-flex justify-content-left">
-            <a href="{{ route('acuerdos.index') }}" class="btn btn-secondary px-4 py-2 rounded-pill shadow-sm me-2" aria-label="Volver a la lista de acuerdos">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Atrás
-            </a>
             <button id="export-pdf" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm" aria-label="Descargar acuerdo en formato PDF">
                 <i class="fas fa-file-pdf" aria-hidden="true"></i> Descargar PDF
             </button>
@@ -106,13 +103,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Inicializar Summernote con opciones de accesibilidad
         $('#descripcion_acuerdos').summernote({
-            height: 280,
+            height: 300,
             lang: 'es-ES', // Soporte de idioma español
             toolbar: [
                 ['style', ['style']],
                 ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['fontname', ['fontname']],
-                ['fontsize', ['fontsize']],
+                
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],

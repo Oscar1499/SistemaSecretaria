@@ -29,11 +29,10 @@ function numToText($number)
     <!-- Campos ocultos para almacenar los contenidos dinámicos -->
     <input type="hidden" id="presentes" name="presentes" required />
     <input type="hidden" id="ausentes" name="ausentes" required />
-    <input type="hidden" id="estado" name="estado" value="Abierto" />
+    <input type="hidden" id="estado" name="estado" value="Abierto" required />
     <input type="hidden" id="tipo_sesion" name="tipo_sesion" required />
 
     <!-- <input type="hidden" id="id_Personal" name="id_Personal" required /> -->
-
 
     <input type="hidden" id="alcaldesaInfo" value="{{ $alcaldesa ? $alcaldesa->nombre . ' ' . $alcaldesa->apellido . ' ' . $alcaldesa->cargo : 'No definida' }}">
     <input type="hidden" id="secretarioInfo" value="{{ $secretario ? $secretario->nombre . ' ' . $secretario->apellido .' '. $secretario->cargo : 'No definido' }}">
@@ -95,7 +94,9 @@ function numToText($number)
                             <label for="id_libros"><i class="bi bi-book"></i> Libro</label>
                             <select class="form-control" id="id_libros" name="id_libros" required>
                                 <option value="" selected>Seleccione un libro</option>
-
+                                @foreach($libros as $libro)
+                                    <option value="{{ $libro->id_Libros }}">{{ $libro->id_Libros }}-{{ $libro->descripcion_Libro }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
@@ -161,7 +162,7 @@ function numToText($number)
                         <div class="form-group">
                             <label for="correlativo"><i class="bi bi-file-earmark-text me-2"></i> Número de Acta</label>
                             <input type="text" class="form-control font-weight-bold text-uppercase" id="correlativo" name="correlativo"
-                                value="ACTA NÚMERO {{ mb_strtoupper(numToText($numero_Actas), 'UTF-8') }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" readonly>
+                                value="ACTA NÚMERO {{ mb_strtoupper(numToText($numero_Actas), 'UTF-8') }} DEL CONCEJO MUNICIPAL PLURAL DE LA UNIÓN SUR.-" required readonly>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" id="Notas" name="contenido_elaboracion" required></textarea>
@@ -173,7 +174,7 @@ function numToText($number)
                                 class="form-control"
                                 id="motivo_ausencia"
                                 name="motivo_ausencia"
-                                placeholder="Detalle los motivos de ausencia de los miembros no presentes en la sesión"></textarea>
+                                placeholder="Detalle los motivos de ausencia de los miembros no presentes en la sesión" required>sssss</textarea>
                             
                             <div class="mt-1 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary previous-step mt-3">

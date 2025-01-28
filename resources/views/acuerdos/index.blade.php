@@ -178,6 +178,9 @@
         }
     </script>
 
+
+<!-- Alertas de operación exitosa -->
+
 @if(session('success_create'))
 <script>
     Swal.fire({
@@ -199,6 +202,21 @@
         icon: 'success',
         title: '¡Operación exitosa!',
         text: "El acuerdo se ha actualizado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
+@if(session('success_delete'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Operación exitosa!',
+        text: "El acuerdo se ha eliminado correctamente.",
         confirmButtonText: 'Aceptar',
         showConfirmButton: true,
         timer: 3000,

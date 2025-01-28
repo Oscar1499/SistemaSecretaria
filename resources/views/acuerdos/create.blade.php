@@ -100,6 +100,7 @@ $NumeroTexto = numToText($numero_Acuerdo);
                     <form action="{{ route('acuerdos.store') }}" method="POST" id="acuerdoForm">
                         @csrf
                         <input type="hidden" value="1" name="id_Personal" id="id_Personal" value="1" required />
+                        <input type="hidden" id="resultado_votacion" name="resultado_votacion" value="" required />
 
                         <!-- Paso 1: Configuración del libro -->
                         <div id="step-1" class="content active tab-pane" role="tabpanel" aria-labelledby="stepper-step-1">
@@ -233,6 +234,8 @@ $NumeroTexto = numToText($numero_Acuerdo);
         
         const tipoSesion = $('#tipo-sesion').text().toUpperCase() || 'INDEFINIDO';
 
+        document.getElementById('resultado_votacion').value = tipoSesion;
+
         const Textoinicial = `<p style="text-align: justify; line-height: 1.5;"><strong>ACUERDO NÚMERO <?php echo mb_strtoupper(numToText($numero_Acuerdo)) ?>.-</strong>EL CONSEJO MUNICIPAL, en uso de sus
          facultades legales que les confiere la Constitución de la República de El Salvador en el artículo 204 lnc. 3 CN y
          Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO:${contenidoNotas} <strong>.-POR
@@ -249,31 +252,34 @@ $NumeroTexto = numToText($numero_Acuerdo);
         toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
-            ['fontname', ['Arial', 'Arial Black', 'Courier New', 'Times New Roman']],
-            ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
+            ['fontname', ['fontname']], // Allow changing font family
+            ['fontsize', ['fontsize']], // Allow changing font size
             ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph', 'height']],
             ['table', ['table']],
             ['view', ['fullscreen', 'codeview', 'help']]
-        ]
+        ],
+        fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman'],
+        fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']
     });
 
-    // Establecer un placeholder en el editor #notas
-    $('#notas').summernote({
-        placeholder: 'Escriba aquí el contenido del cuerpo del Acuerdo...',
-        height: 400,
-        lang: 'es-ES',
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'clear']],
-            ['fontname', ['Arial', 'Courier New', 'Times New Roman']],
-            ['fontsize', ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph', 'height']],
-            ['table', ['table']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ]
-    });
+   $('#notas').summernote({
+       placeholder: 'Escriba aquí el contenido del cuerpo del Acuerdo...',
+       height: 400,
+       lang: 'es-ES',
+       toolbar: [
+           ['style', ['style']],
+           ['font', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
+           ['fontname', ['fontname']],
+           ['fontsize', ['fontsize']],
+           ['color', ['color']],
+           ['para', ['ul', 'ol', 'paragraph', 'height']],
+           ['table', ['table']],
+           ['view', ['fullscreen', 'codeview', 'help']]
+       ],
+       fontNames: ['Arial', 'Arial Black', 'Courier New', 'Times New Roman'],
+       fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '24', '36']
+   });
 
     // Evento para detectar cambios en el editor #notas y actualizar #contenido
     $('#notas').on('summernote.change', function(we, contents) {

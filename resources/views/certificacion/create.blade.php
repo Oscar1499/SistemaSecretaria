@@ -334,6 +334,14 @@ async function obtenerAcuerdo(idAcuerdo) {
     const acuerdo = await obtenerAcuerdo(id_Acuerdo); // Cambia el 1 por el ID del acuerdo que necesitas
     const descripcionAcuerdo = acuerdo?.descripcion_Acuerdos || 'No se pudo obtener la descripción del acuerdo';
 
+let Texto2 = `CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////
+////////////////////////////////////////. Es conforme con su original, con el cu
+al fue debidamente confrontada, y para los efectos de Ley se expide la presente 
+en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
+ a los cinco días del mes de diciembre de dos mil veinticuatro.-
+
+`;
+
     // Construir el texto inicial
     let TextoInicial = `<p style="text-align: justify; line-height: 1.2; font-family: Arial, sans-serif;">
     La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
@@ -342,7 +350,8 @@ async function obtenerAcuerdo(idAcuerdo) {
     las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
     el acuerdo Municipal número UNO, que literalmente dice:
     ////////////////////////////////////////////////////////////////////////////</p>
-    <p>${descripcionAcuerdo}</p>`; // Aquí se agrega la descripción del acuerdo
+    ${descripcionAcuerdo}
+    <br><br></p> ${Texto2}`; // Aquí se agrega la descripción del acuerdo
 
     // Agregar texto inicial al editor Summernote
     $('#Certificacion').summernote('code', TextoInicial);

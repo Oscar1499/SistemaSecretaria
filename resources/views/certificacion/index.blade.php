@@ -210,12 +210,27 @@
 </script>
 @endif
 
+@if(session('success_delete'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Operación exitosa!',
+        text: "La certificación se ha eliminado correctamente.",
+        confirmButtonText: 'Aceptar',
+        showConfirmButton: true,
+        timer: 3000,
+        toast: true,
+        position: 'top-end'
+    });
+</script>
+@endif
+
 <!-- Alertas de posibles errores -->
 @if(session('error_create'))
 <script>
     Swal.fire({
         icon: 'error',
-        title: '¡Error al guardar la Certificación!',
+        title: '¡Error al crear la Certificación!',
         text: "Verifica que hayas ingresado todos los campos obligatorios y que la Certificación no se encuentre duplicada. Inténtalo de nuevo.",
         confirmButtonText: 'Aceptar',
         showConfirmButton: true,
