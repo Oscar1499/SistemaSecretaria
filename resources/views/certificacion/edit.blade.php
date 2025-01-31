@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Crear Certificación')
+@section('title', 'Editar Certificación')
 
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
-    <h1><i class="fas fa-certificate me-2"></i> Crear Nueva Certificación</h1>
+    <h1><i class="fas fa-certificate me-2"></i> Editar Certificación</h1>
     <a href="{{ route('certificacion.index') }}" class="btn btn-secondary">
         <i class="fas fa-arrow-left me-1"></i> Regresar
     </a>
@@ -56,9 +56,18 @@ $mesEnTexto = [
                 <div class="line"></div>
 
                 <!-- Paso 2 -->
+                <div class="step" data-target="#step-2">
+                    <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
+                        <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-label">Representación del consejo</span>
+                    </button>
+                </div>
+                <div class="line"></div>
+
+                <!-- Paso 3 -->
                 <div class="step" data-target="#step-3">
                     <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                        <span class="bs-stepper-circle">2</span>
+                        <span class="bs-stepper-circle">3</span>
                         <span class="bs-stepper-label">Apertura del libro</span>
                     </button>
                 </div>
@@ -78,22 +87,6 @@ $mesEnTexto = [
                                 <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
                             </div>
                         </div>
-                        <div class="form-group">
-
-<label for="secretario">
-    <i class="bi bi-person-badge me-2"></i>
-    Seleccione secretario a firmar:
-</label>
-<div class="input-group">
-    <select class="form-select form-select-sm form-control" id="secretario" name="secretario" style="font-size: 1rem;">
-        <option selected>Seleccione</option>
-        @foreach($secretarios as $secretario)
-        <option data-alcalde="{{$secretario->id}}" value="{{$secretario->id}}">{{$secretario->nombre}} {{$secretario->apellido}} - ({{$secretario->cargo}})</option>
-        @endforeach
-    </select>
-</div>
-</div>
-
 
                         <div class="form-group">
                                 <label for="id_Acuerdos"><i class="bi bi-file-earmark-fill"></i> Seleccionar Acuerdo</label>
@@ -110,6 +103,16 @@ $mesEnTexto = [
                             <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
                     </div>
+
+                    <!-- Paso 2: Representación del consejo -->
+                    <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
+
+                    <div class="mt-3 d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+
                     <!-- Paso 3: Apertura del libro -->
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                     <div class="form-group">
@@ -156,9 +159,7 @@ $mesEnTexto = [
                         </div>
                     <textarea class="form-control mt-2" id="Certificacion" name="contenido_Certificacion" required></textarea>
                         <div class="mt-3 d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary previous-step">
-                                <i class="bi bi-arrow-left"></i> Anterior
-                            </button>
+                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
                             <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Certificación</button>
                         </div>
                     </div>
@@ -365,7 +366,7 @@ en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Uni�
 $(document).ready(function() {
     $('#Certificacion').summernote({
         tabsize: 2,
-        height: 400,
+        height: 300,
         toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'underline', 'clear']],
@@ -388,76 +389,37 @@ $(document).ready(function() {
     // Actualizar el contenido de Summernote al cargar la página
     actualizarMesYTexto();
 });
-      
- });
- 
-</script>
-<script>
-    // Seleccionamos los botones de "Siguiente" y "Anterior"
-    const nextButtons = document.querySelectorAll('.next-step');
-    const previousButtons = document.querySelectorAll('.previous-step');
-
-    // Función para cambiar al siguiente paso
-    nextButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            let currentStep = e.target.closest('.content');
-            let nextStep = currentStep.nextElementSibling;
-
-            if (nextStep) {
-                currentStep.classList.remove('active');
-                nextStep.classList.add('active');
-
-                updateActiveStep(nextStep);
-
-                updateProgressBar();
-            }
-        });
-    });
-
-    // Función para volver al paso anterior
-    previousButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            let currentStep = e.target.closest('.content');
-            let previousStep = currentStep.previousElementSibling;
-
-            if (previousStep) {
-
-                currentStep.classList.remove('active');
-                previousStep.classList.add('active');
-
-                updateActiveStep(previousStep);
-
-                updateProgressBar();
-            }
-        });
-    });
-
-    // Función para actualizar el paso activo en los botones
-    function updateActiveStep(currentStep) {
-        document.querySelectorAll('.step .step-trigger').forEach(button => {
-            button.classList.remove('active-step');
-        });
-
-        const activeButton = document.querySelector(`#stepper-step-${currentStep.id.split('-')[1]}`);
-        activeButton.classList.add('active-step');
-    }
-
-    // Función para actualizar la barra de progreso
-    function updateProgressBar() {
-        const steps = document.querySelectorAll('.content');
+        
+        const stepper = new Stepper(document.querySelector('.bs-stepper'));
         const progressBar = document.getElementById('progress-bar');
-        const activeStepIndex = Array.from(steps).findIndex(step => step.classList.contains('active'));
 
-        // Aseguramos que siempre haya 3 pasos
-        const totalSteps = 2;
-        const progressPercent = (activeStepIndex / totalSteps) * 100;
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', () => {
+                stepper.next();
+                updateProgressBar();
+            });
+        });
 
-        progressBar.style.width = `${progressPercent}%`;
-        progressBar.setAttribute('aria-valuenow', progressPercent);
-        progressBar.textContent = `Paso ${activeStepIndex} de ${totalSteps}`;
-    }
+        document.querySelectorAll('.previous-step').forEach(button => {
+            button.addEventListener('click', () => {
+                stepper.previous();
+                updateProgressBar();
+            });
+        });
 
-    // Inicializar el primer paso como activo
-    updateActiveStep(document.getElementById('step-1'));
+        function updateProgressBar() {
+            const steps = document.querySelectorAll('.step');
+            const activeStepIndex = Math.max(0, Array.from(steps).findIndex(step => step.classList.contains('active')));
+            const progressPercent = ((activeStepIndex + 1) / steps.length) * 100;
+
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.setAttribute('aria-valuenow', progressPercent);
+            progressBar.textContent = `Paso ${activeStepIndex + 1} de ${steps.length}`;
+        }
+
+        // Ensure the first step is active by default
+        document.querySelector('.step')?.classList.add('active');
+        updateProgressBar();
+    });
 </script>
 @endsection

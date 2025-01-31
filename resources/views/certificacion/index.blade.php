@@ -67,48 +67,42 @@
                     <thead>
                         <tr>
                             <th><i class="bi bi-person-badge-fill"></i> ID</th>
-                            <th><i class="bi bi-book-fill"></i> Libro</th>
-                            <th><i class="bi bi-file-earmark-fill"></i> Acta</th>
-                            <th><i class="bi bi-people-fill"></i> Acuerdos</th>
-                            <th><i class="bi bi-calendar-fill"></i> Fecha de Certificación</th>
+                            <th><i class="bi bi-book-fill"></i> Fecha de Certificación</th>
                             <th><i class="bi bi-save-fill"></i> Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                      
+                        @foreach ($certificaciones as $certificacion)
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{$certificacion->id_Certificacion ?? 'N/A'}}</td>
+                            <td>{{$certificacion->fecha_Certificacion ?? 'N/A'}}</td>
                             <td class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-1">
-                                <a href=""             
+                                <a href="{{ route('certificacion.show', $certificacion->id_Certificacion) }}"             
                                    class="btn btn-info btn-sm" 
                                    title="Ver esta Certificación">
                                     <i class="bi bi-eye"></i> Ver
                                 </a>
-                                <a href="" 
+                                <a href="{{ route('certificacion.edit', $certificacion->id_Certificacion) }}" 
                                    class="btn btn-warning btn-sm" 
                                    title="Editar esta Certificación">
                                     <i class="bi bi-pencil"></i> Editar
                                 </a>
-                                <form action="" 
+                                <form action="{{ route('certificacion.destroy', $certificacion->id_Certificacion) }}" 
                                       method="POST" 
                                       class="d-inline" 
-                                      id="">
+                                      id="deleteForm-{{ $certificacion->id_Certificacion }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 
                                             class="btn btn-danger btn-sm" 
-                                            onclick=""                             
+                                            onclick="Eliminar(event, 'deleteForm-{{ $certificacion->id_Certificacion }}')"                             
                                             title="Eliminar esta Certificación">
                                         <i class="bi bi-trash"></i> Eliminar
                                     </button>
                                 </form>
                             </td>
                         </tr>
-                   
+                        @endforeach
                     </tbody>
                 </table>
             </div>

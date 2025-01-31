@@ -187,7 +187,7 @@ $mesEnTexto = [
                                 <select class="form-select form-select-sm" id="alcalde" name="alcalde">
                                     <option selected>Seleccione</option>
                                     @foreach($alcalde as $alcaldes)
-                                    <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->id}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}}</option>
+                                    <option data-alcalde="{{$alcaldes->id}}" value="{{$alcaldes->nombre}} {{$alcaldes->apellido}}">{{$alcaldes->nombre}} {{$alcaldes->apellido}} - ({{$alcaldes->cargo}})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -203,7 +203,7 @@ $mesEnTexto = [
                                 <select class="form-select form-select-sm" id="sindico" name="sindico">
                                     <option selected>Seleccione</option>
                                     @foreach($sindico as $sindicos)
-                                    <option value="{{$sindicos->id}}">{{$sindicos->nombre}} {{$sindicos->apellido}}</option>
+                                    <option value="{{$sindicos->nombre}} {{$sindicos->apellido}}">{{$sindicos->nombre}} {{$sindicos->apellido}} - ({{$sindicos->cargo}})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -259,12 +259,10 @@ $mesEnTexto = [
                                 </div>
                             </div>
                         </div>
-
                         <!-- Área de texto para notas -->
                         <div>
                             <textarea class="form-control mt-2" id="notas" name="apertura_Libro" required></textarea>
                         </div>
-
                         @section('css')
                         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
                         @endsection
@@ -332,8 +330,8 @@ $mesEnTexto = [
         const diaSeleccionado = numeroAPalabras(fecha?.dia) || 'el día';
         const mesSeleccionadoVariable = fecha?.mes || 'el mes';
 
-        const alcaldeSeleccionado = $('#alcalde option:selected').text() || 'Nombre del Alcalde';
-        const sindicoSeleccionado = $('#sindico option:selected').text() || 'Nombre del Síndico';
+        const alcaldeSeleccionado = $('#alcalde').val() || 'Nombre del Alcalde';
+        const sindicoSeleccionado = $('#sindico').val() || 'Nombre del Síndico';
 
         let hora_Seleccionada = $('#horaApertura').val();
         let minutos_Seleccionada = $('#minutosApertura').val();
