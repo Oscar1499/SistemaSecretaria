@@ -99,12 +99,12 @@
                                     @method('DELETE')
                                     <button type="submit" 
                                             class="btn btn-danger btn-sm" 
-                                            onclick="return Eliminar(event, 'deleteForm-{{ $acuerdo->id_Acuerdo }}');"                             
+                                            onclick="return Eliminar(event, 'deleteForm-{{ $acuerdo->id_Acuerdo }}');" 
                                             title="Eliminar este Acuerdo">
                                         <i class="bi bi-trash"></i> Eliminar
                                     </button>
                                 </form>
-                              
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

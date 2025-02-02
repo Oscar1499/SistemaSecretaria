@@ -1,18 +1,20 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class Acta extends Model
 {
+    use HasFactory;
+
     protected $table = 'Actas';
 
     protected $primaryKey = 'id_Actas';
 
+    public $timestamps = false;
     protected $fillable = [
         'id_libros',
-        'id_Personal',
+        // 'id_Personal',
         'estado',
         'fecha',
         'contenido_elaboracion',

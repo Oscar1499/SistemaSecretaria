@@ -333,25 +333,21 @@ async function obtenerAcuerdo(idAcuerdo) {
     const acuerdo = await obtenerAcuerdo(id_Acuerdo); // Cambia el 1 por el ID del acuerdo que necesitas
     const descripcionAcuerdo = acuerdo?.descripcion_Acuerdos || 'No se pudo obtener la descripción del acuerdo';
 
-let Texto2 = `CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////
-////////////////////////////////////////. Es conforme con su original, con el cu
-al fue debidamente confrontada, y para los efectos de Ley se expide la presente 
-en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
- a los cinco días del mes de diciembre de dos mil veinticuatro.-
-
-`;
-
     // Construir el texto inicial
-    let TextoInicial = `<p style="text-align: justify; line-height: 1.2; font-family: Arial, sans-serif;">
+    let TextoInicial = `<p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">
     La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
     Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
     <?php echo $anioEnTexto ?>, se encuentra el acta número VEINTICINCO de Sesión Ordinaria, celebrada lugar a 
     las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
     el acuerdo Municipal número UNO, que literalmente dice:
     ////////////////////////////////////////////////////////////////////////////</p>
-    ${descripcionAcuerdo}
-    <br><br></p> ${Texto2}`; // Aquí se agrega la descripción del acuerdo
-
+    <p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">${descripcionAcuerdo}</p>
+    <br><br><p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////
+////////////////////////////////////////. Es conforme con su original, con el cu
+al fue debidamente confrontada, y para los efectos de Ley se expide la presente 
+    en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
+    a los cinco días del mes de diciembre de dos mil veinticuatro.-
+`;
     // Agregar texto inicial al editor Summernote
     $('#Certificacion').summernote('code', TextoInicial);
 }

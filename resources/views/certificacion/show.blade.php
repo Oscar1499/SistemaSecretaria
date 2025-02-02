@@ -77,7 +77,65 @@
             ],
             callbacks: {}
         });
+        $('#export-pdf').click(function(e) {
+            e.preventDefault();
+
+            // Obtener el contenido del editor Summernote
+            var content = $('#Certificacion').summernote('code');
+
+            // Reemplazar los saltos invisibles con <br> para el PDF
+            var formattedContent = content.replace(
+                /<p style="display: none;" class="invisible-line"><\/p>/g,
+                '<br><br>'
+            );
+
+            // Imagen 1: Imagen centrada en la parte superior
+            var imageHTML1 = `
+    <div style="text-align: left; margin-bottom: 20px;">
+        <img src="{{ asset('img/imagen1.png') }}" alt="Imagen" style="max-width: 250px; height: 120px; margin-left: 1px;">
+    </div>
+    <p style="text-align: center; line-height: 1.5;font-size: 0.5em; margin: 0;">BLANCA VICTORIA GUTIERREZ SALMERON </p>
+    <div style="text-align: right; margin-bottom: 20px;">
+    <img src="https://media.gettyimages.com/id/1500448395/es/foto/cat-taking-a-selfie.jpg?s=1024x1024&w=gi&k=20&c=A4HkIB60XY8y6xlZzYQayyYusF8Sjn1udnF0kUxEgvk=" alt="Imagen 2" style="
+        max-width: 210px;
+        height: 100px;
+        margin-top: -200px;
+         margin-right: -95px;">
+       
+    </div>
+    
+    `;
+            formattedContent = imageHTML1 + formattedContent;
+
+  
+           
+
+            // Crear un contenedor temporal para el contenido con formato
+            var tempContainer = $(
+                '<div style="width: 80%; margin: 0 auto; text-align: center; word-break: break-word; position: relative;">'
+            ).html(formattedContent);
+
+            // Exportar a PDF usando html2pdf con mayor calidad
+            html2pdf()
+                .set({
+                    margin: 10, // Márgenes en milímetros
+                    filename: 'apertura-libro.pdf',
+                    html2canvas: {
+                        scale: 6, // Escala más alta para mejorar la calidad
+                        useCORS: true // Permite cargar imágenes externas
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait' // Orientación vertical
+                    }
+                })
+                .from(tempContainer[0])
+                .save();
+        });
+
     });
+
 
     </script>
 @endsection

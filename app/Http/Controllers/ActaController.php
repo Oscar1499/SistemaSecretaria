@@ -33,6 +33,7 @@ class ActaController extends Controller
             $request->validate([
                 'fecha' => 'required|date',
                 // 'id_Personal' => 'nullable|string',
+                'id_libros' => 'required|integer',
                 'estado' => 'required|string',
                 'contenido_elaboracion' => 'required|string',
                 'presentes' => 'required|string',
@@ -43,28 +44,37 @@ class ActaController extends Controller
                 'motivo_ausencia' => 'nullable|string',
             ]);
 
-            // Crear una nueva instancia de Acta
+            // Crear una nueva instancia de Acta con los datos proporcionados
             $acta = new Acta();
+            // Asignar el ID del libro asociado a la acta
             $acta->id_libros = $request->id_libros;
+            // Asignar el estado de la acta
             $acta->estado = $request->estado;
-            // $acta->id_Personal = $request->id_Personal;
+            // Asignar la fecha de la acta
             $acta->fecha = $request->fecha;
+            // Asignar el correlativo de la acta
             $acta->correlativo = $request->correlativo;
-            $acta->motivo_ausencia = $request->motivo_ausencia ?? 'Ninguno'; // Valor predeterminado si no se proporciona
+            // Asignar el motivo de ausencia, si no se proporciona, usar 'Ninguno' como valor predeterminado
+            $acta->motivo_ausencia = $request->motivo_ausencia ?? 'Ninguno';
+            // Asignar el contenido de elaboración de la acta
             $acta->contenido_elaboracion = $request->contenido_elaboracion;
+            // Asignar la lista de personas presentes en la acta
             $acta->presentes = $request->presentes;
+            // Asignar la lista de personas ausentes en la acta
             $acta->ausentes = $request->ausentes;
+            // Asignar el tipo de sesión de la acta
             $acta->tipo_sesion = $request->tipo_sesion;
+            // Asignar la descripción de la acta
             $acta->descripcion = $request->descripcion;
 
             // Guardar en la base de datos
             $acta->save();
-
             // Busca el Acta y actualiza su estado
-            $libro = Libro::findOrFail($request->id_libros);
-            $libro->estado = 'Cerrado';
-            $libro->save();
+            $libros = Libro::findOrFail($request->id_libros);
+            $libros->estado = 'Cerrado';
+            $libros->save();
 
+          
             // Redireccionar con mensaje de éxito
             return redirect()->route('actas.index')->with('success_create', 'Acta creada exitosamente.');
         } catch (\Exception $e) {
@@ -128,6 +138,10 @@ class ActaController extends Controller
         try {
 
             $acta->delete();
+            // Busca el Acta y actualiza su estado
+            $libros = Libro::findOrFail($acta->id_libros);
+            $libros->estado = 'Abierto';
+            $libros->save();
             return redirect()->route('actas.index')->with('success_delete', 'Acta eliminada exitosamente.');
 
         } catch (\Exception $e) {
