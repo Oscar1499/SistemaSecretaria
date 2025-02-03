@@ -230,17 +230,19 @@ $NumeroTexto = numToText($numero_Acuerdo);
 <script>
     // Función para actualizar el texto en Summernote
     function actualizarTexto() {
-        const contenidoNotas = $('#notas').summernote('code');
+        const contenidoNotas = $('#notas').summernote('code').replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim();
         
         const tipoSesion = $('#tipo-sesion').text().toUpperCase() || 'INDEFINIDO';
 
         document.getElementById('resultado_votacion').value = tipoSesion;
 
-        const Textoinicial = `<p style="text-align: justify; line-height: 1.5;"><strong>ACUERDO NÚMERO <?php echo mb_strtoupper(numToText($numero_Acuerdo)) ?>.-</strong>EL CONSEJO MUNICIPAL, en uso de sus
-         facultades legales que les confiere la Constitución de la República de El Salvador en el artículo 204 lnc. 3 CN y
-         Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO:${contenidoNotas} <strong>.-POR
-         TANTO ESTE CONCEJO MUNICIPAL DE ALCALDESA Y CONCEJO MUNICIPAL POR VOTACIÓN ${tipoSesion} ACUERDAN:</strong>
-         escriba aquí los acuerdos...</p>`;
+        const Textoinicial = `<p style="text-align: justify; line-height: 1.5;"><strong>ACUERDO NÚMERO <?php echo mb_strtoupper(numToText($numero_Acuerdo)) ?>.-</strong>
+         EL CONSEJO MUNICIPAL, en uso de sus facultades legales que les confiere 
+         la Constitución de la República de El Salvador en el artículo 204 lnc. 3 
+         CN y Código Municipal en su artículo 32 y 34 CM; CONSIDERANDO: 
+         ${contenidoNotas} .-POR TANTO ESTE CONCEJO MUNICIPAL DE ALCALDESA Y 
+         CONCEJO MUNICIPAL POR VOTACIÓN ${tipoSesion} ACUERDAN: escriba aquí 
+         los acuerdos...</p>`;
 
         $('#contenido').summernote('code', Textoinicial);
     }

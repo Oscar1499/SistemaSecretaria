@@ -56,18 +56,9 @@ $mesEnTexto = [
                 <div class="line"></div>
 
                 <!-- Paso 2 -->
-                <div class="step" data-target="#step-2">
-                    <button type="button" class="step-trigger" role="tab" id="stepper-step-2" aria-controls="step-2">
-                        <span class="bs-stepper-circle">2</span>
-                        <span class="bs-stepper-label">Representación del consejo</span>
-                    </button>
-                </div>
-                <div class="line"></div>
-
-                <!-- Paso 3 -->
                 <div class="step" data-target="#step-3">
                     <button type="button" class="step-trigger" role="tab" id="stepper-step-3" aria-controls="step-3">
-                        <span class="bs-stepper-circle">3</span>
+                        <span class="bs-stepper-circle">2</span>
                         <span class="bs-stepper-label">Apertura del libro</span>
                     </button>
                 </div>
@@ -75,44 +66,35 @@ $mesEnTexto = [
 
             <div class="bs-stepper-content">
                 <!-- Formulario con pasos -->
-                <form action="{{ route('certificacion.store') }}" method="POST">
+                <form action="{{ route('certificacion.update',5) }}" id="certificacionForm" method="POST">
                     @csrf
+                    @method('PUT')
 
                     <!-- Paso 1: Configuración del libro-->
                     <div id="step-1" class="content active" role="tabpanel" aria-labelledby="stepper-step-1">
                         <div class="form-group">
                             <label for="fecha_Certificacion"><i class="bi bi-calendar-event me-2"></i>Fecha de Certificación</label>
                             <div class="input-group">
-                                <input type="date"  oninput="actualizarMesYTexto();" class="form-control" id="fecha_Certificacion" name="fecha_Certificacion" value="{{ old('fecha', now()->toDateString()) }}" required />
+                                <input type="date"  oninput="actualizarMesYTexto();" class="form-control" id="fecha_Certificacion" name="fecha_Certificacion" value="{{$certificacion->fecha_Certificacion}}" required />
                                 <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
                             </div>
                         </div>
-
                         <div class="form-group">
-                                <label for="id_Acuerdos"><i class="bi bi-file-earmark-fill"></i> Seleccionar Acuerdo</label>
-                                <select id="id_Acuerdos" name="id_Acuerdos"  class="form-control select2">
-                                    <option value="" disabled selected>Seleccione un Acuerdo A Certificar</option>
-                                    @foreach($acuerdos as $acuerdo)
-                                    <option value="{{ $acuerdo->id_Acuerdo }}" data-descripcion="{{ $acuerdo->correlativo }}" data-valor2="{{ Str::words($acuerdo->correlativo, 3, '') }}">
+                            <label for="id_Acuerdos"><i class="bi bi-file-earmark-fill"></i> Seleccionar Acuerdo</label>
+                            <select id="id_Acuerdos" name="id_Acuerdos" class="form-control select2" required>
+                                <option value="" disabled>Seleccione un Acuerdo A Certificar</option>
+                                @foreach($acuerdos as $acuerdo)
+                                    <option value="{{ $acuerdo->id_Acuerdo }}" data-descripcion="{{ $acuerdo->correlativo }}" data-valor2="{{ Str::words($acuerdo->correlativo, 3, '') }}" 
+                                        {{ $certificacion->id_Acuerdo == $acuerdo->id_Acuerdo ? 'selected' : '' }}>
                                         {{ $acuerdo->id_Acuerdo }} - {{ $acuerdo->fecha_Acuerdos }}
                                     </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="mt-3">
                             <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                         </div>
                     </div>
-
-                    <!-- Paso 2: Representación del consejo -->
-                    <div id="step-2" class="content" role="tabpanel" aria-labelledby="stepper-step-2">
-
-                    <div class="mt-3 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
-                            <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
-                        </div>
-                    </div>
-
                     <!-- Paso 3: Apertura del libro -->
                     <div id="step-3" class="content" role="tabpanel" aria-labelledby="stepper-step-3">
                     <div class="form-group">
@@ -159,7 +141,9 @@ $mesEnTexto = [
                         </div>
                     <textarea class="form-control mt-2" id="Certificacion" name="contenido_Certificacion" required></textarea>
                         <div class="mt-3 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary previous-step"><i class="bi bi-arrow-left"></i> Anterior</button>
+                        <button type="button" class="btn btn-secondary previous-step">
+                                <i class="bi bi-arrow-left"></i> Anterior
+                            </button>
                             <button type="submit" class="btn btn-success"><i class="bi bi-floppy"></i> Guardar Certificación</button>
                         </div>
                     </div>
@@ -260,7 +244,7 @@ async function obtenerAcuerdo(idAcuerdo) {
             if (selectedValue) {
                 // Cerrar el dropdown inmediatamente
                 $(this).select2('close');
-                
+
                 // Llamar a obtenerPresentes de manera separada
                 $.ajax({
                     url: "{{ route('obtener.presentes') }}",
@@ -334,25 +318,18 @@ async function obtenerAcuerdo(idAcuerdo) {
     const acuerdo = await obtenerAcuerdo(id_Acuerdo); // Cambia el 1 por el ID del acuerdo que necesitas
     const descripcionAcuerdo = acuerdo?.descripcion_Acuerdos || 'No se pudo obtener la descripción del acuerdo';
 
-let Texto2 = `CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////
-////////////////////////////////////////. Es conforme con su original, con el cu
-al fue debidamente confrontada, y para los efectos de Ley se expide la presente 
-en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
- a los cinco días del mes de diciembre de dos mil veinticuatro.-
-
-`;
-
-    // Construir el texto inicial
-    let TextoInicial = `<p style="text-align: justify; line-height: 1.2; font-family: Arial, sans-serif;">
-    La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
+   // Construir el texto inicial
+   let TextoInicial = `<p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">
+    La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el
     Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
-    <?php echo $anioEnTexto ?>, se encuentra el acta número VEINTICINCO de Sesión Ordinaria, celebrada lugar a 
-    las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
-    el acuerdo Municipal número UNO, que literalmente dice:
-    ////////////////////////////////////////////////////////////////////////////</p>
-    ${descripcionAcuerdo}
-    <br><br></p> ${Texto2}`; // Aquí se agrega la descripción del acuerdo
-
+    <?php echo $anioEnTexto ?>, se encuentra el acta número [Ingrese el número de la acta] de Sesión [Ingrese el tipo de la sesión], celebrada lugar a
+    las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra
+    el acuerdo Municipal número UNO, que literalmente dice: //////////////////////////////////////////////////////////////////////////// ${descripcionAcuerdo.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim()}. 
+    <br><br><span style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////////////////////////////////////////////. Es conforme con su original, con el cu
+    al fue debidamente confrontada, y para los efectos de Ley se expide la presente
+    en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
+    a los ${diaSeleccionado} días del mes de ${mesSeleccionadoVariable} de <?php echo $anioEnTexto ?>.
+`;
     // Agregar texto inicial al editor Summernote
     $('#Certificacion').summernote('code', TextoInicial);
 }
@@ -366,7 +343,7 @@ en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Uni�
 $(document).ready(function() {
     $('#Certificacion').summernote({
         tabsize: 2,
-        height: 300,
+        height: 400,
         toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'underline', 'clear']],
@@ -389,37 +366,76 @@ $(document).ready(function() {
     // Actualizar el contenido de Summernote al cargar la página
     actualizarMesYTexto();
 });
-        
-        const stepper = new Stepper(document.querySelector('.bs-stepper'));
-        const progressBar = document.getElementById('progress-bar');
 
-        document.querySelectorAll('.next-step').forEach(button => {
-            button.addEventListener('click', () => {
-                stepper.next();
+ });
+
+</script>
+<script>
+    // Seleccionamos los botones de "Siguiente" y "Anterior"
+    const nextButtons = document.querySelectorAll('.next-step');
+    const previousButtons = document.querySelectorAll('.previous-step');
+
+    // Función para cambiar al siguiente paso
+    nextButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            let currentStep = e.target.closest('.content');
+            let nextStep = currentStep.nextElementSibling;
+
+            if (nextStep) {
+                currentStep.classList.remove('active');
+                nextStep.classList.add('active');
+
+                updateActiveStep(nextStep);
+
                 updateProgressBar();
-            });
+            }
         });
-
-        document.querySelectorAll('.previous-step').forEach(button => {
-            button.addEventListener('click', () => {
-                stepper.previous();
-                updateProgressBar();
-            });
-        });
-
-        function updateProgressBar() {
-            const steps = document.querySelectorAll('.step');
-            const activeStepIndex = Math.max(0, Array.from(steps).findIndex(step => step.classList.contains('active')));
-            const progressPercent = ((activeStepIndex + 1) / steps.length) * 100;
-
-            progressBar.style.width = `${progressPercent}%`;
-            progressBar.setAttribute('aria-valuenow', progressPercent);
-            progressBar.textContent = `Paso ${activeStepIndex + 1} de ${steps.length}`;
-        }
-
-        // Ensure the first step is active by default
-        document.querySelector('.step')?.classList.add('active');
-        updateProgressBar();
     });
+
+    // Función para volver al paso anterior
+    previousButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            let currentStep = e.target.closest('.content');
+            let previousStep = currentStep.previousElementSibling;
+
+            if (previousStep) {
+
+                currentStep.classList.remove('active');
+                previousStep.classList.add('active');
+
+                updateActiveStep(previousStep);
+
+                updateProgressBar();
+            }
+        });
+    });
+
+    // Función para actualizar el paso activo en los botones
+    function updateActiveStep(currentStep) {
+        document.querySelectorAll('.step .step-trigger').forEach(button => {
+            button.classList.remove('active-step');
+        });
+
+        const activeButton = document.querySelector(`#stepper-step-${currentStep.id.split('-')[1]}`);
+        activeButton.classList.add('active-step');
+    }
+
+    // Función para actualizar la barra de progreso
+    function updateProgressBar() {
+        const steps = document.querySelectorAll('.content');
+        const progressBar = document.getElementById('progress-bar');
+        const activeStepIndex = Array.from(steps).findIndex(step => step.classList.contains('active'));
+
+        // Aseguramos que siempre haya 3 pasos
+        const totalSteps = 2;
+        const progressPercent = (activeStepIndex / totalSteps) * 100;
+
+        progressBar.style.width = `${progressPercent}%`;
+        progressBar.setAttribute('aria-valuenow', progressPercent);
+        progressBar.textContent = `Paso ${activeStepIndex} de ${totalSteps}`;
+    }
+
+    // Inicializar el primer paso como activo
+    updateActiveStep(document.getElementById('step-1'));
 </script>
 @endsection

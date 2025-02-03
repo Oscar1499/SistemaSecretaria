@@ -77,22 +77,22 @@ class CertificacionController extends Controller
     }
 
     // Update the specified resource in storage.
-    public function update(Request $request, $id)
+    public function update(Request $request, Certificacion $certificacion)
     {
         try {
             $request->validate([
                'fecha_Certificacion' => 'required|date',
-               'descripcion_Certificacion' => 'required|string',
+               'contenido_Certificacion' => 'required|string',
            ]);
            $data = $request->only([
                'fecha_Certificacion',
-               'descripcion_Certificacion',
+               'contenido_Certificacion',
            ]);
-           Certificacion::updateOrCreate(['id_Certificacion' => $id], $data);
-           return redirect()->route('certificacion.index')->with('success_update');
-           } catch (\Throwable $th) {
+           $certificacion->update($data);
+           return redirect()->route('certificacion.index')->with('success_update', 'Actualizado');
+           } catch (\Exception $e) {
                //throw $th;
-               return redirect()->route('certificacion.index')->with('error_update');
+               return redirect()->route('certificacion.index')->with('error_update', 'error ');
            }
     }
 

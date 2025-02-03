@@ -80,8 +80,9 @@
 
                 <div class="bs-stepper-content">
                     <!-- Formulario con pasos -->
-                    <form action="{{ route('acuerdos.store') }}" method="POST" id="acuerdoForm">
+                    <form action="{{ route('acuerdos.update', $acuerdo->id_Acuerdo) }}" method="POST" id="acuerdoForm">
                         @csrf
+                        @method('PUT')
                         <input type="hidden" value="1" name="id_Personal" id="id_Personal" value="1" required />
 
                         <!-- Paso 1: Configuración del libro -->
@@ -98,17 +99,18 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i>Seleccionar Acta</label>
-                                <select id="id_Actas" value="{{$acuerdo->id_Actas}}" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
-                                    <option value="" disabled selected>Seleccione</option>
-                                    @foreach($actas as $acta)
-                                    <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ Str::words($acta->correlativo, 3, '') }}">
-                                        {{ $acta->id_Actas }} - {{ $acta->correlativo }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                           <div class="form-group">
+                               <label for="id_Actas"><i class="bi bi-journal-bookmark-fill"></i>Seleccionar Acta</label>
+                               <select id="id_Actas" name="id_Actas" class="form-control select2" required onchange="obtenerPresentes(this.value); let idActa_Variable = obtenerID(this.value)">
+                                   <option value="" disabled>Seleccione</option>
+                                   @foreach($actas as $acta)
+                                       <option value="{{ $acta->id_Actas }}" data-descripcion="{{ $acta->correlativo }}" data-valor2="{{ Str::words($acta->correlativo, 3, '') }}" 
+                                           {{ $acuerdo->id_Actas == $acta->id_Actas ? 'selected' : '' }}>
+                                           {{ $acta->id_Actas }} - {{ $acta->correlativo }}
+                                       </option>
+                                   @endforeach
+                               </select>
+                           </div>
                             <div class="mt-3">
                                 <button type="button" class="btn btn-primary next-step">Siguiente <i class="bi bi-arrow-right"></i></button>
                             </div>

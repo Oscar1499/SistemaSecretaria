@@ -78,22 +78,6 @@ $mesEnTexto = [
                                 <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
                             </div>
                         </div>
-                        <div class="form-group">
-
-<label for="secretario">
-    <i class="bi bi-person-badge me-2"></i>
-    Seleccione secretario a firmar:
-</label>
-<div class="input-group">
-    <select class="form-select form-select-sm form-control" id="secretario" name="secretario" style="font-size: 1rem;">
-        <option selected>Seleccione</option>
-        @foreach($secretarios as $secretario)
-        <option data-alcalde="{{$secretario->id}}" value="{{$secretario->id}}">{{$secretario->nombre}} {{$secretario->apellido}} - ({{$secretario->cargo}})</option>
-        @endforeach
-    </select>
-</div>
-</div>
-
 
                         <div class="form-group">
                                 <label for="id_Acuerdos"><i class="bi bi-file-earmark-fill"></i> Seleccionar Acuerdo</label>
@@ -333,20 +317,17 @@ async function obtenerAcuerdo(idAcuerdo) {
     const acuerdo = await obtenerAcuerdo(id_Acuerdo); // Cambia el 1 por el ID del acuerdo que necesitas
     const descripcionAcuerdo = acuerdo?.descripcion_Acuerdos || 'No se pudo obtener la descripción del acuerdo';
 
-    // Construir el texto inicial
-    let TextoInicial = `<p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">
-    La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el 
+     // Construir el texto inicial
+     let TextoInicial = `<p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">
+    La Suscrita secretaria Municipal, previa autorización de la Alcaldesa Municipal CERTIFICA. Que en el
     Libro de Actas y Acuerdos Municipales que el Concejo Municipal Plural de La Unión Sur, lleva en el año
-    <?php echo $anioEnTexto ?>, se encuentra el acta número VEINTICINCO de Sesión Ordinaria, celebrada lugar a 
-    las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra 
-    el acuerdo Municipal número UNO, que literalmente dice:
-    ////////////////////////////////////////////////////////////////////////////</p>
-    <p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">${descripcionAcuerdo}</p>
-    <br><br><p style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////
-////////////////////////////////////////. Es conforme con su original, con el cu
-al fue debidamente confrontada, y para los efectos de Ley se expide la presente 
+    <?php echo $anioEnTexto ?>, se encuentra el acta número [Ingrese el número de la acta] de Sesión [Ingrese el tipo de la sesión], celebrada lugar a
+    las ${hora_Seleccionada} horas con ${minutos_Seleccionada} minutos del día ${diaSeleccionado} de ${mesSeleccionadoVariable} del año <?php echo $anioEnTexto ?>, se encuentra
+    el acuerdo Municipal número UNO, que literalmente dice: //////////////////////////////////////////////////////////////////////////// ${descripcionAcuerdo.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim()}. 
+    <br><br><span style="text-align: justify; line-height: 1.5; font-family: Arial, sans-serif; text-justify: inter-word;">CERTIFÍQUESE Y COMUNÍQUESE.-//////////////////////////////////////////////////////////////////////////////. Es conforme con su original, con el cu
+    al fue debidamente confrontada, y para los efectos de Ley se expide la presente
     en el Distrito de La Unión, Municipio de La Unión Sur, Departamento de La Unión,
-    a los cinco días del mes de diciembre de dos mil veinticuatro.-
+    a los ${diaSeleccionado} días del mes de ${mesSeleccionadoVariable} de <?php echo $anioEnTexto ?>.
 `;
     // Agregar texto inicial al editor Summernote
     $('#Certificacion').summernote('code', TextoInicial);
